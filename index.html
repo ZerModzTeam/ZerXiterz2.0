@@ -32,7 +32,7 @@
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
-            justify-content: center; align-items: center; transition: 1s ease;
+            justify-content: center; align-items: center; transition: 0.8s ease;
         }
         .enter-btn {
             padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif;
@@ -48,7 +48,7 @@
         /* --- MAIN MENU --- */
         #main-content { 
             display: none; padding: 20px; max-width: 1200px; margin: 0 auto; 
-            opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0; transform: scale(0.95); transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #main-content.active { display: block; opacity: 1; transform: scale(1); }
 
@@ -67,11 +67,11 @@
         .nav-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
         .nav-btn { 
             background: var(--glass); border: 2px solid var(--primary); color: #fff;
-            padding: 12px 20px; border-radius: 10px; cursor: pointer;
+            padding: 12px 20px; border-radius: 10px; cursor: pointer; text-decoration: none;
             font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); 
             transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
-        .nav-btn:active { transform: scale(0.9); }
+        .nav-btn:hover { background: var(--primary); transform: translateY(-3px); }
 
         /* --- PRODUCT CARDS --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
@@ -80,8 +80,8 @@
             border-radius: 15px; padding: 25px; backdrop-filter: blur(12px);
             box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: 0.4s ease;
         }
-        .card:hover { transform: translateY(-10px) scale(1.02); box-shadow: var(--neon-shadow); }
-        .card-title { color: var(--primary); font-family: 'Orbitron'; margin-bottom: 5px; text-shadow: 0 0 5px var(--primary); }
+        .card:hover { transform: translateY(-10px); box-shadow: var(--neon-shadow); }
+        .card-title { color: var(--primary); font-family: 'Orbitron'; margin-bottom: 5px; }
 
         .price-item { 
             display: flex; justify-content: space-between; align-items: center;
@@ -90,38 +90,36 @@
         }
         
         .row-buy-btn {
-            padding: 6px 15px; background: transparent; border: 1px solid var(--primary);
+            padding: 8px 15px; background: transparent; border: 1px solid var(--primary);
             color: #fff; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 5px;
-            box-shadow: var(--neon-shadow); transition: 0.2s; display: flex; align-items: center; gap: 5px;
+            box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 5px;
         }
-        .row-buy-btn:active { transform: scale(0.85); }
 
-        /* --- MODAL LOGO & ANIMATION --- */
+        /* --- MODAL --- */
         .modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.9); z-index: 10001; 
-            justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; backdrop-filter: blur(8px);
         }
         .modal-content { 
             background: #0a0a0a; border: 2px solid var(--primary); padding: 35px; 
             border-radius: 20px; width: 90%; max-width: 380px; text-align: center; 
-            box-shadow: var(--neon-shadow); transform: scale(0.7); opacity: 0;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--neon-shadow); transform: scale(0.8); opacity: 0;
+            transition: 0.3s ease-out;
         }
         .modal.show .modal-content { transform: scale(1); opacity: 1; }
 
         .modal-btn { 
             display: flex; align-items: center; justify-content: center; gap: 12px;
             padding: 14px; color: #fff; text-decoration: none; border: 1px solid var(--primary); 
-            margin: 15px 0; border-radius: 10px; font-weight: 600; transition: 0.3s; 
+            margin: 15px 0; border-radius: 10px; font-weight: 600;
         }
-        .modal-btn:hover { background: var(--primary); transform: translateX(5px); }
-        .modal-btn i { font-size: 1.2rem; }
+        .modal-btn:hover { background: var(--primary); }
 
-        .theme-toggle { margin-top: 15px; cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; transition: 0.3s; }
+        .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
     </style>
 </head>
-<body>
+<body data-theme="purple">
 
     <canvas id="star-canvas"></canvas>
     <audio id="audio-intro" src="intro.mp3"></audio>
@@ -143,7 +141,7 @@
 
         <div class="nav-buttons">
             <button class="nav-btn" onclick="openMod('m-soc')"><i class="fas fa-globe"></i> SOCIAL MEDIA</button>
-            <button class="nav-btn" onclick="alert('Testimoni segera hadir!')"><i class="fas fa-star"></i> TESTIMONI</button>
+            <button class="nav-btn" onclick="goTesti()"><i class="fas fa-certificate"></i> TESTIMONI</button>
             <button class="nav-btn" onclick="openMod('m-cs')"><i class="fas fa-headset"></i> CUSTOMER SERVICE</button>
         </div>
 
@@ -151,44 +149,38 @@
     </div>
 
     <div id="m-soc" class="modal"><div class="modal-content">
-        <h3 style="color:var(--primary); margin-bottom:20px; font-family: 'Orbitron';">SOCIAL MEDIA</h3>
-        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn">
-            <i class="fab fa-instagram" style="color: #E1306C;"></i> Instagram
-        </a>
-        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn">
-            <i class="fab fa-tiktok" style="color: #fff;"></i> TikTok
-        </a>
-        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn">
-            <i class="fab fa-youtube" style="color: #FF0000;"></i> YouTube
-        </a>
-        <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content: center;">CLOSE</button>
+        <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SOCIAL MEDIA</h3>
+        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
+        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
+        <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
     <div id="m-cs" class="modal"><div class="modal-content">
-        <h3 style="color:var(--primary); margin-bottom:20px; font-family: 'Orbitron';">SUPPORT</h3>
-        <a href="#" class="modal-btn" onclick="goCS('admin')">
-            <i class="fab fa-whatsapp" style="color: #25D366;"></i> ADMIN [ ZERO ]
-        </a>
-        <a href="#" class="modal-btn" onclick="goCS('owner')">
-            <i class="fab fa-whatsapp" style="color: #25D366;"></i> OWNER [ RENDY ]
-        </a>
-        <button class="row-buy-btn" onclick="closeMod('m-cs')" style="margin-top:10px; width:100%; justify-content: center;">CLOSE</button>
+        <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SUPPORT</h3>
+        <button class="modal-btn" style="width:100%" onclick="goCS('admin')"><i class="fab fa-whatsapp" style="color:#25D366"></i> ADMIN [ ZERO ]</button>
+        <button class="modal-btn" style="width:100%" onclick="goCS('owner')"><i class="fab fa-whatsapp" style="color:#25D366"></i> OWNER [ RENDY ]</button>
+        <button class="row-buy-btn" onclick="closeMod('m-cs')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
     <script>
         const WA_OWNER = "6285721057014"; 
         const WA_ADMIN = "6289653938936";
+        const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
-        function playTut() {
-            const actx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = actx.createOscillator();
-            const g = actx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1100, actx.currentTime);
-            g.gain.setValueAtTime(0.1, actx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.15);
-            osc.connect(g); g.connect(actx.destination);
-            osc.start(); osc.stop(actx.currentTime + 0.15);
+        // Fungsi BEEP Digital yang Solid
+        function playBeep() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = context.createOscillator();
+            const gain = context.createGain();
+            osc.type = 'square'; // Pake square wave biar suaranya "Beep" beneran
+            osc.frequency.setValueAtTime(880, context.currentTime); // Nada A5
+            gain.gain.setValueAtTime(0.1, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.2);
+            osc.connect(gain);
+            gain.connect(context.destination);
+            osc.start();
+            osc.stop(context.currentTime + 0.2);
         }
 
         function triggerIntro() {
@@ -198,7 +190,7 @@
             btn.style.display = 'none';
             audio.play().catch(() => {});
             setTimeout(() => {
-                playTut();
+                playBeep(); // Bunyi BEEP pas video mulai
                 video.style.display = 'block';
                 video.play();
                 video.onended = () => {
@@ -208,13 +200,13 @@
                         const main = document.getElementById('main-content');
                         main.style.display = 'block';
                         setTimeout(() => main.classList.add('active'), 100);
-                    }, 1000);
+                    }, 800);
                 };
-            }, 600);
+            }, 500);
         }
 
         function changeTheme() {
-            playTut();
+            playBeep();
             document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'red' ? 'purple' : 'red');
         }
 
@@ -234,19 +226,21 @@
 
         const list = document.getElementById('product-list');
         items.forEach(it => {
-            let pr = it.p.map(obj => `<li class="price-item"><div><b style="color:var(--primary)">${obj.h}</b><br><small style="opacity:0.7">${obj.d}</small></div><button class="row-buy-btn" onclick="order('${it.n}', '${obj.h}', '${obj.d}')"><i class="fas fa-shopping-cart"></i> BUY</button></li>`).join('');
+            let pr = it.p.map(obj => `<li class="price-item"><div><b style="color:var(--primary)">${obj.h}</b><br><small style="opacity:0.7">${obj.d}</small></div><button class="row-buy-btn" onclick="order('${it.n}', '${obj.h}', '${obj.d}', '${it.r}')"><i class="fas fa-shopping-cart"></i> BUY</button></li>`).join('');
             list.innerHTML += `<div class="card"><h3 class="card-title">${it.n}</h3><p style="font-size:9px; color:#888; margin-bottom:10px;">NEEDED: ${it.r}</p><ul class="price-list">${pr}</ul></div>`;
         });
 
-        function order(n, h, d) {
-            const t = `Halo kak saya mau order %0A${n} %0AHarga : ${h} %0ADurasi : ${d}`;
-            window.open(`https://wa.me/${WA_OWNER}?text=${t}`, '_blank');
+        function order(n, h, d, r) {
+            const text = `Halo kak saya mau order%0A${n}%0AHarga : ${h}%0ADurasi : ${d}%0ANeeded : ${r}`;
+            window.location.href = `https://wa.me/${WA_OWNER}?text=${text}`;
         }
 
         function goCS(role) {
             const no = (role === 'admin') ? WA_ADMIN : WA_OWNER;
-            window.open(`https://wa.me/${no}?text=${encodeURIComponent("Halo kak saya mengalami kendala!")}`, '_blank');
+            window.location.href = `https://wa.me/${no}?text=Halo kak saya mengalami kendala!`;
         }
+
+        function goTesti() { window.open(TESTI_LINK, '_blank'); }
 
         function openMod(id) { 
             const mod = document.getElementById(id);
@@ -257,9 +251,10 @@
         function closeMod(id) { 
             const mod = document.getElementById(id);
             mod.classList.remove('show');
-            setTimeout(() => mod.style.display = 'none', 400);
+            setTimeout(() => mod.style.display = 'none', 300);
         }
 
+        // Star Background
         const cvs = document.getElementById('star-canvas');
         const ctx = cvs.getContext('2d');
         let w, h, s = [];
