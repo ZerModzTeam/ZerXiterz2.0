@@ -71,7 +71,6 @@
             font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); 
             transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
-        .nav-btn:hover { background: var(--primary); transform: translateY(-3px); }
 
         /* --- PRODUCT CARDS --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
@@ -95,7 +94,7 @@
             box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 5px;
         }
 
-        /* --- MODAL --- */
+        /* --- MODAL (FIXED LOGO CS) --- */
         .modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.9); z-index: 10001; 
@@ -109,12 +108,16 @@
         }
         .modal.show .modal-content { transform: scale(1); opacity: 1; }
 
+        /* FIX: Tombol Modal Biar Gak Putih Polos */
         .modal-btn { 
             display: flex; align-items: center; justify-content: center; gap: 12px;
-            padding: 14px; color: #fff; text-decoration: none; border: 1px solid var(--primary); 
-            margin: 15px 0; border-radius: 10px; font-weight: 600;
+            padding: 14px; color: #fff; text-decoration: none; 
+            background: transparent; border: 1px solid var(--primary); 
+            margin: 15px 0; border-radius: 10px; font-weight: 600; cursor: pointer;
+            width: 100%; transition: 0.3s;
         }
-        .modal-btn:hover { background: var(--primary); }
+        .modal-btn:hover { background: var(--primary); box-shadow: var(--neon-shadow); }
+        .modal-btn i { font-size: 1.3rem; }
 
         .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
     </style>
@@ -150,16 +153,26 @@
 
     <div id="m-soc" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SOCIAL MEDIA</h3>
-        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
-        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
-        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
+        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn">
+            <i class="fab fa-instagram" style="color:#E1306C"></i> Instagram
+        </a>
+        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn">
+            <i class="fab fa-tiktok"></i> TikTok
+        </a>
+        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn">
+            <i class="fab fa-youtube" style="color:#FF0000"></i> YouTube
+        </a>
         <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
     <div id="m-cs" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SUPPORT</h3>
-        <button class="modal-btn" style="width:100%" onclick="goCS('admin')"><i class="fab fa-whatsapp" style="color:#25D366"></i> ADMIN [ ZERO ]</button>
-        <button class="modal-btn" style="width:100%" onclick="goCS('owner')"><i class="fab fa-whatsapp" style="color:#25D366"></i> OWNER [ RENDY ]</button>
+        <button class="modal-btn" onclick="goCS('admin')">
+            <i class="fab fa-whatsapp" style="color:#25D366"></i> ADMIN [ ZERO ]
+        </button>
+        <button class="modal-btn" onclick="goCS('owner')">
+            <i class="fab fa-whatsapp" style="color:#25D366"></i> OWNER [ RENDY ]
+        </button>
         <button class="row-buy-btn" onclick="closeMod('m-cs')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
@@ -168,19 +181,16 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
-        // Fungsi BEEP Digital yang Solid
         function playBeep() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const osc = context.createOscillator();
             const gain = context.createGain();
-            osc.type = 'square'; // Pake square wave biar suaranya "Beep" beneran
-            osc.frequency.setValueAtTime(880, context.currentTime); // Nada A5
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(880, context.currentTime);
             gain.gain.setValueAtTime(0.1, context.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.2);
-            osc.connect(gain);
-            gain.connect(context.destination);
-            osc.start();
-            osc.stop(context.currentTime + 0.2);
+            osc.connect(gain); gain.connect(context.destination);
+            osc.start(); osc.stop(context.currentTime + 0.2);
         }
 
         function triggerIntro() {
@@ -190,9 +200,8 @@
             btn.style.display = 'none';
             audio.play().catch(() => {});
             setTimeout(() => {
-                playBeep(); // Bunyi BEEP pas video mulai
-                video.style.display = 'block';
-                video.play();
+                playBeep();
+                video.style.display = 'block'; video.play();
                 video.onended = () => {
                     document.getElementById('intro-overlay').style.opacity = '0';
                     setTimeout(() => {
@@ -254,7 +263,7 @@
             setTimeout(() => mod.style.display = 'none', 300);
         }
 
-        // Star Background
+        // Star Background logic
         const cvs = document.getElementById('star-canvas');
         const ctx = cvs.getContext('2d');
         let w, h, s = [];
