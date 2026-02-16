@@ -28,12 +28,28 @@
 
         #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        /* --- INTRO SCREEN --- */
+        /* --- INTRO SCREEN UPDATE --- */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
-            justify-content: center; align-items: center; transition: 0.8s ease;
+            flex-direction: column; justify-content: center; align-items: center; transition: 0.8s ease;
         }
+        
+        .welcome-msg {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            text-shadow: var(--neon-shadow);
+            margin-bottom: 25px;
+            letter-spacing: 4px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
         .enter-btn {
             padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif;
             background: transparent; color: var(--primary); border: 2px solid var(--primary);
@@ -52,12 +68,22 @@
         }
         #main-content.active { display: block; opacity: 1; transform: scale(1); }
 
-        header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
+        header { text-align: center; margin-bottom: 20px; padding-top: 20px; }
         .site-title { 
             font-family: 'Orbitron', sans-serif; font-size: 3rem; 
-            text-shadow: var(--neon-shadow); margin-bottom: 15px;
+            text-shadow: var(--neon-shadow); margin-bottom: 10px;
             animation: flicker 3s infinite;
         }
+
+        /* Fitur: Running Text */
+        .news-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--primary);
+            border-bottom: 1px solid var(--primary);
+            padding: 5px 0;
+            margin-bottom: 30px;
+        }
+        .news-bar marquee { font-size: 12px; font-weight: bold; color: var(--primary); }
 
         @keyframes flicker {
             0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--neon-shadow); }
@@ -108,7 +134,6 @@
         }
         .modal.show .modal-content { transform: scale(1); opacity: 1; }
 
-        /* FIX: Tombol Modal Biar Gak Putih Polos */
         .modal-btn { 
             display: flex; align-items: center; justify-content: center; gap: 12px;
             padding: 14px; color: #fff; text-decoration: none; 
@@ -117,9 +142,18 @@
             width: 100%; transition: 0.3s;
         }
         .modal-btn:hover { background: var(--primary); box-shadow: var(--neon-shadow); }
-        .modal-btn i { font-size: 1.3rem; }
 
         .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
+
+        /* Fitur: Floating Button */
+        .floating-help {
+            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
+            background: #25D366; border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; color: #fff;
+            font-size: 24px; box-shadow: 0 0 15px rgba(37, 211, 102, 0.6);
+            z-index: 1000; cursor: pointer; transition: 0.3s;
+        }
+        .floating-help:hover { transform: scale(1.1); }
     </style>
 </head>
 <body data-theme="purple">
@@ -128,15 +162,25 @@
     <audio id="audio-intro" src="intro.mp3"></audio>
 
     <div id="intro-overlay">
+        <h2 class="welcome-msg">ZerXiterz 2.0</h2>
         <video id="intro-video" src="intro.mp4" playsinline></video>
         <button class="enter-btn" onclick="triggerIntro()">
             <i class="fas fa-bolt"></i> CLICK TO OPEN
         </button>
     </div>
 
+    <div class="floating-help" onclick="goCS('owner')">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+
     <div id="main-content">
         <header>
             <h1 class="site-title">ZerXiterz</h1>
+            
+            <div class="news-bar">
+                <marquee scrollamount="6">🔥 WELCOME TO ZERXITERZ 2.0 - PREMIUM MODS WITHOUT BUG - OPEN ORDER 24 HOURS - CONTACT US FOR ANY ISSUE 🔥</marquee>
+            </div>
+
             <button class="theme-toggle" onclick="changeTheme()">
                 <i class="fas fa-palette"></i> CHANGE THEME
             </button>
@@ -153,26 +197,16 @@
 
     <div id="m-soc" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SOCIAL MEDIA</h3>
-        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn">
-            <i class="fab fa-instagram" style="color:#E1306C"></i> Instagram
-        </a>
-        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn">
-            <i class="fab fa-tiktok"></i> TikTok
-        </a>
-        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn">
-            <i class="fab fa-youtube" style="color:#FF0000"></i> YouTube
-        </a>
+        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
+        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
         <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
     <div id="m-cs" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SUPPORT</h3>
-        <button class="modal-btn" onclick="goCS('admin')">
-            <i class="fab fa-whatsapp" style="color:#25D366"></i> ADMIN [ ZERO ]
-        </button>
-        <button class="modal-btn" onclick="goCS('owner')">
-            <i class="fab fa-whatsapp" style="color:#25D366"></i> OWNER [ RENDY ]
-        </button>
+        <button class="modal-btn" onclick="goCS('admin')"><i class="fab fa-whatsapp" style="color:#25D366"></i> ADMIN [ ZERO ]</button>
+        <button class="modal-btn" onclick="goCS('owner')"><i class="fab fa-whatsapp" style="color:#25D366"></i> OWNER [ RENDY ]</button>
         <button class="row-buy-btn" onclick="closeMod('m-cs')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
@@ -181,26 +215,29 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
+        // GANTI KE BEEP (Digital Square Sound)
         function playBeep() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const osc = context.createOscillator();
             const gain = context.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(880, context.currentTime);
+            osc.type = 'square'; // Ganti ke square biar suaranya "Beep"
+            osc.frequency.setValueAtTime(800, context.currentTime);
             gain.gain.setValueAtTime(0.1, context.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.1);
             osc.connect(gain); gain.connect(context.destination);
-            osc.start(); osc.stop(context.currentTime + 0.2);
+            osc.start(); osc.stop(context.currentTime + 0.1);
         }
 
         function triggerIntro() {
             const btn = document.querySelector('.enter-btn');
+            const welcome = document.querySelector('.welcome-msg');
             const video = document.getElementById('intro-video');
             const audio = document.getElementById('audio-intro');
             btn.style.display = 'none';
+            welcome.style.display = 'none';
             audio.play().catch(() => {});
             setTimeout(() => {
-                playBeep();
+                playBeep(); // Bunyi BEEP pas video mulai
                 video.style.display = 'block'; video.play();
                 video.onended = () => {
                     document.getElementById('intro-overlay').style.opacity = '0';
