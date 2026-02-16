@@ -28,7 +28,6 @@
 
         #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        /* --- INTRO SCREEN --- */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
@@ -36,116 +35,38 @@
         }
         
         .welcome-group { text-align: center; margin-bottom: 30px; }
+        .welcome-msg { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--primary); text-shadow: var(--neon-shadow); letter-spacing: 5px; margin-bottom: 5px; animation: pulse 2s infinite; }
+        .welcome-sub { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #fff; opacity: 0.6; letter-spacing: 3px; text-transform: uppercase; }
 
-        .welcome-msg {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            color: var(--primary);
-            text-shadow: var(--neon-shadow);
-            letter-spacing: 5px;
-            margin-bottom: 5px;
-            animation: pulse 2s infinite;
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
 
-        .welcome-sub {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            color: #fff;
-            opacity: 0.6;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
+        .enter-btn { padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif; background: transparent; color: var(--primary); border: 2px solid var(--primary); border-radius: 8px; cursor: pointer; box-shadow: var(--neon-shadow); text-transform: uppercase; z-index: 10; transition: 0.3s; }
+        #intro-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 5; }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
-
-        .enter-btn {
-            padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif;
-            background: transparent; color: var(--primary); border: 2px solid var(--primary);
-            border-radius: 8px; cursor: pointer; box-shadow: var(--neon-shadow);
-            text-transform: uppercase; z-index: 10; transition: 0.3s;
-        }
-        .enter-btn:hover { background: var(--primary); color: #fff; }
-
-        #intro-video {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; display: none; z-index: 5;
-        }
-
-        /* --- MAIN MENU --- */
-        #main-content { 
-            display: none; padding: 20px; max-width: 1200px; margin: 0 auto; 
-            opacity: 0; transform: scale(0.95); transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        #main-content { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; transform: scale(0.95); transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #main-content.active { display: block; opacity: 1; transform: scale(1); }
 
         header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
-        .site-title { 
-            font-family: 'Orbitron', sans-serif; font-size: 3rem; 
-            text-shadow: var(--neon-shadow); margin-bottom: 15px;
-            animation: flicker 3s infinite;
-        }
+        .site-title { font-family: 'Orbitron', sans-serif; font-size: 3rem; text-shadow: var(--neon-shadow); margin-bottom: 15px; animation: flicker 3s infinite; }
 
-        @keyframes flicker {
-            0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--neon-shadow); }
-            20%, 24%, 55% { text-shadow: none; }
-        }
+        @keyframes flicker { 0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--neon-shadow); } 20%, 24%, 55% { text-shadow: none; } }
 
         .nav-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; flex-wrap: wrap; }
-        .nav-btn { 
-            background: var(--glass); border: 2px solid var(--primary); color: #fff;
-            padding: 12px 20px; border-radius: 10px; cursor: pointer; text-decoration: none;
-            font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); 
-            transition: 0.3s; display: flex; align-items: center; gap: 8px;
-        }
-        .nav-btn:hover { transform: translateY(-3px); background: var(--primary); }
+        .nav-btn { background: var(--glass); border: 2px solid var(--primary); color: #fff; padding: 12px 20px; border-radius: 10px; cursor: pointer; text-decoration: none; font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); transition: 0.3s; display: flex; align-items: center; gap: 8px; }
 
-        /* --- PRODUCT CARDS --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .card { 
-            background: var(--glass); border: 2px solid var(--primary); 
-            border-radius: 15px; padding: 25px; backdrop-filter: blur(12px);
-            box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: 0.4s ease;
-            position: relative; overflow: hidden;
-        }
+        .card { background: var(--glass); border: 2px solid var(--primary); border-radius: 15px; padding: 25px; backdrop-filter: blur(12px); box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: 0.4s ease; position: relative; overflow: hidden; }
         .card:hover { transform: translateY(-10px); box-shadow: var(--neon-shadow); }
         .card-title { color: var(--primary); font-family: 'Orbitron'; margin-bottom: 5px; }
 
-        .price-item { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255,255,255,0.02); margin-bottom: 8px; border-radius: 8px;
-        }
-        
-        .row-buy-btn {
-            padding: 8px 15px; background: transparent; border: 1px solid var(--primary);
-            color: #fff; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 5px;
-            box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 5px;
-        }
+        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.02); margin-bottom: 8px; border-radius: 8px; }
+        .row-buy-btn { padding: 8px 15px; background: transparent; border: 1px solid var(--primary); color: #fff; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 5px; }
 
-        /* --- MODAL --- */
-        .modal { 
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 10001; 
-            justify-content: center; align-items: center; backdrop-filter: blur(8px);
-        }
-        .modal-content { 
-            background: #0a0a0a; border: 2px solid var(--primary); padding: 35px; 
-            border-radius: 20px; width: 90%; max-width: 380px; text-align: center; 
-            box-shadow: var(--neon-shadow); transform: scale(0.8); opacity: 0;
-            transition: 0.3s ease-out;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-content { background: #0a0a0a; border: 2px solid var(--primary); padding: 35px; border-radius: 20px; width: 90%; max-width: 380px; text-align: center; box-shadow: var(--neon-shadow); transform: scale(0.8); opacity: 0; transition: 0.3s ease-out; }
         .modal.show .modal-content { transform: scale(1); opacity: 1; }
 
-        .modal-btn { 
-            display: flex; align-items: center; justify-content: center; gap: 12px;
-            padding: 14px; color: #fff; text-decoration: none; 
-            background: transparent; border: 1px solid var(--primary); 
-            margin: 15px 0; border-radius: 10px; font-weight: 600; cursor: pointer;
-            width: 100%; transition: 0.3s;
-        }
+        .modal-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; color: #fff; text-decoration: none; background: transparent; border: 1px solid var(--primary); margin: 15px 0; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
         .modal-btn:hover { background: var(--primary); box-shadow: var(--neon-shadow); }
 
         .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
@@ -161,7 +82,6 @@
             <h2 class="welcome-msg">ZerXiterz 2.0</h2>
             <p class="welcome-sub">BY ZerModzTeam</p>
         </div>
-        
         <video id="intro-video" src="intro.mp4" playsinline></video>
         <button class="enter-btn" onclick="triggerIntro()">
             <i class="fas fa-bolt"></i> CLICK TO OPEN
@@ -182,26 +102,16 @@
             <button class="nav-btn" onclick="openMod('m-cs')"><i class="fas fa-headset"></i> CUSTOMER SERVICE</button>
         </div>
 
-        <div class="product-grid" id="product-list"></div>
+        <div id="product-list" class="product-grid"></div>
     </div>
 
     <div id="m-soc" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SOCIAL MEDIA</h3>
-        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn">
-            <i class="fab fa-instagram" style="color:#E1306C"></i> Instagram
-        </a>
-        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn">
-            <i class="fab fa-tiktok"></i> TikTok
-        </a>
-        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn">
-            <i class="fab fa-youtube" style="color:#FF0000"></i> YouTube
-        </a>
-        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn">
-            SALURAN UTAMA <i class="fab fa-whatsapp" style="color:#25D366; margin-left:10px;"></i>
-        </a>
-        <a href="https://whatsapp.com/channel/0029VbBr7Cf6hENl6RGn3z3H" target="_blank" class="modal-btn">
-            SALURAN ROOT <i class="fab fa-whatsapp" style="color:#25D366; margin-left:10px;"></i>
-        </a>
+        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
+        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
+        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn">SALURAN UTAMA <i class="fab fa-whatsapp" style="color:#25D366"></i></a>
+        <a href="https://whatsapp.com/channel/0029VbBr7Cf6hENl6RGn3z3H" target="_blank" class="modal-btn">SALURAN ROOT <i class="fab fa-whatsapp" style="color:#25D366"></i></a>
         <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
@@ -217,14 +127,14 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
-        // FIXED BEEP AUDIO
+        // BEEP DIGITAL MURNI
         function playBeep() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const osc = context.createOscillator();
             const gain = context.createGain();
-            osc.type = 'sine'; // Sine wave buat bunyi beep bersih
-            osc.frequency.setValueAtTime(1000, context.currentTime); // 1000Hz biar high-pitched beep
-            gain.gain.setValueAtTime(0.2, context.currentTime);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1000, context.currentTime);
+            gain.gain.setValueAtTime(0.1, context.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.15);
             osc.connect(gain); gain.connect(context.destination);
             osc.start(); osc.stop(context.currentTime + 0.15);
@@ -235,26 +145,28 @@
             const welcome = document.querySelector('.welcome-group');
             const video = document.getElementById('intro-video');
             const audio = document.getElementById('audio-intro');
+            
             btn.style.display = 'none';
             welcome.style.display = 'none';
+            
+            // Langsung play audio & video tanpa beep tambahan di awal klik
             audio.play().catch(() => {});
-            setTimeout(() => {
-                playBeep();
-                video.style.display = 'block'; video.play();
-                video.onended = () => {
-                    document.getElementById('intro-overlay').style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById('intro-overlay').style.display = 'none';
-                        const main = document.getElementById('main-content');
-                        main.style.display = 'block';
-                        setTimeout(() => main.classList.add('active'), 100);
-                    }, 800);
-                };
-            }, 500);
+            video.style.display = 'block'; 
+            video.play();
+            
+            video.onended = () => {
+                document.getElementById('intro-overlay').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('intro-overlay').style.display = 'none';
+                    const main = document.getElementById('main-content');
+                    main.style.display = 'block';
+                    setTimeout(() => main.classList.add('active'), 100);
+                }, 800);
+            };
         }
 
         function changeTheme() {
-            playBeep();
+            playBeep(); // Sekarang bunyi Beep, bukan Tut
             document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'red' ? 'purple' : 'red');
         }
 
@@ -278,48 +190,18 @@
             list.innerHTML += `<div class="card"><h3 class="card-title">${it.n}</h3><p style="font-size:9px; color:#888; margin-bottom:10px;">NEEDED: ${it.r}</p><ul class="price-list">${pr}</ul></div>`;
         });
 
-        function order(n, h, d, r) {
-            const text = `Halo kak saya mau order%0A${n}%0AHarga : ${h}%0ADurasi : ${d}%0ANeeded : ${r}`;
-            window.location.href = `https://wa.me/${WA_OWNER}?text=${text}`;
-        }
-
-        function goCS(role) {
-            const no = (role === 'admin') ? WA_ADMIN : WA_OWNER;
-            window.location.href = `https://wa.me/${no}?text=Halo kak saya mengalami kendala!`;
-        }
-
+        function order(n, h, d, r) { window.location.href = `https://wa.me/${WA_OWNER}?text=Halo kak saya mau order%0A${n}%0AHarga : ${h}%0ADurasi : ${d}%0ANeeded : ${r}`; }
+        function goCS(role) { window.location.href = `https://wa.me/${(role === 'admin') ? WA_ADMIN : WA_OWNER}?text=Halo kak saya mengalami kendala!`; }
         function goTesti() { window.open(TESTI_LINK, '_blank'); }
-
-        function openMod(id) { 
-            const mod = document.getElementById(id);
-            mod.style.display = 'flex';
-            setTimeout(() => mod.classList.add('show'), 10);
-        }
-
-        function closeMod(id) { 
-            const mod = document.getElementById(id);
-            mod.classList.remove('show');
-            setTimeout(() => mod.style.display = 'none', 300);
-        }
+        function openMod(id) { const mod = document.getElementById(id); mod.style.display = 'flex'; setTimeout(() => mod.classList.add('show'), 10); }
+        function closeMod(id) { const mod = document.getElementById(id); mod.classList.remove('show'); setTimeout(() => mod.style.display = 'none', 300); }
 
         const cvs = document.getElementById('star-canvas');
         const ctx = cvs.getContext('2d');
         let w, h, s = [];
-        function resize() {
-            w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight;
-            s = Array(100).fill().map(() => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5, v: Math.random()*0.5 }));
-        }
-        function anim() {
-            ctx.clearRect(0,0,w,h);
-            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--primary');
-            s.forEach(star => {
-                ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI*2); ctx.fill();
-                star.y -= star.v; if(star.y < 0) star.y = h;
-            });
-            requestAnimationFrame(anim);
-        }
-        window.addEventListener('resize', resize);
-        resize(); anim();
+        function resize() { w = cvs.width = window.innerWidth; h = cvs.height = window.innerHeight; s = Array(100).fill().map(() => ({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5, v: Math.random()*0.5 })); }
+        function anim() { ctx.clearRect(0,0,w,h); ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--primary'); s.forEach(star => { ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI*2); ctx.fill(); star.y -= star.v; if(star.y < 0) star.y = h; }); requestAnimationFrame(anim); }
+        window.addEventListener('resize', resize); resize(); anim();
     </script>
 </body>
 </html>
