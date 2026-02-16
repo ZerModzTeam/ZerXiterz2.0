@@ -67,6 +67,7 @@
         .modal.show .modal-content { transform: scale(1); opacity: 1; }
 
         .modal-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; color: #fff; text-decoration: none; background: transparent; border: 1px solid var(--primary); margin: 15px 0; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
+        .modal-btn i { width: 20px; text-align: center; } /* Bikin icon sejajar di kiri */
         .modal-btn:hover { background: var(--primary); box-shadow: var(--neon-shadow); }
 
         .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
@@ -110,8 +111,8 @@
         <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
         <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
         <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
-        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn">SALURAN UTAMA <i class="fab fa-whatsapp" style="color:#25D366"></i></a>
-        <a href="https://whatsapp.com/channel/0029VbBr7Cf6hENl6RGn3z3H" target="_blank" class="modal-btn">SALURAN ROOT <i class="fab fa-whatsapp" style="color:#25D366"></i></a>
+        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn"><i class="fab fa-whatsapp" style="color:#25D366"></i> SALURAN UTAMA</a>
+        <a href="https://whatsapp.com/channel/0029VbBr7Cf6hENl6RGn3z3H" target="_blank" class="modal-btn"><i class="fab fa-whatsapp" style="color:#25D366"></i> SALURAN ROOT</a>
         <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
@@ -127,17 +128,17 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
-        // BEEP DIGITAL MURNI
+        // TRUE DIGITAL BEEP (SQUARE WAVE)
         function playBeep() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const osc = context.createOscillator();
             const gain = context.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1000, context.currentTime);
-            gain.gain.setValueAtTime(0.1, context.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.15);
+            osc.type = 'square'; // Karakter suara digital robotik
+            osc.frequency.setValueAtTime(1200, context.currentTime); 
+            gain.gain.setValueAtTime(0.05, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.08); // Durasi pendek biar gak sember
             osc.connect(gain); gain.connect(context.destination);
-            osc.start(); osc.stop(context.currentTime + 0.15);
+            osc.start(); osc.stop(context.currentTime + 0.08);
         }
 
         function triggerIntro() {
@@ -145,15 +146,11 @@
             const welcome = document.querySelector('.welcome-group');
             const video = document.getElementById('intro-video');
             const audio = document.getElementById('audio-intro');
-            
             btn.style.display = 'none';
             welcome.style.display = 'none';
-            
-            // Langsung play audio & video tanpa beep tambahan di awal klik
             audio.play().catch(() => {});
             video.style.display = 'block'; 
             video.play();
-            
             video.onended = () => {
                 document.getElementById('intro-overlay').style.opacity = '0';
                 setTimeout(() => {
@@ -166,7 +163,7 @@
         }
 
         function changeTheme() {
-            playBeep(); // Sekarang bunyi Beep, bukan Tut
+            playBeep(); 
             document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'red' ? 'purple' : 'red');
         }
 
