@@ -28,7 +28,7 @@
 
         #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        /* --- INTRO SCREEN UPDATE --- */
+        /* --- INTRO SCREEN --- */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
@@ -47,7 +47,6 @@
             animation: pulse 2s infinite;
         }
 
-        /* REQUEST: Subtitle BY ZerModzTeam */
         .welcome-sub {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.8rem;
@@ -188,9 +187,21 @@
 
     <div id="m-soc" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SOCIAL MEDIA</h3>
-        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
-        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
-        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
+        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn">
+            <i class="fab fa-instagram" style="color:#E1306C"></i> Instagram
+        </a>
+        <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn">
+            <i class="fab fa-tiktok"></i> TikTok
+        </a>
+        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn">
+            <i class="fab fa-youtube" style="color:#FF0000"></i> YouTube
+        </a>
+        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn">
+            SALURAN UTAMA <i class="fab fa-whatsapp" style="color:#25D366; margin-left:10px;"></i>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VbBr7Cf6hENl6RGn3z3H" target="_blank" class="modal-btn">
+            SALURAN ROOT <i class="fab fa-whatsapp" style="color:#25D366; margin-left:10px;"></i>
+        </a>
         <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
@@ -206,16 +217,17 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
+        // FIXED BEEP AUDIO
         function playBeep() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const osc = context.createOscillator();
             const gain = context.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(800, context.currentTime);
-            gain.gain.setValueAtTime(0.1, context.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.1);
+            osc.type = 'sine'; // Sine wave buat bunyi beep bersih
+            osc.frequency.setValueAtTime(1000, context.currentTime); // 1000Hz biar high-pitched beep
+            gain.gain.setValueAtTime(0.2, context.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.15);
             osc.connect(gain); gain.connect(context.destination);
-            osc.start(); osc.stop(context.currentTime + 0.1);
+            osc.start(); osc.stop(context.currentTime + 0.15);
         }
 
         function triggerIntro() {
