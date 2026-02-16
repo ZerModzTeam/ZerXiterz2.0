@@ -35,18 +35,30 @@
             flex-direction: column; justify-content: center; align-items: center; transition: 0.8s ease;
         }
         
+        .welcome-group { text-align: center; margin-bottom: 30px; }
+
         .welcome-msg {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: var(--primary);
             text-shadow: var(--neon-shadow);
-            margin-bottom: 25px;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
+            margin-bottom: 5px;
             animation: pulse 2s infinite;
         }
 
+        /* REQUEST: Subtitle BY ZerModzTeam */
+        .welcome-sub {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0.6;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
         @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
+            0%, 100% { transform: scale(1); opacity: 0.8; }
             50% { transform: scale(1.05); opacity: 1; }
         }
 
@@ -54,8 +66,10 @@
             padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif;
             background: transparent; color: var(--primary); border: 2px solid var(--primary);
             border-radius: 8px; cursor: pointer; box-shadow: var(--neon-shadow);
-            text-transform: uppercase; z-index: 10;
+            text-transform: uppercase; z-index: 10; transition: 0.3s;
         }
+        .enter-btn:hover { background: var(--primary); color: #fff; }
+
         #intro-video {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; display: none; z-index: 5;
@@ -68,22 +82,12 @@
         }
         #main-content.active { display: block; opacity: 1; transform: scale(1); }
 
-        header { text-align: center; margin-bottom: 20px; padding-top: 20px; }
+        header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
         .site-title { 
             font-family: 'Orbitron', sans-serif; font-size: 3rem; 
-            text-shadow: var(--neon-shadow); margin-bottom: 10px;
+            text-shadow: var(--neon-shadow); margin-bottom: 15px;
             animation: flicker 3s infinite;
         }
-
-        /* Fitur: Running Text */
-        .news-bar {
-            background: rgba(255, 255, 255, 0.05);
-            border-top: 1px solid var(--primary);
-            border-bottom: 1px solid var(--primary);
-            padding: 5px 0;
-            margin-bottom: 30px;
-        }
-        .news-bar marquee { font-size: 12px; font-weight: bold; color: var(--primary); }
 
         @keyframes flicker {
             0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--neon-shadow); }
@@ -97,6 +101,7 @@
             font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); 
             transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
+        .nav-btn:hover { transform: translateY(-3px); background: var(--primary); }
 
         /* --- PRODUCT CARDS --- */
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
@@ -104,6 +109,7 @@
             background: var(--glass); border: 2px solid var(--primary); 
             border-radius: 15px; padding: 25px; backdrop-filter: blur(12px);
             box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: 0.4s ease;
+            position: relative; overflow: hidden;
         }
         .card:hover { transform: translateY(-10px); box-shadow: var(--neon-shadow); }
         .card-title { color: var(--primary); font-family: 'Orbitron'; margin-bottom: 5px; }
@@ -120,7 +126,7 @@
             box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 5px;
         }
 
-        /* --- MODAL (FIXED LOGO CS) --- */
+        /* --- MODAL --- */
         .modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.9); z-index: 10001; 
@@ -144,16 +150,6 @@
         .modal-btn:hover { background: var(--primary); box-shadow: var(--neon-shadow); }
 
         .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
-
-        /* Fitur: Floating Button */
-        .floating-help {
-            position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-            background: #25D366; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center; color: #fff;
-            font-size: 24px; box-shadow: 0 0 15px rgba(37, 211, 102, 0.6);
-            z-index: 1000; cursor: pointer; transition: 0.3s;
-        }
-        .floating-help:hover { transform: scale(1.1); }
     </style>
 </head>
 <body data-theme="purple">
@@ -162,25 +158,20 @@
     <audio id="audio-intro" src="intro.mp3"></audio>
 
     <div id="intro-overlay">
-        <h2 class="welcome-msg">ZerXiterz 2.0</h2>
+        <div class="welcome-group">
+            <h2 class="welcome-msg">ZerXiterz 2.0</h2>
+            <p class="welcome-sub">BY ZerModzTeam</p>
+        </div>
+        
         <video id="intro-video" src="intro.mp4" playsinline></video>
         <button class="enter-btn" onclick="triggerIntro()">
             <i class="fas fa-bolt"></i> CLICK TO OPEN
         </button>
     </div>
 
-    <div class="floating-help" onclick="goCS('owner')">
-        <i class="fab fa-whatsapp"></i>
-    </div>
-
     <div id="main-content">
         <header>
             <h1 class="site-title">ZerXiterz</h1>
-            
-            <div class="news-bar">
-                <marquee scrollamount="6">🔥 WELCOME TO ZERXITERZ 2.0 - PREMIUM MODS WITHOUT BUG - OPEN ORDER 24 HOURS - CONTACT US FOR ANY ISSUE 🔥</marquee>
-            </div>
-
             <button class="theme-toggle" onclick="changeTheme()">
                 <i class="fas fa-palette"></i> CHANGE THEME
             </button>
@@ -215,12 +206,11 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
-        // GANTI KE BEEP (Digital Square Sound)
         function playBeep() {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const osc = context.createOscillator();
             const gain = context.createGain();
-            osc.type = 'square'; // Ganti ke square biar suaranya "Beep"
+            osc.type = 'square';
             osc.frequency.setValueAtTime(800, context.currentTime);
             gain.gain.setValueAtTime(0.1, context.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.1);
@@ -230,14 +220,14 @@
 
         function triggerIntro() {
             const btn = document.querySelector('.enter-btn');
-            const welcome = document.querySelector('.welcome-msg');
+            const welcome = document.querySelector('.welcome-group');
             const video = document.getElementById('intro-video');
             const audio = document.getElementById('audio-intro');
             btn.style.display = 'none';
             welcome.style.display = 'none';
             audio.play().catch(() => {});
             setTimeout(() => {
-                playBeep(); // Bunyi BEEP pas video mulai
+                playBeep();
                 video.style.display = 'block'; video.play();
                 video.onended = () => {
                     document.getElementById('intro-overlay').style.opacity = '0';
@@ -300,7 +290,6 @@
             setTimeout(() => mod.style.display = 'none', 300);
         }
 
-        // Star Background logic
         const cvs = document.getElementById('star-canvas');
         const ctx = cvs.getContext('2d');
         let w, h, s = [];
