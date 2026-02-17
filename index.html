@@ -28,39 +28,39 @@
 
         #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
+        /* INTRO FIX */
         #intro-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex;
             flex-direction: column; justify-content: center; align-items: center; transition: 0.8s ease;
         }
         
-        .welcome-group { text-align: center; margin-bottom: 30px; }
+        .welcome-group { text-align: center; margin-bottom: 30px; z-index: 11; }
         .welcome-msg { font-family: 'Orbitron', sans-serif; font-size: 2rem; color: var(--primary); text-shadow: var(--neon-shadow); letter-spacing: 5px; margin-bottom: 5px; animation: pulse 2s infinite; }
         .welcome-sub { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #fff; opacity: 0.6; letter-spacing: 3px; text-transform: uppercase; }
 
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
 
-        .enter-btn { padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif; background: transparent; color: var(--primary); border: 2px solid var(--primary); border-radius: 8px; cursor: pointer; box-shadow: var(--neon-shadow); text-transform: uppercase; z-index: 10; transition: 0.3s; }
+        .enter-btn { padding: 18px 45px; font-size: 18px; font-family: 'Orbitron', sans-serif; background: transparent; color: var(--primary); border: 2px solid var(--primary); border-radius: 8px; cursor: pointer; box-shadow: var(--neon-shadow); text-transform: uppercase; z-index: 12; transition: 0.3s; }
+        
         #intro-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 5; }
 
-        #main-content { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; transform: scale(0.95); transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #main-content.active { display: block; opacity: 1; transform: scale(1); }
+        /* MAIN CONTENT */
+        #main-content { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; opacity: 0; }
+        #main-content.active { display: block; opacity: 1; transition: 0.8s ease; }
 
         header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
-        .site-title { font-family: 'Orbitron', sans-serif; font-size: 3rem; text-shadow: var(--neon-shadow); margin-bottom: 15px; animation: flicker 3s infinite; }
-
-        @keyframes flicker { 0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: var(--neon-shadow); } 20%, 24%, 55% { text-shadow: none; } }
+        .site-title { font-family: 'Orbitron', sans-serif; font-size: 3rem; text-shadow: var(--neon-shadow); margin-bottom: 15px; }
 
         .nav-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .nav-btn { background: var(--glass); border: 2px solid var(--primary); color: #fff; padding: 12px 20px; border-radius: 10px; cursor: pointer; text-decoration: none; font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .nav-btn { background: var(--glass); border: 2px solid var(--primary); color: #fff; padding: 12px 20px; border-radius: 10px; cursor: pointer; text-decoration: none; font-size: 11px; font-weight: bold; box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 8px; }
 
-        /* FILTER SYSTEM */
         .filter-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; }
-        .filter-btn { background: transparent; border: 1px solid var(--primary); color: #fff; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 10px; font-family: 'Orbitron'; transition: 0.3s; }
+        .filter-btn { background: transparent; border: 1px solid var(--primary); color: #fff; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 10px; font-family: 'Orbitron'; }
         .filter-btn.active { background: var(--primary); box-shadow: var(--neon-shadow); }
 
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .card { background: var(--glass); border: 2px solid var(--primary); border-radius: 15px; padding: 25px; backdrop-filter: blur(12px); box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: 0.4s ease; position: relative; overflow: hidden; }
+        .card { background: var(--glass); border: 2px solid var(--primary); border-radius: 15px; padding: 25px; backdrop-filter: blur(12px); transition: 0.4s ease; }
         .card:hover { transform: translateY(-10px); box-shadow: var(--neon-shadow); }
         .card-title { color: var(--primary); font-family: 'Orbitron'; margin-bottom: 5px; }
 
@@ -68,14 +68,8 @@
         .row-buy-btn { padding: 8px 15px; background: transparent; border: 1px solid var(--primary); color: #fff; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 5px; box-shadow: var(--neon-shadow); display: flex; align-items: center; gap: 5px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-content { background: #0a0a0a; border: 2px solid var(--primary); padding: 35px; border-radius: 20px; width: 90%; max-width: 380px; text-align: center; box-shadow: var(--neon-shadow); transform: scale(0.8); opacity: 0; transition: 0.3s ease-out; }
-        .modal.show .modal-content { transform: scale(1); opacity: 1; }
-
-        .modal-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; color: #fff; text-decoration: none; background: transparent; border: 1px solid var(--primary); margin: 15px 0; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; }
-        .modal-btn i { width: 20px; text-align: center; }
-        .modal-btn:hover { background: var(--primary); box-shadow: var(--neon-shadow); }
-
-        .theme-toggle { cursor: pointer; background: #000; color: #fff; border: 2px solid var(--primary); padding: 10px 20px; border-radius: 30px; font-size: 10px; box-shadow: var(--neon-shadow); font-family: 'Orbitron'; }
+        .modal-content { background: #0a0a0a; border: 2px solid var(--primary); padding: 35px; border-radius: 20px; width: 90%; max-width: 380px; text-align: center; }
+        .modal-btn { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; color: #fff; text-decoration: none; background: transparent; border: 1px solid var(--primary); margin: 15px 0; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body data-theme="purple">
@@ -88,7 +82,7 @@
             <h2 class="welcome-msg">ZerXiterz 2.0</h2>
             <p class="welcome-sub">BY ZerModzTeam</p>
         </div>
-        <video id="intro-video" src="intro.mp4" playsinline></video>
+        <video id="intro-video" src="intro.mp4" playsinline muted></video>
         <button class="enter-btn" onclick="triggerIntro()">
             <i class="fas fa-bolt"></i> CLICK TO OPEN
         </button>
@@ -97,7 +91,7 @@
     <div id="main-content">
         <header>
             <h1 class="site-title">ZerXiterz</h1>
-            <button class="theme-toggle" onclick="changeTheme()">
+            <button class="nav-btn" style="margin: 0 auto;" onclick="changeTheme()">
                 <i class="fas fa-palette"></i> CHANGE THEME
             </button>
         </header>
@@ -119,19 +113,17 @@
 
     <div id="m-soc" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SOCIAL MEDIA</h3>
-        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram" style="color:#E1306C"></i> Instagram</a>
+        <a href="https://www.instagram.com/zeroxit44?igsh=YXVkNHR0amRpNnN4" target="_blank" class="modal-btn"><i class="fab fa-instagram"></i> Instagram</a>
         <a href="https://tiktok.com/@zaraxitnd" target="_blank" class="modal-btn"><i class="fab fa-tiktok"></i> TikTok</a>
-        <a href="https://www.youtube.com/@ZMTEAM0" target="_blank" class="modal-btn"><i class="fab fa-youtube" style="color:#FF0000"></i> YouTube</a>
-        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn"><i class="fab fa-whatsapp" style="color:#25D366"></i> SALURAN UTAMA</a>
-        <a href="https://whatsapp.com/channel/0029VbBr7Cf6hENl6RGn3z3H" target="_blank" class="modal-btn"><i class="fab fa-whatsapp" style="color:#25D366"></i> SALURAN ROOT</a>
-        <button class="row-buy-btn" onclick="closeMod('m-soc')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
+        <a href="https://whatsapp.com/channel/0029Vb7Cvtj9hXEy7z3Fva1r" target="_blank" class="modal-btn"><i class="fab fa-whatsapp"></i> SALURAN</a>
+        <button class="row-buy-btn" onclick="closeMod('m-soc')" style="width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
     <div id="m-cs" class="modal"><div class="modal-content">
         <h3 style="color:var(--primary); margin-bottom:20px; font-family:'Orbitron';">SUPPORT</h3>
-        <button class="modal-btn" onclick="goCS('admin')"><i class="fab fa-whatsapp" style="color:#25D366"></i> ADMIN [ ZERO ]</button>
-        <button class="modal-btn" onclick="goCS('owner')"><i class="fab fa-whatsapp" style="color:#25D366"></i> OWNER [ RENDY ]</button>
-        <button class="row-buy-btn" onclick="closeMod('m-cs')" style="margin-top:10px; width:100%; justify-content:center;">CLOSE</button>
+        <button class="modal-btn" onclick="goCS('admin')"><i class="fab fa-whatsapp"></i> ADMIN</button>
+        <button class="modal-btn" onclick="goCS('owner')"><i class="fab fa-whatsapp"></i> OWNER</button>
+        <button class="row-buy-btn" onclick="closeMod('m-cs')" style="width:100%; justify-content:center;">CLOSE</button>
     </div></div>
 
     <script>
@@ -139,57 +131,46 @@
         const WA_ADMIN = "6289653938936";
         const TESTI_LINK = "https://whatsapp.com/channel/0029Vb7alZSChq6OsnwMSk0k";
 
-        function playBeep() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = context.createOscillator();
-            const gain = context.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(1200, context.currentTime); 
-            gain.gain.setValueAtTime(0.05, context.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.08);
-            osc.connect(gain); gain.connect(context.destination);
-            osc.start(); osc.stop(context.currentTime + 0.08);
-        }
-
+        // INTRO FIX: Video & Audio Sync
         function triggerIntro() {
-            const btn = document.querySelector('.enter-btn');
-            const welcome = document.querySelector('.welcome-group');
+            const overlay = document.getElementById('intro-overlay');
             const video = document.getElementById('intro-video');
             const audio = document.getElementById('audio-intro');
+            const btn = document.querySelector('.enter-btn');
+            const welcome = document.querySelector('.welcome-group');
+
             btn.style.display = 'none';
             welcome.style.display = 'none';
+            
+            video.style.display = 'block';
+            video.muted = false; // Unmute setelah interaksi
+            
+            // Play video & audio barengan
+            const playPromise = video.play();
             audio.play().catch(() => {});
-            video.style.display = 'block'; 
-            video.play();
+
             video.onended = () => {
-                document.getElementById('intro-overlay').style.opacity = '0';
+                overlay.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('intro-overlay').style.display = 'none';
+                    overlay.style.display = 'none';
                     const main = document.getElementById('main-content');
                     main.style.display = 'block';
-                    setTimeout(() => main.classList.add('active'), 100);
+                    setTimeout(() => main.classList.add('active'), 50);
                 }, 800);
             };
-        }
 
-        function changeTheme() {
-            playBeep(); 
-            document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'red' ? 'purple' : 'red');
+            // Safety timeout jika video gagal load
+            if (!playPromise) {
+                video.onended();
+            }
         }
 
         const items = [
-            { n: "BLOOD STRIKE", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"3 Day", h:"25K/$2"}, {d:"7 Day", h:"50k/$5"}, {d:"10 Day", h:"80k/$5"}, {d:"30 Day", h:"150k/$10"}] },
-            { n: "BR MODS", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"3 Day", h:"25K/$2"}, {d:"7 Day", h:"50k/$5"}, {d:"10 Day", h:"80k/$5"}, {d:"30 Day", h:"150k/$10"}] },
-            { n: "HEX BLADE", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "8 BALL POOL", r: "No Root", p: [ {d:"1 Day", h:"15k/$1"}, {d:"3 Day", h:"25k/$2.50"}, {d:"7 Day", h:"65k/$5"}, {d:"15 Day", h:"100k/$7"}, {d:"30 Day", h:"160k/$10"}] },
-            { n: "STRICKS BR", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"3 Day", h:"25k/$2"}, {d:"7 Day", h:"50k/$4"}, {d:"10 Day", h:"80k/$5"}, {d:"30 Day", h:"150k/$10"}] },
-            { n: "LKTEAM", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "REAPER X PRO", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "EAGLE CHEATS", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "BEYOND CHEATS", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "ELEVENT", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "EVO CHEATS", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] },
-            { n: "PUBGM USERCHEAT", r: "Root / Virtual", p: [ {d:"7 Day", h:"50k/$5"}, {d:"14 Day", h:"100k/$8"}, {d:"30 Day", h:"140k/$12"}] }
+            { n: "BLOOD STRIKE", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"3 Day", h:"25K/$2"}, {d:"7 Day", h:"50k/$5"}, {d:"30 Day", h:"150k/$10"}] },
+            { n: "BR MODS", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"3 Day", h:"25K/$2"}, {d:"7 Day", h:"50k/$5"}, {d:"30 Day", h:"150k/$10"}] },
+            { n: "HEX BLADE", r: "Root / Virtual", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"50k/$5"}, {d:"30 Day", h:"140k/$12"}] },
+            { n: "8 BALL POOL", r: "No Root", p: [ {d:"1 Day", h:"15k/$1"}, {d:"7 Day", h:"65k/$5"}, {d:"30 Day", h:"160k/$10"}] },
+            { n: "PUBGM USERCHEAT", r: "Root / Virtual", p: [ {d:"7 Day", h:"50k/$5"}, {d:"30 Day", h:"140k/$12"}] }
         ];
 
         function renderProducts(filter = 'All') {
@@ -198,24 +179,38 @@
             const filtered = filter === 'All' ? items : items.filter(it => it.r === filter);
             
             filtered.forEach(it => {
-                let pr = it.p.map(obj => `<li class="price-item"><div><b style="color:var(--primary)">${obj.h}</b><br><small style="opacity:0.7">${obj.d}</small></div><button class="row-buy-btn" onclick="order('${it.n}', '${obj.h}', '${obj.d}', '${it.r}')"><i class="fas fa-shopping-cart"></i> BUY</button></li>`).join('');
-                list.innerHTML += `<div class="card"><h3 class="card-title">${it.n}</h3><p style="font-size:9px; color:#888; margin-bottom:10px;">NEEDED: ${it.r}</p><ul class="price-list">${pr}</ul></div>`;
+                let prices = it.p.map(obj => `
+                    <li class="price-item">
+                        <div><b style="color:var(--primary)">${obj.h}</b><br><small>${obj.d}</small></div>
+                        <button class="row-buy-btn" onclick="order('${it.n}', '${obj.h}', '${obj.d}', '${it.r}')">
+                            <i class="fas fa-shopping-cart"></i> BUY
+                        </button>
+                    </li>`).join('');
+                list.innerHTML += `<div class="card"><h3 class="card-title">${it.n}</h3><p style="font-size:10px; color:#888;">${it.r}</p><ul>${prices}</ul></div>`;
             });
         }
 
+        function order(n, h, d, r) {
+            const text = encodeURIComponent(`Halo kak, saya mau order:\n🚀 Cheat: ${n}\n💰 Harga: ${h}\n⏳ Durasi: ${d}\n🛠 Type: ${r}`);
+            window.open(`https://wa.me/${WA_OWNER}?text=${text}`, '_blank');
+        }
+
         function filterItems(category, btn) {
-            playBeep();
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderProducts(category);
         }
 
-        function order(n, h, d, r) { window.location.href = `https://wa.me/${WA_OWNER}?text=Halo kak saya mau order%0A${n}%0AHarga : ${h}%0ADurasi : ${d}%0ANeeded : ${r}`; }
-        function goCS(role) { window.location.href = `https://wa.me/${(role === 'admin') ? WA_ADMIN : WA_OWNER}?text=Halo kak saya mengalami kendala!`; }
-        function goTesti() { window.open(TESTI_LINK, '_blank'); }
-        function openMod(id) { const mod = document.getElementById(id); mod.style.display = 'flex'; setTimeout(() => mod.classList.add('show'), 10); }
-        function closeMod(id) { const mod = document.getElementById(id); mod.classList.remove('show'); setTimeout(() => mod.style.display = 'none', 300); }
+        function changeTheme() {
+            document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'red' ? 'purple' : 'red');
+        }
 
+        function goCS(role) { window.open(`https://wa.me/${role === 'admin' ? WA_ADMIN : WA_OWNER}?text=Halo saya butuh bantuan`, '_blank'); }
+        function goTesti() { window.open(TESTI_LINK, '_blank'); }
+        function openMod(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeMod(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Star Background
         const cvs = document.getElementById('star-canvas');
         const ctx = cvs.getContext('2d');
         let w, h, s = [];
