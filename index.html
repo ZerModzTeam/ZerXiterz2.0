@@ -57,7 +57,6 @@
         .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
         .hidden { display: none !important; }
 
-        /* Style Rules Mirroring Photo */
         .photo-rules { text-align: left; }
         .photo-rules .title { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: #fff; }
         .photo-rules .hangus { background: #4b5563; padding: 8px 15px; color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 20px; display: inline-block; }
@@ -112,7 +111,6 @@
             </div>
 
             <button onclick="showRules()" class="rules-btn">RULES TF</button>
-            
             <div id="product_list"></div>
         </div>
 
@@ -129,23 +127,32 @@
                 <i onclick="closeAdmin()" class="fas fa-times" style="cursor:pointer"></i>
             </div>
             
+            <p style="font-size:10px; color:#3b82f6; margin-bottom:10px">UPLOAD PRODUK</p>
             <input type="hidden" id="edit_id">
             <div class="row-in">
-                <input type="text" id="p_name" placeholder="Nama Produk" class="cap-in">
+                <input type="text" id="p_name" placeholder="Nama Cheat" class="cap-in">
                 <select id="p_tag" class="cap-in" style="flex:0.7">
                     <option value="ROOT / VIRTUAL">ROOT / VIRTUAL</option>
                     <option value="NO ROOT">NO ROOT</option>
                 </select>
             </div>
             <div id="price_rows">
-                <div class="row-in"><input type="number" placeholder="Durasi" class="cap-in d-in"><input type="number" placeholder="Harga" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Durasi" class="cap-in d-in"><input type="number" placeholder="Harga" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Durasi" class="cap-in d-in"><input type="number" placeholder="Harga" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Durasi" class="cap-in d-in"><input type="number" placeholder="Harga" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Durasi" class="cap-in d-in"><input type="number" placeholder="Harga" class="cap-in p-in"></div>
+                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
+                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
+                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
             </div>
             <button onclick="saveP()" id="save_p_btn" class="up-btn">UPLOAD PRODUK</button>
+
+            <hr style="margin:30px 0; border:none; border-top:1px solid #222">
+            
+            <p style="font-size:10px; color:#10b981; margin-bottom:10px">SETTING EVENT GRATIS</p>
+            <input type="hidden" id="ev_edit_id">
+            <input type="text" id="ev_title" placeholder="Judul Event" class="cap-in">
+            <input type="text" id="ev_link" placeholder="Link (https://...)" class="cap-in">
+            <button onclick="saveEv()" id="save_ev_btn" class="up-btn" style="background:#10b981">UPDATE EVENT</button>
+
             <div id="manage_list_p" style="margin-top:30px"></div>
+            <div id="manage_list_ev" style="margin-top:20px"></div>
         </div>
     </div>
 
@@ -156,9 +163,9 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let isAdmin = localStorage.getItem('zmt_v35') === 'true';
+        let isAdmin = localStorage.getItem('zmt_v36') === 'true';
 
-        // Stars
+        // Stars Background
         const field = document.getElementById('starField');
         for(let i=0; i<80; i++) {
             let s = document.createElement('div');
@@ -183,10 +190,7 @@
             const cards = document.getElementsByClassName('p-card');
             for (let i = 0; i < cards.length; i++) {
                 const name = cards[i].getElementsByClassName('p-name')[0];
-                if (name) {
-                    const text = name.textContent || name.innerText;
-                    cards[i].style.display = text.toUpperCase().indexOf(input) > -1 ? "" : "none";
-                }
+                if (name) cards[i].style.display = name.innerText.toUpperCase().indexOf(input) > -1 ? "" : "none";
             }
         };
 
@@ -204,17 +208,17 @@
                 html: '<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">',
                 preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
             });
-            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v35', 'true'); location.reload(); }
+            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v36', 'true'); location.reload(); }
         };
 
-        window.logout = () => { localStorage.removeItem('zmt_v35'); location.reload(); };
+        window.logout = () => { localStorage.removeItem('zmt_v36'); location.reload(); };
 
+        // Product Logic
         window.saveP = () => {
             const id = document.getElementById('edit_id').value;
             const name = document.getElementById('p_name').value;
             const tag = document.getElementById('p_tag').value;
-            const durs = document.querySelectorAll('.d-in');
-            const prcs = document.querySelectorAll('.p-in');
+            const durs = document.querySelectorAll('.d-in'), prcs = document.querySelectorAll('.p-in');
             let prices = [];
             durs.forEach((d, i) => { if(d.value) prices.push(`${d.value} Day | ${prcs[i].value}K`); });
             if(!name || prices.length === 0) return;
@@ -224,57 +228,74 @@
         };
 
         window.editP = (id, name, tag, prices) => {
-            resetForm();
-            document.getElementById('edit_id').value = id;
-            document.getElementById('p_name').value = name;
-            document.getElementById('p_tag').value = tag;
-            const pArr = prices.split(',');
-            const durs = document.querySelectorAll('.d-in');
-            const prcs = document.querySelectorAll('.p-in');
-            pArr.forEach((p, i) => {
-                if(durs[i]) {
-                    const part = p.split(' Day | ');
-                    durs[i].value = part[0]; prcs[i].value = part[1].replace('K','');
-                }
-            });
+            resetForm(); document.getElementById('edit_id').value = id;
+            document.getElementById('p_name').value = name; document.getElementById('p_tag').value = tag;
+            const pArr = prices.split(','), durs = document.querySelectorAll('.d-in'), prcs = document.querySelectorAll('.p-in');
+            pArr.forEach((p, i) => { if(durs[i]) { const part = p.split(' Day | '); durs[i].value = part[0]; prcs[i].value = part[1].replace('K',''); } });
             document.getElementById('save_p_btn').innerText = "UPDATE PRODUK";
         };
 
+        // Event Logic
+        window.saveEv = () => {
+            const id = document.getElementById('ev_edit_id').value;
+            const title = document.getElementById('ev_title').value, link = document.getElementById('ev_link').value;
+            if(!title || !link) return;
+            if(id) db.ref('events/'+id).update({title, link}); else db.ref('events').push({title, link});
+            resetForm(); Swal.fire('Event Saved!', '', 'success');
+        };
+
+        window.editEv = (id, title, link) => {
+            document.getElementById('ev_edit_id').value = id;
+            document.getElementById('ev_title').value = title; document.getElementById('ev_link').value = link;
+            document.getElementById('save_ev_btn').innerText = "UPDATE EVENT";
+        };
+
         function resetForm() {
-            document.getElementById('edit_id').value = "";
-            document.getElementById('p_name').value = "";
-            document.querySelectorAll('.d-in, .p-in').forEach(i => i.value = "");
-            document.getElementById('save_p_btn').innerText = "UPLOAD PRODUK";
+            document.getElementById('edit_id').value = ""; document.getElementById('ev_edit_id').value = "";
+            document.getElementById('p_name').value = ""; document.getElementById('ev_title').value = "";
+            document.getElementById('ev_link').value = ""; document.querySelectorAll('.d-in, .p-in').forEach(i => i.value = "");
+            document.getElementById('save_p_btn').innerText = "UPLOAD PRODUK"; document.getElementById('save_ev_btn').innerText = "UPDATE EVENT";
         }
 
+        // Database Sync
         db.ref('products').on('value', snap => {
-            const list = document.getElementById('product_list');
-            const mList = document.getElementById('manage_list_p');
+            const list = document.getElementById('product_list'), mList = document.getElementById('manage_list_p');
             list.innerHTML = ''; mList.innerHTML = '';
             snap.forEach(child => {
-                const item = child.val();
-                let p_html = '';
+                const item = child.val(); let p_html = '';
                 item.prices.split(',').forEach(p => {
                     p_html += `<div class="price-box"><span style="font-weight:900; color:#3b82f6; font-size:18px">${p}</span>
-                        <div style="display:flex; gap:10px; margin-top:10px;">
-                        <button onclick="window.open('https://wa.me/6289653938936?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#2563eb">WA 1</button>
-                        <button onclick="window.open('https://wa.me/6285721057014?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#10b981">WA 2</button>
-                        </div></div>`;
+                        <div style="display:flex; gap:10px; margin-top:10px;"><button onclick="window.open('https://wa.me/6289653938936?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#2563eb">WA 1</button>
+                        <button onclick="window.open('https://wa.me/6285721057014?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#10b981">WA 2</button></div></div>`;
                 });
                 list.innerHTML += `<div class="p-card"><div class="p-header"><h1 class="p-name">${item.name}</h1><span class="p-tag">${item.tag}</span></div>${p_html}</div>`;
-                if(isAdmin) mList.innerHTML += `<div class="manage-item"><span>${item.name}</span><div style="display:flex; gap:10px">
-                    <i onclick="editP('${child.key}','${item.name}','${item.tag}','${item.prices}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i>
-                    <i onclick="db.ref('products/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
+                if(isAdmin) mList.innerHTML += `<div class="manage-item"><span>${item.name}</span><div style="display:flex; gap:10px"><i onclick="editP('${child.key}','${item.name}','${item.tag}','${item.prices}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('products/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
             });
         });
 
-        window.zoomQR = () => Swal.fire({ imageUrl: 'qris_clean.png', imageWidth: 400, showConfirmButton: false, background: '#0f172a' });
+        db.ref('events').on('value', snap => {
+            const evPage = document.getElementById('event_list'), mEvList = document.getElementById('manage_list_ev');
+            evPage.innerHTML = ''; mEvList.innerHTML = '';
+            snap.forEach(child => {
+                const ev = child.val();
+                evPage.innerHTML += `<div onclick="window.open('${ev.link}')" class="p-card" style="text-align:center; cursor:pointer; background:rgba(16,185,129,0.1); border-color:#10b98133;"><h2 style="color:#10b981; font-style:italic;">${ev.title}</h2><p style="font-size:10px; margin-top:10px; opacity:0.5;">CLICK TO OPEN LINK</p></div>`;
+                if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px"><i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('events/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
+            });
+        });
+
+        // Modals with RED OK BUTTON
+        window.zoomQR = () => Swal.fire({ 
+            imageUrl: 'qris_clean.png', 
+            imageWidth: 400, 
+            background: '#0f172a', 
+            confirmButtonText: 'OK', 
+            confirmButtonColor: '#ef4444' 
+        });
         
-        // MIRROR RULES DARI FOTO
         window.showRules = () => Swal.fire({
-            background: '#0f172a',
-            color: '#fff',
-            showConfirmButton: false,
+            background: '#0f172a', color: '#fff',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#ef4444',
             html: `
                 <div class="photo-rules">
                     <div class="title">RULES TF</div>
