@@ -1,90 +1,85 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
 
-/* Reset & Base */
+/* Reset & Global */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    outline: none;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-body {
-    background-color: #05070a;
-    color: #ffffff;
-    overflow-x: hidden;
+body { 
+    background: #05070a; 
+    color: white; 
     user-select: none;
+    overflow-x: hidden;
 }
 
-/* --- NAVIGATION / SIDEBAR --- */
+/* --- SIDEBAR FULL KAPSUL --- */
 #sidebar {
-    @apply shadow-[20px_0_50px_rgba(0,0,0,0.5)];
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Tombol Menu di Navigasi (Harus Kapsul & Vertikal) */
-.nav-kapsul {
+/* Tombol Navigasi di Sidebar (Sejajar Vertikal & Kapsul) */
+.nav-btn {
     display: flex;
     align-items: center;
     gap: 15px;
     width: 100%;
-    padding: 14px 25px;
-    border-radius: 9999px; /* Kapsul Mutlak */
+    padding: 16px 25px;
+    margin-bottom: 12px;
+    border-radius: 9999px; /* FIX: FULL KAPSUL */
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
     color: #94a3b8;
     font-weight: 700;
     font-size: 14px;
     transition: all 0.3s ease;
-    text-align: left;
+}
+
+.nav-btn.active {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.nav-btn i {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* --- TOMBOL LOGIN/LOGOUT TERPISAH --- */
+.admin-btn-kapsul {
+    width: 100%;
+    padding: 15px;
+    border-radius: 9999px; /* FIX: FULL KAPSUL */
+    font-weight: 800;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+/* --- ADMIN PANEL ELEMENTS --- */
+.kapsul-in {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px; /* FIX: INPUT KAPSUL */
+    padding: 15px 25px;
+    color: white;
+    font-size: 14px;
     margin-bottom: 10px;
 }
 
-.nav-kapsul.active {
-    background: rgba(37, 99, 235, 0.1);
-    color: #60a5fa;
-    border-color: rgba(59, 130, 246, 0.2);
-}
-
-.nav-kapsul:active {
-    scale: 0.95;
-}
-
-/* Tombol Admin & Logout Terpisah di Bawah */
-.admin-btn-kapsul {
-    width: 100%;
+.row-in {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px; /* FIX: ROW INPUT KAPSUL */
     padding: 12px;
-    border-radius: 9999px;
-    font-weight: 800;
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    margin-top: 8px;
-}
-
-/* --- ADMIN PANEL / MODAL --- */
-.kapsul-in {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 9999px; /* Input Kapsul */
-    padding: 14px 20px;
-    color: white;
-    font-size: 13px;
-    transition: border 0.3s ease;
-}
-
-.kapsul-in:focus {
-    border-color: #3b82f6;
-    background: rgba(0, 0, 0, 0.6);
-}
-
-.row-kapsul {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 9999px; /* Baris Input Kapsul */
-    padding: 10px 15px;
     color: white;
     font-size: 12px;
     text-align: center;
@@ -92,96 +87,77 @@ body {
 
 /* --- PRODUCT DESIGN --- */
 .card-z {
-    background: linear-gradient(145deg, #0f172a 0%, #05070a 100%);
-    border-radius: 40px; /* Super Rounded */
-    padding: 25px;
+    background: linear-gradient(145deg, #0f172a, #080b12);
+    border-radius: 45px; /* Super Rounded untuk Card */
+    padding: 30px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     margin-bottom: 30px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-/* Kategori ROOT/NO ROOT */
-.badge-kapsul {
-    font-size: 10px;
-    font-weight: 800;
-    color: #3b82f6;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-
-.product-title {
-    font-size: 28px;
-    font-weight: 800;
-    font-style: italic;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    line-height: 1;
-}
-
-/* Box Harga & Durasi */
-.price-item {
+.price-box {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 35px; /* Rounded Dalam */
-    padding: 20px;
-    margin-bottom: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.price-text {
+/* Teks Durasi/Harga (Gedein dikit biar jelas) */
+.price-tag {
     display: block;
     text-align: center;
     font-weight: 800;
-    font-size: 13px;
+    font-size: 15px; /* FIX: LEBIH GEDE */
     color: #60a5fa;
     margin-bottom: 15px;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
+    font-style: italic;
 }
 
-/* Tombol Beli WA (Kapsul & Gak Menyilaukan) */
+/* --- TOMBOL BELI (KAPSUL MODERN) --- */
 .btn-buy {
     width: 100%;
-    padding: 12px;
-    border-radius: 9999px; /* Kapsul Beli */
-    font-size: 10px;
+    padding: 14px;
+    border-radius: 9999px; /* FIX: TOMBOL BELI KAPSUL */
+    font-size: 11px;
     font-weight: 800;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    margin-bottom: 10px;
     color: white;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-bottom: 8px;
+    border: none;
 }
 
-.btn-wa1 {
-    background: linear-gradient(to right, #1d4ed8, #2563eb);
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
-}
+.btn-wa1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+.btn-wa2 { background: linear-gradient(135deg, #16a34a, #15803d); }
 
-.btn-wa2 {
-    background: linear-gradient(to right, #15803d, #16a34a);
-    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.2);
-}
+.btn-buy:active { transform: scale(0.92); }
 
-.btn-buy:active {
-    scale: 0.96;
-    filter: brightness(1.2);
-}
-
-/* QRIS Section */
-.qris-container {
-    background: white;
-    padding: 10px;
-    border-radius: 35px; /* Kapsul Frame QRIS */
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-.qris-label {
-    font-size: 10px;
+/* Tombol Rules (Kapsul Merah) */
+.btn-rules {
+    width: 100%;
+    padding: 14px;
+    border-radius: 9999px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #f87171;
     font-weight: 800;
-    color: #3b82f6;
-    letter-spacing: 3px;
-    margin-top: 15px;
+    font-size: 11px;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+}
+
+/* QRIS Frame */
+.qris-frame {
+    background: white;
+    padding: 12px;
+    border-radius: 40px; /* Kapsul Frame */
+    display: inline-block;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
