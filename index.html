@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE V3.3 - FINAL</title>
+    <title>ZMT STORE V3.3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -30,7 +30,6 @@
 
         .container { padding: 110px 20px 60px; max-width: 480px; margin: 0 auto; position: relative; z-index: 10; }
         
-        /* Search Box */
         .search-container { position: relative; margin-bottom: 25px; }
         .search-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 18px 25px 18px 55px; color: white; font-family: inherit; font-weight: 700; outline: none; transition: 0.3s; }
         .search-input:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
@@ -57,6 +56,13 @@
         
         .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
         .hidden { display: none !important; }
+
+        /* Style Rules Mirroring Photo */
+        .photo-rules { text-align: left; }
+        .photo-rules .title { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .photo-rules .hangus { background: #4b5563; padding: 8px 15px; color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 20px; display: inline-block; }
+        .photo-rules ul { list-style: disc; padding-left: 20px; }
+        .photo-rules li { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 10px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -105,7 +111,7 @@
                 <input type="text" id="searchInput" class="search-input" placeholder="Cari nama cheat..." onkeyup="filterProducts()">
             </div>
 
-            <button onclick="showRules()" class="rules-btn">RULES PAYMENT</button>
+            <button onclick="showRules()" class="rules-btn">RULES TF</button>
             
             <div id="product_list"></div>
         </div>
@@ -125,7 +131,7 @@
             
             <input type="hidden" id="edit_id">
             <div class="row-in">
-                <input type="text" id="p_name" placeholder="Nama Cheat" class="cap-in">
+                <input type="text" id="p_name" placeholder="Nama Produk" class="cap-in">
                 <select id="p_tag" class="cap-in" style="flex:0.7">
                     <option value="ROOT / VIRTUAL">ROOT / VIRTUAL</option>
                     <option value="NO ROOT">NO ROOT</option>
@@ -139,7 +145,6 @@
                 <div class="row-in"><input type="number" placeholder="Durasi" class="cap-in d-in"><input type="number" placeholder="Harga" class="cap-in p-in"></div>
             </div>
             <button onclick="saveP()" id="save_p_btn" class="up-btn">UPLOAD PRODUK</button>
-
             <div id="manage_list_p" style="margin-top:30px"></div>
         </div>
     </div>
@@ -151,9 +156,9 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let isAdmin = localStorage.getItem('zmt_v33') === 'true';
+        let isAdmin = localStorage.getItem('zmt_v35') === 'true';
 
-        // Star BG
+        // Stars
         const field = document.getElementById('starField');
         for(let i=0; i<80; i++) {
             let s = document.createElement('div');
@@ -173,7 +178,6 @@
             toggleSidebar();
         };
 
-        // Filter Search
         window.filterProducts = () => {
             const input = document.getElementById('searchInput').value.toUpperCase();
             const cards = document.getElementsByClassName('p-card');
@@ -200,10 +204,10 @@
                 html: '<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">',
                 preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
             });
-            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v33', 'true'); location.reload(); }
+            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v35', 'true'); location.reload(); }
         };
 
-        window.logout = () => { localStorage.removeItem('zmt_v33'); location.reload(); };
+        window.logout = () => { localStorage.removeItem('zmt_v35'); location.reload(); };
 
         window.saveP = () => {
             const id = document.getElementById('edit_id').value;
@@ -265,7 +269,27 @@
         });
 
         window.zoomQR = () => Swal.fire({ imageUrl: 'qris_clean.png', imageWidth: 400, showConfirmButton: false, background: '#0f172a' });
-        window.showRules = () => Swal.fire({ title: 'RULES', background: '#0f172a', color: '#fff', html: '1. Scan QRIS<br>2. Bayar Sesuai Harga<br>3. Kirim Bukti ke WA' });
+        
+        // MIRROR RULES DARI FOTO
+        window.showRules = () => Swal.fire({
+            background: '#0f172a',
+            color: '#fff',
+            showConfirmButton: false,
+            html: `
+                <div class="photo-rules">
+                    <div class="title">RULES TF</div>
+                    <div class="hangus">TIDAK MENGIKUTI = HANGUS</div>
+                    <ul>
+                        <li>+ BAYAR SESUAI NOMINAL</li>
+                        <li>+ CEK DETAIL</li>
+                        <li>+ KLIK BELI PADA PRODUK</li>
+                        <li>+ KIRIM BUKTI TF</li>
+                        <li>+ KIRIM DETAIL MAU MOD APA</li>
+                        <li>+ DAN ADMIN AUTO SEND DATA</li>
+                    </ul>
+                </div>
+            `
+        });
     </script>
 </body>
 </html>
