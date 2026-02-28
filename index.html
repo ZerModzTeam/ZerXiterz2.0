@@ -3,42 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE - VVIP</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ZMT STORE - VVIP OFFICIAL</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+
+        /* --- CSS CORE SYSTEM --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #05070a; color: white; overflow-x: hidden; }
+
+        /* Bintang Bergerak */
+        #starField { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: moveStars linear infinite; }
+        @keyframes moveStars { from { transform: translateY(0); } to { transform: translateY(-1000px); } }
+
+        /* Header Utama */
+        .main-header { position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-style: italic; color: #3b82f6; font-weight: 900; font-size: 22px; letter-spacing: -1px; }
+        .burger-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #3b82f633; background: #3b82f61a; color: #3b82f6; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        /* Sidebar Kapsul */
+        .sidebar { position: fixed; top: 0; left: 0; width: 290px; height: 100%; background: rgba(8, 11, 18, 0.98); backdrop-filter: blur(25px); z-index: 1000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(-100%); border-right: 1px solid rgba(255,255,255,0.1); }
+        .sidebar.active { transform: translateX(0); }
+        .sidebar-content { padding: 35px; display: flex; flex-direction: column; height: 100%; }
+        .sidebar-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 45px; }
+        .nav-label { font-size: 11px; letter-spacing: 4px; color: #3b82f6; font-weight: 800; text-transform: uppercase; }
+        
+        .nav-item { display: flex; align-items: center; gap: 15px; width: 100%; padding: 16px 25px; border-radius: 50px; background: rgba(255,255,255,0.03); color: #94a3b8; font-weight: 700; border: 1px solid transparent; margin-bottom: 12px; cursor: pointer; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        .nav-item.active { background: #3b82f626; color: #3b82f6; border-color: #3b82f64d; }
+        .nav-item.admin-special { color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); background: rgba(251, 191, 36, 0.05); margin-top: 10px; }
+
+        .sidebar-footer { margin-top: auto; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .auth-btn { width: 100%; padding: 16px; border-radius: 50px; font-weight: 900; font-size: 10px; cursor: pointer; border: none; letter-spacing: 1px; text-transform: uppercase; }
+        .login-btn { background: #3b82f61a; color: #3b82f6; border: 1px solid #3b82f633; }
+        .logout-btn { background: #ef44441a; color: #ef4444; border: 1px solid #ef444433; }
+
+        /* Area Utama */
+        .container { padding: 110px 20px 60px; max-width: 480px; margin: 0 auto; position: relative; z-index: 10; }
+        .qris-card { text-align: center; margin-bottom: 40px; }
+        .qris-frame { display: inline-block; padding: 12px; background: white; border-radius: 40px; cursor: pointer; box-shadow: 0 15px 45px rgba(0,0,0,0.4); }
+        .qris-img { width: 190px; height: 190px; border-radius: 30px; display: block; object-fit: contain; }
+        .hint-text { color: #3b82f6; font-size: 13px; letter-spacing: 4px; margin-top: 25px; font-weight: 900; text-align: center; }
+        
+        .rules-btn { width: 100%; padding: 18px; border-radius: 50px; background: #ef44441a; border: 1px solid #ef444433; color: #ef4444; font-weight: 900; font-size: 11px; margin: 35px 0; cursor: pointer; transition: 0.3s; }
+
+        /* Kartu Produk Sesuai SS */
+        .p-card { background: rgba(15, 23, 42, 0.6); border-radius: 50px; padding: 35px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 35px; transition: 0.3s; }
+        .p-tag { color: #3b82f6; font-size: 10px; letter-spacing: 3px; font-weight: 800; text-transform: uppercase; }
+        .p-name { font-size: 34px; font-style: italic; font-weight: 900; margin: 8px 0 25px; text-transform: uppercase; line-height: 0.9; }
+        .price-box { background: rgba(255,255,255,0.03); border-radius: 40px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 18px; text-align: center; }
+        .p-info { color: #60a5fa; font-weight: 900; font-size: 19px; margin-bottom: 18px; display: block; font-style: italic; }
+        .buy-btn { width: 100%; padding: 15px; border-radius: 50px; border: none; color: white; font-weight: 800; font-size: 11px; margin-bottom: 10px; cursor: pointer; text-transform: uppercase; }
+        .wa1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .wa2 { background: linear-gradient(135deg, #16a34a, #15803d); }
+
+        /* Modal Admin Dashboard */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal.active { display: flex; }
+        .modal-card { background: #0f172a; width: 100%; max-width: 420px; border-radius: 55px; padding: 40px; border: 1px solid #3b82f633; box-shadow: 0 0 50px rgba(59, 130, 246, 0.1); }
+        .modal-head { display: flex; justify-content: space-between; margin-bottom: 30px; color: #3b82f6; font-weight: 900; font-style: italic; }
+        
+        .row-in { display: flex; gap: 12px; margin-bottom: 12px; }
+        .cap-in { flex: 1; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 15px 22px; color: white; font-size: 13px; outline: none; transition: 0.2s; }
+        .cap-in:focus { border-color: #3b82f6; }
+        .upload-btn { width: 100%; background: #2563eb; color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 900; margin-top: 20px; cursor: pointer; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2); }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-    <div class="stars-wrapper" id="starField"></div>
+    <div id="starField"></div>
 
     <header class="main-header">
-        <button onclick="toggleSidebar()" class="burger-btn">
-            <i class="fas fa-bars-staggered"></i>
-        </button>
+        <button onclick="toggleSidebar()" class="burger-btn"><i class="fas fa-bars-staggered"></i></button>
         <h1 class="logo">ZMT STORE</h1>
-        <div id="admin_tag" class="admin-icon-tag hidden"><i class="fas fa-user-shield"></i></div>
-        <div class="spacer"></div>
+        <div id="admin_tag" class="hidden" style="color:#ef4444; font-size:20px"><i class="fas fa-user-shield"></i></div>
+        <div style="width:45px"></div>
     </header>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-top">
                 <span class="nav-label">NAVIGATOR</span>
-                <i onclick="toggleSidebar()" class="fas fa-times close-icon"></i>
+                <i onclick="toggleSidebar()" class="fas fa-times" style="color:#666; cursor:pointer; font-size:22px"></i>
             </div>
-            
-            <nav class="nav-list">
-                <button onclick="switchPage('home')" class="nav-item active">
-                    <i class="fas fa-home"></i> <span>Toko Utama</span>
-                </button>
-                <button onclick="switchPage('event')" class="nav-item">
-                    <i class="fas fa-bolt"></i> <span>Event Gratis</span>
-                </button>
-                <a href="https://wa.me/6289653938936" class="nav-item">
-                    <i class="fab fa-whatsapp"></i> <span>CS Admin</span>
+            <nav id="nav_list">
+                <div onclick="switchPage('home')" class="nav-item active"><i class="fas fa-home"></i> Toko Utama</div>
+                <div onclick="switchPage('event')" class="nav-item"><i class="fas fa-bolt"></i> Event Gratis</div>
+                
+                <div id="dash_menu" onclick="openAdmin()" class="nav-item admin-special hidden">
+                    <i class="fas fa-th-large"></i> Dashboard Admin
+                </div>
+
+                <a href="https://wa.me/6289653938936" class="nav-item" style="text-decoration:none">
+                    <i class="fab fa-whatsapp"></i> Customer Service
                 </a>
             </nav>
-
             <div class="sidebar-footer">
                 <button id="lgn_btn" onclick="openAdmin()" class="auth-btn login-btn">LOGIN ADMIN</button>
                 <button id="lgt_btn" onclick="logoutAdmin()" class="auth-btn logout-btn hidden">LOGOUT AKUN</button>
@@ -47,57 +114,190 @@
     </div>
 
     <main class="container">
-        <div class="qris-box">
+        <div class="qris-card">
             <div onclick="zoomQR()" class="qris-frame">
-                <img src="qris_clean.png" alt="QRIS" class="qris-img">
+                <img src="qris_clean.png" class="qris-img" onerror="this.src='https://via.placeholder.com/200?text=QRIS+ZMT'">
             </div>
-            <h2 class="qris-title">CLICK TO PAYMENT</h2>
-            <p class="qris-sub">DIGITAL PAYMENT ZMT</p>
+            <div class="hint-text">CLICK TO PAYMENT</div>
         </div>
 
-        <button onclick="showRules()" class="rules-btn">
-            <i class="fas fa-scroll"></i> RULES PAYMENT
-        </button>
+        <button onclick="showRules()" class="rules-btn"><i class="fas fa-scroll"></i> RULES PAYMENT</button>
 
-        <div id="page_home" class="product-feed"></div>
-        <div id="page_event" class="hidden empty-state">BELUM ADA EVENT...</div>
+        <div id="page_home"></div>
+        <div id="page_event" class="hidden" style="text-align:center; opacity:0.3; padding:100px; font-weight:900;">BELUM ADA EVENT</div>
     </main>
 
     <div id="modal_admin" class="modal">
         <div class="modal-card">
             <div class="modal-head">
-                <span class="modal-title italic">ADMIN CONSOLE</span>
-                <i onclick="closeAdmin()" class="fas fa-times"></i>
+                <span>ADMIN CONSOLE</span>
+                <i onclick="closeAdmin()" class="fas fa-times" style="cursor:pointer"></i>
             </div>
-            
             <div class="admin-form">
-                <div class="input-row">
-                    <input type="text" id="p_name" placeholder="Nama Produk" class="capsule-input">
-                    <select id="p_tag" class="capsule-input">
+                <div class="row-in">
+                    <input type="text" id="p_name" placeholder="Nama Produk" class="cap-in">
+                    <select id="p_tag" class="cap-in">
                         <option value="ROOT/VIRTUAL">ROOT</option>
                         <option value="NO ROOT">NO ROOT</option>
                     </select>
                 </div>
-
                 <div id="price_fields">
-                    <div class="input-row">
-                        <input type="text" placeholder="Durasi" class="capsule-input d-in">
-                        <input type="text" placeholder="Harga" class="capsule-input p-in">
+                    <div class="row-in">
+                        <input type="text" placeholder="Durasi" class="cap-in d-in">
+                        <input type="text" placeholder="Harga" class="cap-in p-in">
                     </div>
-                    <div class="input-row">
-                        <input type="text" placeholder="Durasi" class="capsule-input d-in">
-                        <input type="text" placeholder="Harga" class="capsule-input p-in">
+                    <div class="row-in">
+                        <input type="text" placeholder="Durasi" class="cap-in d-in">
+                        <input type="text" placeholder="Harga" class="cap-in p-in">
                     </div>
                 </div>
-
                 <button onclick="saveP()" class="upload-btn">UPLOAD PRODUK</button>
                 
-                <div id="admin_list" class="manage-list"></div>
+                <div id="admin_list" style="margin-top:30px; max-height:200px; overflow-y:auto; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                    </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module" src="script.js"></script>
+    <script>
+        // 1. Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
+            authDomain: "zmtstore-92963.firebaseapp.com",
+            databaseURL: "https://zmtstore-92963-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "zmtstore-92963"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2. Status Login
+        let isAdmin = localStorage.getItem('zmt_auth') === 'true';
+
+        // 3. Efek Bintang Background
+        const starField = document.getElementById('starField');
+        for(let i=0; i<85; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            const size = Math.random()*3+'px';
+            s.style.width = size; s.style.height = size;
+            s.style.left = Math.random()*100+'%';
+            s.style.top = Math.random()*100+'%';
+            s.style.animationDuration = (Math.random()*50+50)+'s';
+            starField.appendChild(s);
+        }
+
+        // 4. Fungsi UI
+        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
+        window.closeAdmin = () => document.getElementById('modal_admin').classList.remove('active');
+        
+        window.switchPage = (p) => {
+            document.getElementById('page_home').classList.toggle('hidden', p !== 'home');
+            document.getElementById('page_event').classList.toggle('hidden', p !== 'event');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(event.currentTarget) event.currentTarget.classList.add('active');
+            toggleSidebar();
+        };
+
+        // Cek Sesi Admin
+        if(isAdmin) {
+            document.getElementById('admin_tag').classList.remove('hidden');
+            document.getElementById('dash_menu').classList.remove('hidden');
+            document.getElementById('lgt_btn').classList.remove('hidden');
+            document.getElementById('lgn_btn').classList.add('hidden');
+        }
+
+        window.openAdmin = async () => {
+            if(isAdmin) {
+                document.getElementById('modal_admin').classList.add('active');
+                if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+                return;
+            }
+            const { value: login } = await Swal.fire({
+                title: 'ADMIN LOGIN', background: '#0f172a', color: '#fff',
+                html: '<input id="u" class="swal2-input" style="border-radius:50px" placeholder="Username"><input id="p" type="password" style="border-radius:50px" class="swal2-input" placeholder="Password">',
+                preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
+            });
+            if(login && login[0] === 'Zmt' && login[1] === 'zmt') {
+                localStorage.setItem('zmt_auth', 'true');
+                Swal.fire('Success!', '', 'success').then(() => location.reload());
+            } else if (login) {
+                Swal.fire('Error', 'Username/Pass Salah', 'error');
+            }
+        };
+
+        window.logoutAdmin = () => { 
+            localStorage.removeItem('zmt_auth'); 
+            location.reload(); 
+        };
+
+        // 5. Database CRUD
+        window.saveP = () => {
+            const name = document.getElementById('p_name').value;
+            const tag = document.getElementById('p_tag').value;
+            const durs = document.querySelectorAll('.d-in');
+            const prcs = document.querySelectorAll('.p-in');
+            let priceData = [];
+            
+            durs.forEach((d, i) => { 
+                if(d.value && prcs[i].value) priceData.push(d.value + " Day | " + prcs[i].value + "K"); 
+            });
+            
+            if(name && priceData.length > 0) {
+                db.ref('products').push({ name, tag, prices: priceData.join(',') });
+                Swal.fire('Berhasil!', 'Produk sudah tampil', 'success');
+                document.getElementById('p_name').value = '';
+                durs.forEach(d => d.value = '');
+                prcs.forEach(p => p.value = '');
+                closeAdmin();
+            } else {
+                Swal.fire('Waduh', 'Isi data yang bener lek!', 'warning');
+            }
+        };
+
+        // Sinkronisasi Realtime
+        db.ref('products').on('value', (snap) => {
+            const home = document.getElementById('page_home');
+            const admList = document.getElementById('admin_list');
+            home.innerHTML = ''; admList.innerHTML = '';
+            
+            snap.forEach(child => {
+                const item = child.val();
+                const key = child.key;
+                const priceArr = item.prices.split(',');
+                let p_html = '';
+                
+                priceArr.forEach(p => {
+                    p_html += `
+                        <div class="price-box">
+                            <span class="p-info">${p}</span>
+                            <button onclick="window.open('https://wa.me/6289653938936?text=Order%20${item.name}%20${p}')" class="buy-btn wa1">ORDER WA 1</button>
+                            <button onclick="window.open('https://wa.me/6285721057014?text=Order%20${item.name}%20${p}')" class="buy-btn wa2">ORDER WA 2</button>
+                        </div>`;
+                });
+
+                home.innerHTML += `
+                    <div class="p-card">
+                        <span class="p-tag">${item.tag}</span>
+                        <h1 class="p-name">${item.name}</h1>
+                        ${p_html}
+                    </div>`;
+
+                if(isAdmin) {
+                    admList.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:rgba(255,255,255,0.03); border-radius:25px; margin-bottom:10px; font-size:11px; border:1px solid rgba(255,255,255,0.05)">
+                            <span>${item.name}</span>
+                            <i onclick="firebase.database().ref('products/${key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer; padding:5px"></i>
+                        </div>`;
+                }
+            });
+        });
+
+        // 6. Fitur Tambahan
+        window.zoomQR = () => Swal.fire({ imageUrl: 'qris_clean.png', imageWidth: 400, showConfirmButton: false, background: '#0f172a' });
+        window.showRules = () => Swal.fire({ 
+            title: 'RULES PAYMENT', background: '#0f172a', color: '#fff',
+            html: '<div style="text-align:left; font-size:13px; line-height:1.8">1. Scan QRIS di atas<br>2. Bayar sesuai harga produk<br>3. Kirim bukti transfer ke Admin WA</div>' 
+        });
+    </script>
 </body>
 </html>
