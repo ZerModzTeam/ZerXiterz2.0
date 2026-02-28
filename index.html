@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZerModz • Neo Brutalism</title>
+    <title>ZerModz • Store</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <a href="https://chat.whatsapp.com/JBW6fNk5KwiGRWCaPVmr8T" class="cs-floating" target="_blank">
+        <span class="cs-icon">💬</span>
+        <span class="cs-text">CS GROUP</span>
+    </a>
+
     <div class="container">
         <div class="header">
             <div class="logo">
                 <span class="zer">Zer</span><span class="modz">Modz</span>
             </div>
-            <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="header-right">
                 <div class="time-panel">
                     <span id="clock">00:00:00</span>
                     <span id="date">Loading...</span>
                 </div>
                 <div id="adminProfileBtn" class="admin-profile">
                     <span class="profile-icon">⚡</span>
-                    <span class="profile-text">ADMIN</span>
                 </div>
             </div>
         </div>
@@ -27,14 +31,31 @@
         <div id="loginModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <span class="modal-icon">⚡</span>
                     <span class="modal-title">ADMIN ACCESS</span>
                     <span id="closeModalBtn" class="close-btn">✕</span>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="username" placeholder="username" autocomplete="off">
-                    <input type="password" id="password" placeholder="password" autocomplete="off">
-                    <button id="loginBtn">MASUK</button>
+                    <input type="text" id="username" placeholder="Username">
+                    <input type="password" id="password" placeholder="Password">
+                    <button id="loginBtn">LOG IN</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="productGrid" class="product-grid"></div>
+
+        <div id="adminPanelContainer" class="admin-panel-container hidden">
+            <div class="admin-panel-header">
+                <span>⚙️ DATABASE CONTROL</span>
+                <button id="logoutBtn" class="admin-logout-btn">[ KELUAR ]</button>
+            </div>
+            <div id="adminPanelBody" class="admin-panel-body"></div>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>                    <button id="loginBtn">MASUK</button>
                     <div id="loginMessage" class="login-message"></div>
                 </div>
             </div>
