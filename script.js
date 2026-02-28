@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// KONFIGURASI FIREBASE ASIA SINGAPORE
 const firebaseConfig = {
   apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
   authDomain: "zmtstore-92963.firebaseapp.com",
@@ -15,21 +14,30 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const productsRef = ref(db, 'products');
+const productsRef = ref(db, 'zmt_products');
 
 document.addEventListener('DOMContentLoaded', function() {
     let products = [];
-    let offset = parseInt(localStorage.getItem('zerModzOffset')) || 0;
+    let offset = 0;
 
-    // AMBIL DATA REAL-TIME DARI FIREBASE
+    // FUNGSI SIMPAN KE FIREBASE (Gantiin saveProducts asli)
+    function saveProducts() {
+        set(productsRef, products);
+    }
+
+    // LOAD DATA REAL-TIME DARI FIREBASE (Gantiin loadProducts asli)
     onValue(productsRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            products = Object.keys(data).map(key => ({
-                id: key,
-                ...data[key],
-                timerEnd: data[key].timerEnd ? new Date(data[key].timerEnd) : null
-            }));
+            products = data;
+        } else {
+            // Data Default jika Firebase masih kosong
+            products = [
+                { id: 'p1', name: 'HOLO ALL CHAR FFM', oldPrice: 22000, newPrice: 22000, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' },
+                { id: 'p2', name: 'HOLO SENJATA FFM', oldPrice: 18000, newPrice: 18000, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' },
+                { id: 'p3', name: 'HOLO SENJATA FFB', oldPrice: 15000, newPrice: 15000, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' }
+            ];
+            saveProducts();
         }
         renderProducts();
         if (!document.getElementById('adminPanelContainer').classList.contains('hidden')) {
@@ -37,112 +45,130 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // CLOCK REAL TIME
+    // ===== FUNGSI CLOCK ASLI KAMU =====
     function updateClock() {
         const now = new Date();
         const adjusted = new Date(now.getTime() + offset * 60000);
-        document.getElementById('clock').innerText = adjusted.toLocaleTimeString('id-ID', { hour12: false });
-        document.getElementById('date').innerText = adjusted.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
+        if (clockEl) clockEl.innerText = adjusted.toLocaleTimeString('id-ID', { hour12: false });
+        if (dateEl) dateEl.innerText = adjusted.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
     }
     setInterval(updateClock, 1000);
 
-    // RENDER PRODUK KE HALAMAN
+    // ===== RENDER PRODUK ASLI KAMU =====
     function renderProducts() {
         const grid = document.getElementById('productGrid');
         if (!grid) return;
         grid.innerHTML = '';
-
-        products.forEach(p => {
-            const disc = p.oldPrice > 0 ? Math.round(((p.oldPrice - p.newPrice) / p.oldPrice) * 100) : 0;
+        products.forEach(product => {
+            const discPercent = product.oldPrice > 0 ? Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100) : 0;
             const card = document.createElement('div');
             card.className = 'product';
             card.innerHTML = `
-                <div class="product-name">${p.name}</div>
+                <div class="product-name">${product.name}</div>
                 <div class="product-price">
-                    <span class="old-price">Rp ${p.oldPrice.toLocaleString()}</span>
-                    <span class="new-price">Rp ${p.newPrice.toLocaleString()}</span>
+                    <span class="old-price">Rp ${product.oldPrice.toLocaleString()}</span>
+                    <span class="new-price">Rp ${product.newPrice.toLocaleString()}</span>
                 </div>
-                ${disc > 0 ? `<div class="discount-badge">DISKON ${disc}%</div>` : ''}
-                <div id="t-${p.id}" class="timer-badge ${p.timerEnd ? '' : 'hidden'}">⏱️ 00:00:00</div>
-                <button class="order-btn" onclick="window.order('${p.name}', ${p.newPrice})">${p.buttonText || '[ ORDER ]'}</button>
+                ${discPercent > 0 ? `<div class="discount-badge">DISKON ${discPercent}%</div>` : ''}
+                <div id="timer-${product.id}" class="timer-badge ${product.timerEnd ? '' : 'hidden'}"></div>
+                <button class="order-btn" onclick="handleOrder('${product.name}', ${product.newPrice})">${product.buttonText || '[ ORDER ]'}</button>
             `;
             grid.appendChild(card);
         });
     }
 
-    // ORDER WHATSAPP
-    window.order = (name, price) => {
+    window.handleOrder = (name, price) => {
         const msg = encodeURIComponent(`Halo kak saya mau order ${name} (Rp ${price.toLocaleString()})`);
         window.open(`https://wa.me/6289653938936?text=${msg}`, '_blank');
     };
 
-    // LOGIN ADMIN
+    // ===== LOGIN & ADMIN ASLI KAMU (Pass: ROBB15) =====
+    const adminBtn = document.getElementById('adminProfileBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    if(adminBtn) adminBtn.onclick = () => loginModal.classList.remove('hidden');
+    if(closeBtn) closeBtn.onclick = () => loginModal.classList.add('hidden');
+
     document.getElementById('loginBtn').onclick = () => {
-        if (document.getElementById('username').value === 'ZeroXitAndro' && 
-            document.getElementById('password').value === 'ROBB15') {
-            document.getElementById('loginModal').classList.add('hidden');
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        if(u === 'ZeroXitAndro' && p === 'ROBB15') {
+            loginModal.classList.add('hidden');
             document.getElementById('adminPanelContainer').classList.remove('hidden');
             loadAdminPanel();
+        } else {
+            alert('Username atau Password Salah!');
         }
     };
 
-    // KONTROL ADMIN (DENGAN FIREBASE UPDATE)
-    function loadAdminPanel() {
-        const body = document.getElementById('adminPanelBody');
-        body.innerHTML = `
-            <div class="admin-section">
-                <div>TAMBAH PRODUK</div>
-                <input type="text" id="addName" placeholder="Nama">
-                <input type="number" id="addPrice" placeholder="Harga">
-                <button onclick="window.addNew()">TAMBAH</button>
+    window.loadAdminPanel = function() {
+        const container = document.getElementById('adminPanelBody');
+        container.innerHTML = `
+            <div class="admin-section-title">DAFTAR PRODUK</div>
+            <div id="adminProductList"></div>
+            <div class="admin-section-title" style="margin-top:20px;">TAMBAH PRODUK BARU</div>
+            <div class="admin-row">
+                <input type="text" id="addName" placeholder="Nama Produk" style="width:140px">
+                <input type="number" id="addPrice" placeholder="Harga" style="width:100px">
+                <button onclick="window.addNew()" class="admin-btn">TAMBAH</button>
             </div>
-            <div id="adminItems"></div>
         `;
-        
-        const items = document.getElementById('adminItems');
+        const list = document.getElementById('adminProductList');
         products.forEach(p => {
-            const row = document.createElement('div');
-            row.className = 'admin-section';
-            row.innerHTML = `
-                <div class="admin-row">
-                    <span>${p.name}</span>
-                    <button onclick="window.del('${p.id}')">HAPUS</button>
+            const div = document.createElement('div');
+            div.className = 'admin-row';
+            div.innerHTML = `
+                <span class="admin-label">${p.name}</span>
+                <div class="admin-control">
+                    <input type="number" id="d-${p.id}" placeholder="%" style="width:45px">
+                    <input type="number" id="m-${p.id}" placeholder="Min" style="width:45px">
+                    <button onclick="window.applyDisc('${p.id}')" class="admin-btn small">SET</button>
+                    <button onclick="window.delProd('${p.id}')" class="admin-btn small" style="background:red">X</button>
                 </div>
-                <input type="number" id="d-${p.id}" placeholder="Diskon %" style="width:60px">
-                <input type="number" id="m-${p.id}" placeholder="Menit" style="width:60px">
-                <button onclick="window.setDisc('${p.id}')">SET DISKON</button>
             `;
-            items.appendChild(row);
+            list.appendChild(div);
         });
-    }
+    };
 
-    // FUNGSI GLOBAL UNTUK ADMIN
     window.addNew = () => {
         const n = document.getElementById('addName').value;
         const p = parseInt(document.getElementById('addPrice').value);
-        if(n && p) set(ref(db, 'products/p' + Date.now()), { name: n, oldPrice: p, newPrice: p, discount: 0, buttonText: '[ ORDER ]' });
+        if(n && p) {
+            products.push({ id: 'p'+Date.now(), name: n, oldPrice: p, newPrice: p, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' });
+            saveProducts();
+        }
     };
 
-    window.del = (id) => remove(ref(db, `products/${id}`));
+    window.delProd = (id) => {
+        products = products.filter(x => x.id !== id);
+        saveProducts();
+    };
 
-    window.setDisc = (id) => {
-        const p = products.find(x => x.id === id);
+    window.applyDisc = (id) => {
         const d = parseFloat(document.getElementById(`d-${id}`).value) || 0;
         const m = parseInt(document.getElementById(`m-${id}`).value) || 0;
-        const nPrice = Math.round(p.oldPrice - (p.oldPrice * d / 100));
-        const tEnd = m > 0 ? new Date(Date.now() + m * 60000).toISOString() : null;
-        update(ref(db, `products/${id}`), { discount: d, newPrice: nPrice, timerEnd: tEnd });
+        const p = products.find(x => x.id === id);
+        if(p) {
+            p.newPrice = p.oldPrice - (p.oldPrice * d / 100);
+            p.timerEnd = m > 0 ? new Date(Date.now() + m * 60000).toISOString() : null;
+            saveProducts();
+        }
     };
 
-    // LOGIC TIMER PER DETIK
+    // ===== TIMER PER DETIK =====
     setInterval(() => {
         products.forEach(p => {
             if (p.timerEnd) {
-                const diff = p.timerEnd - new Date();
-                const el = document.getElementById(`t-${p.id}`);
+                const diff = new Date(p.timerEnd) - new Date();
+                const el = document.getElementById(`timer-${p.id}`);
                 if (el) {
                     if (diff <= 0) {
-                        update(ref(db, `products/${p.id}`), { newPrice: p.oldPrice, discount: 0, timerEnd: null });
+                        p.newPrice = p.oldPrice;
+                        p.timerEnd = null;
+                        saveProducts();
                     } else {
                         const m = Math.floor(diff/60000);
                         const s = Math.floor((diff%60000)/1000);

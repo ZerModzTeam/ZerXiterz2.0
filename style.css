@@ -26,6 +26,7 @@ body {
     position: relative;
 }
 
+/* ===== HEADER ===== */
 .header {
     display: flex;
     justify-content: space-between;
@@ -59,6 +60,7 @@ body {
 #clock { font-size: 1.8rem; font-weight: 700; display: block; line-height: 1.1; }
 #date { font-size: 0.85rem; opacity: 0.9; }
 
+/* ===== ADMIN PROFIL BUTTON ===== */
 .admin-profile {
     display: flex;
     align-items: center;
@@ -72,51 +74,53 @@ body {
     transition: 0.1s;
 }
 
-.modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 1000;
-}
+.admin-profile:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #ff6b35; }
+.profile-icon { font-size: 1.2rem; }
+.profile-text { color: white; font-weight: 900; font-size: 0.8rem; letter-spacing: 1px; }
 
-.modal-content {
-    background: black; border: 5px solid #ff6b35;
-    box-shadow: 12px 12px 0 white; width: 90%; max-width: 400px; border-radius: 20px;
-}
+/* ===== MODAL LOGIN ===== */
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 1rem; }
+.modal.hidden { display: none; }
+.modal-content { background: black; border: 5px solid #ff6b35; box-shadow: 12px 12px 0 white; width: 100%; max-width: 400px; border-radius: 20px; overflow: hidden; animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-header { background: #ff6b35; padding: 1rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 4px solid black; }
+.modal-title { font-weight: 900; color: black; flex-grow: 1; letter-spacing: 1px; }
+.close-btn { cursor: pointer; font-weight: 900; color: black; font-size: 1.2rem; }
+.modal-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+.modal-body input { background: white; border: 3px solid black; padding: 0.8rem 1rem; font-weight: 700; border-radius: 40px; outline: none; transition: 0.2s; }
+.modal-body input:focus { border-color: #ff6b35; box-shadow: 4px 4px 0 #ff6b35; }
+.modal-body button { background: #ff6b35; border: 3px solid white; color: black; font-weight: 900; padding: 0.8rem; border-radius: 40px; cursor: pointer; transition: 0.1s; letter-spacing: 1px; }
+.modal-body button:hover { transform: scale(1.05); background: white; border-color: #ff6b35; }
 
-.modal-body { padding: 1.8rem; display: flex; flex-direction: column; gap: 1rem; }
-.modal-body input { background: white; border: 3px solid black; padding: 0.8rem 1rem; border-radius: 40px; font-weight: bold; }
-.modal-body button { background: #ff6b35; border: 3px solid white; color: black; font-weight: 900; padding: 0.8rem 1rem; border-radius: 40px; cursor: pointer; }
+/* ===== PRODUCT GRID ===== */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+.product { background: white; border: 4px solid black; padding: 1.5rem; position: relative; display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 8px 8px 0 black; transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.product:hover { transform: translate(-5px, -5px); box-shadow: 13px 13px 0 #ff6b35; border-color: #ff6b35; }
+.product-name { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; color: black; line-height: 1.2; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+.product-price { display: flex; flex-direction: column; gap: 0.2rem; }
+.old-price { font-size: 0.9rem; text-decoration: line-through; color: #888; font-weight: 700; }
+.new-price { font-size: 1.6rem; font-weight: 900; color: black; display: flex; align-items: center; gap: 0.5rem; }
+.new-price::before { content: 'Rp'; font-size: 0.9rem; background: #ff6b35; color: black; padding: 2px 6px; border: 2px solid black; border-radius: 4px; }
+.discount-badge { position: absolute; top: -10px; right: -10px; background: black; color: white; padding: 0.4rem 0.8rem; font-weight: 900; font-size: 0.8rem; border: 2px solid #ff6b35; box-shadow: 4px 4px 0 #ff6b35; transform: rotate(5deg); }
+.timer-badge { background: #ff6b35; color: black; padding: 0.4rem 0.8rem; border: 2px solid black; font-weight: 900; font-size: 0.9rem; text-align: center; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.timer-badge.hidden { display: none; }
+.order-btn { margin-top: auto; background: #ff6b35; border: 3px solid black; padding: 0.8rem; font-weight: 900; font-size: 1rem; cursor: pointer; transition: 0.1s; box-shadow: 4px 4px 0 black; border-radius: 40px; }
+.order-btn:hover { transform: translate(2px, 2px); box-shadow: 0px 0px 0 black; background: black; color: white; border-color: #ff6b35; }
 
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
-}
-
-.product {
-    background: white; border: 4px solid black; padding: 1.2rem 1rem;
-    box-shadow: 8px 8px 0 black; transition: 0.1s ease;
-}
-
-.product:hover { transform: translate(-4px, -4px); box-shadow: 10px 10px 0 #ff6b35; border-color: #ff6b35; }
-
-.new-price { background: black; color: white; padding: 0.1rem 0.5rem; border: 2px solid #ff6b35; font-weight: 900; }
-
-.timer-badge {
-    font-size: 0.8rem; background: #ff6b35; color: black; padding: 0.3rem 0.7rem;
-    border: 2px solid black; border-radius: 30px; font-weight: 900; margin-top: 5px;
-}
-
-.order-btn {
-    background: #ff6b35; border: 3px solid black; font-weight: 900;
-    padding: 0.6rem 1.2rem; cursor: pointer; border-radius: 40px; margin-top: 10px;
-}
-
-.admin-panel-container { margin-top: 2rem; background: black; border: 4px solid #ff6b35; border-radius: 20px; color: white; padding: 1rem; }
-.admin-section { background: #1a1a1a; border: 1px solid #ff6b35; padding: 1rem; margin-bottom: 1rem; border-radius: 10px; }
-.admin-row { display: flex; justify-content: space-between; margin-bottom: 5px; align-items: center; background: #333; padding: 5px 10px; border-radius: 20px; }
+/* ===== ADMIN PANEL ===== */
+.admin-panel-container { margin-top: 3rem; background: black; border: 4px solid #ff6b35; border-radius: 20px; box-shadow: 10px 10px 0 rgba(0,0,0,0.2); overflow: hidden; animation: slideUp 0.4s ease-out; }
+.admin-panel-header { background: #ff6b35; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid black; }
+.admin-panel-header span { font-weight: 900; color: black; letter-spacing: 1px; }
+.admin-logout-btn { background: black; color: white; border: 2px solid white; padding: 0.4rem 0.8rem; font-weight: 900; cursor: pointer; border-radius: 30px; font-size: 0.7rem; transition: 0.2s; }
+.admin-logout-btn:hover { background: white; color: black; border-color: black; }
+.admin-panel-body { padding: 1.5rem; }
+.admin-section-title { color: #ff6b35; font-weight: 900; margin-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase; border-left: 4px solid #ff6b35; padding-left: 0.7rem; }
+.admin-row { display: flex; justify-content: space-between; background: #222; padding: 0.7rem 1rem; border: 2px solid #ff6b35; flex-wrap: wrap; margin-bottom: 0.7rem; border-radius: 40px; }
+.admin-label { color: white; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
+.admin-control { display: flex; gap: 0.5rem; align-items: center; }
+.admin-control input { background: black; border: 2px solid white; color: white; padding: 0.4rem 0.6rem; width: 70px; font-size: 0.8rem; border-radius: 30px; }
+.admin-btn { background: #ff6b35; border: 2px solid white; color: black; font-weight: 900; padding: 0.4rem 0.9rem; font-size: 0.75rem; cursor: pointer; box-shadow: 2px 2px 0 white; letter-spacing: 1px; border-radius: 30px; }
+.admin-btn.small { padding: 0.25rem 0.7rem; font-size: 0.7rem; }
 .hidden { display: none !important; }
 
-@media (max-width: 800px) { .product-grid { grid-template-columns: 1fr; } .header { flex-direction: column; gap: 1rem; } }
+@media (max-width: 600px) { .header { flex-direction: column; gap: 1rem; } .product-grid { grid-template-columns: 1fr; } }
