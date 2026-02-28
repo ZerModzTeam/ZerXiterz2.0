@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE V3.2</title>
+    <title>ZMT STORE V3.2 FINAL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -25,11 +25,11 @@
         .sidebar { position: fixed; top: 0; left: 0; width: 290px; height: 100%; background: rgba(8, 11, 18, 0.98); backdrop-filter: blur(25px); z-index: 1000; transition: 0.5s; transform: translateX(-100%); border-right: 1px solid rgba(255,255,255,0.1); }
         .sidebar.active { transform: translateX(0); }
         .sidebar-content { padding: 35px; display: flex; flex-direction: column; height: 100%; }
-        .nav-item { display: flex; align-items: center; gap: 15px; width: 100%; padding: 16px 25px; border-radius: 50px; background: rgba(255,255,255,0.03); color: #94a3b8; font-weight: 700; margin-bottom: 12px; cursor: pointer; text-decoration: none; font-size: 14px; border: 1px solid transparent; }
+        .nav-item { display: flex; align-items: center; gap: 15px; width: 100%; padding: 16px 25px; border-radius: 50px; background: rgba(255,255,255,0.03); color: #94a3b8; font-weight: 700; margin-bottom: 12px; cursor: pointer; text-decoration: none; font-size: 14px; }
         .nav-item.active { background: #3b82f626; color: #3b82f6; border-color: #3b82f64d; }
 
         .container { padding: 110px 20px 60px; max-width: 480px; margin: 0 auto; position: relative; z-index: 10; }
-        .qris-frame { display: block; margin: 0 auto; padding: 12px; background: white; border-radius: 40px; width: fit-content; }
+        .qris-frame { display: block; margin: 0 auto; padding: 12px; background: white; border-radius: 40px; width: fit-content; cursor: pointer; }
         .qris-img { width: 190px; height: 190px; border-radius: 30px; display: block; }
         .rules-btn { width: 100%; padding: 18px; border-radius: 50px; background: #ef44441a; border: 1px solid #ef444433; color: #ef4444; font-weight: 900; margin: 30px 0; cursor: pointer; }
 
@@ -41,7 +41,6 @@
         .price-box { background: rgba(255,255,255,0.03); border-radius: 40px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; text-align: center; }
         .buy-btn { width: 100%; padding: 12px; border-radius: 50px; border: none; color: white; font-weight: 800; font-size: 11px; margin-top: 5px; cursor: pointer; }
 
-        /* Modal Admin */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
         .modal.active { display: flex; }
         .modal-card { background: #0f172a; width: 100%; max-width: 450px; border-radius: 50px; padding: 35px; border: 1px solid #3b82f633; overflow-y: auto; max-height: 90vh; }
@@ -50,7 +49,6 @@
         .up-btn { width: 100%; background: #2563eb; color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 900; margin-top: 15px; cursor: pointer; }
         
         .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
-
         .hidden { display: none !important; }
     </style>
 </head>
@@ -74,7 +72,7 @@
             <nav>
                 <div onclick="switchPage('home')" class="nav-item active" id="nav_home"><i class="fas fa-home"></i> Home</div>
                 <div onclick="switchPage('event')" class="nav-item" id="nav_event"><i class="fas fa-bolt"></i> Event Gratis</div>
-                <a href="https://wa.me/6289653938936" class="nav-item" style="text-decoration:none"><i class="fab fa-whatsapp"></i> Customer Service</a>
+                <a href="https://wa.me/6289653938936" class="nav-item" style="text-decoration:none"><i class="fab fa-whatsapp"></i> WhatsApp Admin</a>
                 <div id="dash_nav" onclick="openAdmin()" class="nav-item hidden" style="color:#fbbf24!important"><i class="fas fa-tools"></i> Dashboard Admin</div>
             </nav>
             <div style="margin-top:auto">
@@ -86,7 +84,12 @@
 
     <main class="container">
         <div id="page_home">
-            <div class="qris-frame" onclick="zoomQR()"><img src="qris_clean.png" class="qris-img" onerror="this.src='https://via.placeholder.com/200?text=QRIS'"></div>
+            <div class="qris-frame" onclick="zoomQR()">
+                <img src="qris_clean.png" class="qris-img" onerror="this.src='https://via.placeholder.com/200?text=QRIS'">
+            </div>
+            <p style="text-align:center; font-size:10px; color:#3b82f6; margin-top:10px; font-weight:800; letter-spacing:1px;">
+                <i class="fas fa-search-plus"></i> KLIK GAMBAR UNTUK ZOOM
+            </p>
             <button onclick="showRules()" class="rules-btn">RULES PAYMENT</button>
             <div id="product_list"></div>
         </div>
@@ -141,9 +144,9 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let isAdmin = localStorage.getItem('zmt_v32') === 'true';
+        let isAdmin = localStorage.getItem('zmt_final') === 'true';
 
-        // Star BG
+        // Stars
         const field = document.getElementById('starField');
         for(let i=0; i<80; i++) {
             let s = document.createElement('div');
@@ -177,10 +180,10 @@
                 html: '<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">',
                 preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
             });
-            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v32', 'true'); location.reload(); }
+            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_final', 'true'); location.reload(); }
         };
 
-        window.logout = () => { localStorage.removeItem('zmt_v32'); location.reload(); };
+        window.logout = () => { localStorage.removeItem('zmt_final'); location.reload(); };
 
         window.saveP = () => {
             const id = document.getElementById('edit_id').value;
@@ -197,6 +200,7 @@
         };
 
         window.editP = (id, name, tag, prices) => {
+            resetForm();
             document.getElementById('edit_id').value = id;
             document.getElementById('p_name').value = name;
             document.getElementById('p_tag').value = tag;
@@ -204,8 +208,10 @@
             const durs = document.querySelectorAll('.d-in');
             const prcs = document.querySelectorAll('.p-in');
             pArr.forEach((p, i) => {
-                const part = p.split(' Day | ');
-                if(durs[i]) durs[i].value = part[0]; if(prcs[i]) prcs[i].value = part[1].replace('K','');
+                if(durs[i]) {
+                    const part = p.split(' Day | ');
+                    durs[i].value = part[0]; prcs[i].value = part[1].replace('K','');
+                }
             });
             document.getElementById('save_p_btn').innerText = "UPDATE PRODUK";
             document.getElementById('form_title').innerText = "EDIT CHEAT";
@@ -233,6 +239,7 @@
             document.getElementById('ev_link').value = ""; document.querySelectorAll('.d-in, .p-in').forEach(i => i.value = "");
             document.getElementById('save_p_btn').innerText = "UPLOAD PRODUK";
             document.getElementById('save_ev_btn').innerText = "SIMPAN EVENT";
+            document.getElementById('form_title').innerText = "DASHBOARD ADMIN";
         }
 
         db.ref('products').on('value', snap => {
@@ -251,8 +258,8 @@
                 });
                 list.innerHTML += `<div class="p-card"><div class="p-header"><h1 class="p-name">${item.name}</h1><span class="p-tag">${item.tag}</span></div>${p_html}</div>`;
                 if(isAdmin) mList.innerHTML += `<div class="manage-item"><span>${item.name}</span><div style="display:flex; gap:10px">
-                    <i onclick="editP('${child.key}','${item.name}','${item.tag}','${item.prices}')" class="fas fa-edit" style="color:#fbbf24"></i>
-                    <i onclick="db.ref('products/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444"></i></div></div>`;
+                    <i onclick="editP('${child.key}','${item.name}','${item.tag}','${item.prices}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i>
+                    <i onclick="db.ref('products/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
             });
         });
 
@@ -267,8 +274,8 @@
                     <p style="font-size:10px; margin-top:10px; opacity:0.5;">CLICK TO OPEN LINK</p>
                 </div>`;
                 if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px">
-                    <i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24"></i>
-                    <i onclick="db.ref('events/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444"></i></div></div>`;
+                    <i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i>
+                    <i onclick="db.ref('events/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
             });
         });
 
