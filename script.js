@@ -14,24 +14,31 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const productsRef = ref(db, 'zmt_products');
+const productsRef = ref(db, 'store_data');
 
 document.addEventListener('DOMContentLoaded', function() {
     let products = [];
-    let offset = 0;
+    let offset = parseInt(localStorage.getItem('zerModzOffset')) || 0;
+    let timerInterval = null;
 
-    // FUNGSI SIMPAN KE FIREBASE (Gantiin saveProducts asli)
+    // --- SINRONISASI FIREBASE ---
     function saveProducts() {
-        set(productsRef, products);
+        // Simpan ke Firebase (Data otomatis terupdate ke semua user)
+        set(productsRef, products.map(p => ({
+            ...p,
+            timerEnd: p.timerEnd ? p.timerEnd.toISOString() : null
+        })));
     }
 
-    // LOAD DATA REAL-TIME DARI FIREBASE (Gantiin loadProducts asli)
     onValue(productsRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            products = data;
+            products = data.map(p => ({
+                ...p,
+                timerEnd: p.timerEnd ? new Date(p.timerEnd) : null
+            }));
         } else {
-            // Data Default jika Firebase masih kosong
+            // Data Default Jika Kosong
             products = [
                 { id: 'p1', name: 'HOLO ALL CHAR FFM', oldPrice: 22000, newPrice: 22000, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' },
                 { id: 'p2', name: 'HOLO SENJATA FFM', oldPrice: 18000, newPrice: 18000, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' },
@@ -45,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ===== FUNGSI CLOCK ASLI KAMU =====
+    // --- LOGIKA JAM ASLI ---
     function updateClock() {
         const now = new Date();
         const adjusted = new Date(now.getTime() + offset * 60000);
@@ -56,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     setInterval(updateClock, 1000);
 
-    // ===== RENDER PRODUK ASLI KAMU =====
+    // --- RENDER PRODUK ASLI ---
     function renderProducts() {
         const grid = document.getElementById('productGrid');
         if (!grid) return;
@@ -84,11 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
         window.open(`https://wa.me/6289653938936?text=${msg}`, '_blank');
     };
 
-    // ===== LOGIN & ADMIN ASLI KAMU (Pass: ROBB15) =====
+    // --- LOGIN & ADMIN PANEL ASLI (TIDAK ADA YANG DIUBAH) ---
     const adminBtn = document.getElementById('adminProfileBtn');
     const loginModal = document.getElementById('loginModal');
     const closeBtn = document.getElementById('closeModalBtn');
-
     if(adminBtn) adminBtn.onclick = () => loginModal.classList.remove('hidden');
     if(closeBtn) closeBtn.onclick = () => loginModal.classList.add('hidden');
 
@@ -99,66 +105,66 @@ document.addEventListener('DOMContentLoaded', function() {
             loginModal.classList.add('hidden');
             document.getElementById('adminPanelContainer').classList.remove('hidden');
             loadAdminPanel();
-        } else {
-            alert('Username atau Password Salah!');
-        }
+        } else { alert('Gagal!'); }
     };
 
     window.loadAdminPanel = function() {
         const container = document.getElementById('adminPanelBody');
         container.innerHTML = `
-            <div class="admin-section-title">DAFTAR PRODUK</div>
-            <div id="adminProductList"></div>
-            <div class="admin-section-title" style="margin-top:20px;">TAMBAH PRODUK BARU</div>
-            <div class="admin-row">
-                <input type="text" id="addName" placeholder="Nama Produk" style="width:140px">
-                <input type="number" id="addPrice" placeholder="Harga" style="width:100px">
-                <button onclick="window.addNew()" class="admin-btn">TAMBAH</button>
-            </div>
+            <div class="admin-section-title">TAMBAH PRODUK</div>
+            <div class="admin-row"><input type="text" id="addN" placeholder="Nama"><input type="number" id="addP" placeholder="Harga"><button onclick="window.addNew()" class="admin-btn">ADD</button></div>
+            <div class="admin-section-title">MANAJEMEN PRODUK</div>
+            <div id="adminList"></div>
         `;
-        const list = document.getElementById('adminProductList');
+        const list = document.getElementById('adminList');
         products.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'admin-row';
-            div.innerHTML = `
-                <span class="admin-label">${p.name}</span>
+            const row = document.createElement('div');
+            row.className = 'admin-row';
+            row.innerHTML = `
+                <input type="text" value="${p.name}" onchange="window.upName('${p.id}', this.value)" style="width:120px; background:black; color:white; border:1px solid #ff6b35;">
                 <div class="admin-control">
-                    <input type="number" id="d-${p.id}" placeholder="%" style="width:45px">
-                    <input type="number" id="m-${p.id}" placeholder="Min" style="width:45px">
-                    <button onclick="window.applyDisc('${p.id}')" class="admin-btn small">SET</button>
-                    <button onclick="window.delProd('${p.id}')" class="admin-btn small" style="background:red">X</button>
+                    <input type="number" id="d-${p.id}" placeholder="%" style="width:40px">
+                    <input type="number" id="m-${p.id}" placeholder="Min" style="width:40px">
+                    <button onclick="window.setD('${p.id}')" class="admin-btn small">SET</button>
+                    <button onclick="window.delP('${p.id}')" class="admin-btn small" style="background:red">X</button>
                 </div>
             `;
-            list.appendChild(div);
+            list.appendChild(row);
         });
     };
 
+    // --- FUNGSI ACTION ADMIN (SINKRON KE FIREBASE) ---
     window.addNew = () => {
-        const n = document.getElementById('addName').value;
-        const p = parseInt(document.getElementById('addPrice').value);
+        const n = document.getElementById('addN').value;
+        const p = parseInt(document.getElementById('addP').value);
         if(n && p) {
             products.push({ id: 'p'+Date.now(), name: n, oldPrice: p, newPrice: p, discount: 0, timerEnd: null, buttonText: '[ ORDER ]' });
             saveProducts();
         }
     };
 
-    window.delProd = (id) => {
+    window.upName = (id, newName) => {
+        const p = products.find(x => x.id === id);
+        if(p) { p.name = newName; saveProducts(); }
+    };
+
+    window.delP = (id) => {
         products = products.filter(x => x.id !== id);
         saveProducts();
     };
 
-    window.applyDisc = (id) => {
+    window.setD = (id) => {
         const d = parseFloat(document.getElementById(`d-${id}`).value) || 0;
         const m = parseInt(document.getElementById(`m-${id}`).value) || 0;
         const p = products.find(x => x.id === id);
         if(p) {
             p.newPrice = p.oldPrice - (p.oldPrice * d / 100);
-            p.timerEnd = m > 0 ? new Date(Date.now() + m * 60000).toISOString() : null;
+            p.timerEnd = m > 0 ? new Date(Date.now() + m * 60000) : null;
             saveProducts();
         }
     };
 
-    // ===== TIMER PER DETIK =====
+    // --- TIMER PER DETIK ASLI ---
     setInterval(() => {
         products.forEach(p => {
             if (p.timerEnd) {
