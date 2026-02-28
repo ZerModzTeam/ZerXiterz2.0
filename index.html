@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE V3.3</title>
+    <title>ZMT STORE V3.6 - FIX DASHBOARD</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -279,38 +279,4 @@
             snap.forEach(child => {
                 const ev = child.val();
                 evPage.innerHTML += `<div onclick="window.open('${ev.link}')" class="p-card" style="text-align:center; cursor:pointer; background:rgba(16,185,129,0.1); border-color:#10b98133;"><h2 style="color:#10b981; font-style:italic;">${ev.title}</h2><p style="font-size:10px; margin-top:10px; opacity:0.5;">CLICK TO OPEN LINK</p></div>`;
-                if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px"><i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('events/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
-            });
-        });
-
-        // Modals with RED OK BUTTON
-        window.zoomQR = () => Swal.fire({ 
-            imageUrl: 'qris_clean.png', 
-            imageWidth: 400, 
-            background: '#0f172a', 
-            confirmButtonText: 'OK', 
-            confirmButtonColor: '#ef4444' 
-        });
-        
-        window.showRules = () => Swal.fire({
-            background: '#0f172a', color: '#fff',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#ef4444',
-            html: `
-                <div class="photo-rules">
-                    <div class="title">RULES TF</div>
-                    <div class="hangus">TIDAK MENGIKUTI = HANGUS</div>
-                    <ul>
-                        <li>+ BAYAR SESUAI NOMINAL</li>
-                        <li>+ CEK DETAIL</li>
-                        <li>+ KLIK BELI PADA PRODUK</li>
-                        <li>+ KIRIM BUKTI TF</li>
-                        <li>+ KIRIM DETAIL MAU MOD APA</li>
-                        <li>+ DAN ADMIN AUTO SEND DATA</li>
-                    </ul>
-                </div>
-            `
-        });
-    </script>
-</body>
-</html>
+                if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px"><i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('events/${child.key}').remove
