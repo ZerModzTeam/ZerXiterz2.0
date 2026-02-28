@@ -1,147 +1,143 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
-    authDomain: "zmtstore-92963.firebaseapp.com",
-    databaseURL: "https://zmtstore-92963-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "zmtstore-92963",
-    storageBucket: "zmtstore-92963.firebasestorage.app",
-    messagingSenderId: "761749645893",
-    appId: "1:761749645893:web:b320961b1a672c3191d12c"
+  apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
+  authDomain: "zmtstore-92963.firebaseapp.com",
+  databaseURL: "https://zmtstore-92963-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "zmtstore-92963",
+  storageBucket: "zmtstore-92963.firebasestorage.app",
+  messagingSenderId: "761749645893",
+  appId: "1:761749645893:web:b320961b1a672c3191d12c"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const dbRef = ref(db, 'zmt_products_dual');
 
-let products = [];
-const ADMIN_1 = "6289653938936";
-const ADMIN_2 = "6285721057014";
+// === GLOBAL HELPERS ===
+window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('-translate-x-full');
+window.showSection = (section) => {
+    document.getElementById('store_section').classList.toggle('hidden', section !== 'store');
+    document.getElementById('event_section').classList.toggle('hidden', section !== 'event');
+    toggleSidebar();
+};
 
-// === FIREBASE SYNC ===
-onValue(dbRef, (snapshot) => {
-    products = snapshot.val() || [];
-    renderProducts();
-    if (!document.getElementById('adminPanelContainer').classList.contains('hidden')) renderAdminUI();
-});
+// === ADMIN AUTH ===
+window.openLogin = async () => {
+    const { value: loginData } = await Swal.fire({
+        title: 'ADMIN LOGIN',
+        background: '#0f172a',
+        color: '#fff',
+        html: `
+            <input id="swal-user" class="swal2-input" placeholder="Username">
+            <input id="swal-pass" type="password" class="swal2-input" placeholder="Password">
+        `,
+        preConfirm: () => [document.getElementById('swal-user').value, document.getElementById('swal-pass').value]
+    });
 
-function save() { set(dbRef, products); }
+    if (loginData) {
+        onValue(ref(db, 'admin'), (snap) => {
+            const data = snap.val();
+            if (loginData[0] === data.user && loginData[1] === data.pass) {
+                document.getElementById('admin_modal').classList.remove('hidden');
+                toggleSidebar();
+            } else {
+                Swal.fire('Gagal', 'Akun tidak valid!', 'error');
+            }
+        }, { onlyOnce: true });
+    }
+};
+window.closeAdmin = () => document.getElementById('admin_modal').classList.add('hidden');
 
-// === CLOCK ===
-setInterval(() => {
-    const now = new Date();
-    document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID');
-    document.getElementById('date').innerText = now.toLocaleDateString('id-ID', {weekday:'short', day:'numeric', month:'short'});
-}, 1000);
+// === CRUD PRODUK ===
+window.saveProduct = () => {
+    const name = document.getElementById('p_name').value;
+    const tag = document.getElementById('p_tag').value;
+    const prices = document.getElementById('p_prices').value;
+    if (name && prices) {
+        push(ref(db, 'products'), { name, tag, prices });
+        Swal.fire('Success', 'Produk Ditambahkan', 'success');
+    }
+};
 
-// === RENDER PRODUK ===
-function renderProducts() {
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = '';
-    const now = new Date().getTime();
+window.deleteProduct = (id) => {
+    Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true }).then(res => {
+        if(res.isConfirmed) remove(ref(db, `products/${id}`));
+    });
+};
 
-    products.forEach(p => {
-        const isPromo = p.timerEnd && now < p.timerEnd;
-        const currentPrice = isPromo ? p.newPrice : p.oldPrice;
+// === SETTINGS & SOSMED ===
+window.updateGeneralSettings = () => {
+    update(ref(db, 'settings'), {
+        wa1: document.getElementById('set_wa1').value,
+        wa2: document.getElementById('set_wa2').value,
+        cs: document.getElementById('set_cs').value
+    });
+    Swal.fire('Updated', 'Link WA & CS Berhasil Disimpan', 'success');
+};
 
-        const card = document.createElement('div');
-        card.className = 'product';
-        card.innerHTML = `
-            <div class="product-name">${p.name}</div>
-            <div class="price-tag">
-                <div class="old-price">Rp ${p.oldPrice.toLocaleString()}</div>
-                <div class="new-price">Rp ${currentPrice.toLocaleString()}</div>
+window.addSosmed = () => {
+    const name = document.getElementById('sm_name').value;
+    const icon = document.getElementById('sm_icon').value;
+    const link = document.getElementById('sm_link').value;
+    push(ref(db, 'sosmed'), { name, icon, link });
+};
+
+window.addEvent = () => {
+    const title = document.getElementById('ev_title').value;
+    const link = document.getElementById('ev_link').value;
+    push(ref(db, 'events'), { title, link });
+};
+
+// === REALTIME RENDERER ===
+onValue(ref(db, '/'), (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    // Render Products
+    const storeBox = document.getElementById('store_section');
+    storeBox.innerHTML = '';
+    for (let id in data.products) {
+        const p = data.products[id];
+        const priceLines = p.prices.split(',').map(l => `
+            <div class="flex justify-between items-center bg-slate-800/50 p-3 rounded-lg border border-slate-700">
+                <span class="text-sm font-bold text-gray-200">${l.trim()}</span>
+                <div class="flex gap-2">
+                    <button onclick="buy('${p.name}', '${l.trim()}', 1)" class="bg-blue-600 p-2 rounded text-[10px] font-black">WA 1</button>
+                    <button onclick="buy('${p.name}', '${l.trim()}', 2)" class="bg-green-600 p-2 rounded text-[10px] font-black">WA 2</button>
+                </div>
             </div>
-            ${isPromo ? `<div class="timer-badge" id="t-${p.id}">⏱️ 00:00:00</div>` : ''}
-            <div class="order-group">
-                <button class="btn-order a1" onclick="window.order('${p.name}', 1)">ADMIN 1</button>
-                <button class="btn-order a2" onclick="window.order('${p.name}', 2)">ADMIN 2</button>
+        `).join('');
+
+        storeBox.innerHTML += `
+            <div class="product-card p-6 rounded-2xl relative">
+                <span class="absolute -top-3 left-4 bg-blue-500 text-[10px] font-black px-3 py-1 rounded-full shadow-lg">${p.tag}</span>
+                <button onclick="deleteProduct('${id}')" class="absolute -top-3 right-4 text-red-500 hover:scale-125 transition admin-only hidden"><i class="fas fa-trash"></i></button>
+                <h3 class="text-xl font-black mb-4 tracking-wide text-blue-400 uppercase">${p.name}</h3>
+                <div class="space-y-2">${priceLines}</div>
             </div>
         `;
-        grid.appendChild(card);
-    });
-}
-
-// === TIMER LOGIC ===
-setInterval(() => {
-    const now = new Date().getTime();
-    products.forEach(p => {
-        if (p.timerEnd && now < p.timerEnd) {
-            const el = document.getElementById(`t-${p.id}`);
-            if (el) {
-                const diff = p.timerEnd - now;
-                const h = Math.floor(diff/3600000).toString().padStart(2,'0');
-                const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-                const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-                el.innerText = `⏱️ ${h}:${m}:${s}`;
-            }
-        }
-    });
-}, 1000);
-
-// === ACTIONS ===
-window.order = (name, target) => {
-    const num = target === 1 ? ADMIN_1 : ADMIN_2;
-    const text = encodeURIComponent(`Halo Admin ${target}, saya mau beli: ${name}`);
-    window.open(`https://wa.me/${num}?text=${text}`, '_blank');
-};
-
-window.addMenu = () => {
-    const n = document.getElementById('inName').value;
-    const p = parseInt(document.getElementById('inPrice').value);
-    if(n && p) {
-        products.push({ id: 'id'+Date.now(), name: n, oldPrice: p, newPrice: p, timerEnd: null });
-        save();
     }
-};
 
-window.delMenu = (id) => { products = products.filter(p => p.id !== id); save(); };
+    // Render Sosmed & Events
+    document.getElementById('sosmed_list').innerHTML = Object.values(data.sosmed || {}).map(s => `
+        <a href="${s.link}" target="_blank" class="nav-link"><i class="${s.icon} w-8"></i> ${s.name}</a>
+    `).join('');
 
-window.setPromo = (id) => {
-    const d = parseInt(document.getElementById(`d-${id}`).value) || 0;
-    const m = parseInt(document.getElementById(`m-${id}`).value) || 0;
-    const p = products.find(x => x.id === id);
-    if(p) {
-        p.newPrice = p.oldPrice - (p.oldPrice * d / 100);
-        p.timerEnd = new Date().getTime() + (m * 60000);
-        save();
-    }
-};
-
-// === ADMIN UI ===
-function renderAdminUI() {
-    const body = document.getElementById('adminPanelBody');
-    body.innerHTML = `
-        <div class="admin-section">
-            <input type="text" id="inName" placeholder="Nama Barang">
-            <input type="number" id="inPrice" placeholder="Harga">
-            <button onclick="window.addMenu()">TAMBAH BARANG</button>
+    document.getElementById('event_list').innerHTML = Object.values(data.events || {}).map(e => `
+        <div class="bg-slate-900 border border-purple-500/30 p-4 rounded-2xl flex justify-between items-center">
+            <span class="font-bold">${e.title}</span>
+            <a href="${e.link}" class="bg-purple-600 px-4 py-2 rounded-lg text-sm font-bold">DOWNLOAD</a>
         </div>
-        <div class="admin-section">
-            ${products.map(p => `
-                <div class="admin-row">
-                    <span>${p.name}</span>
-                    <div>
-                        <input type="number" id="d-${p.id}" placeholder="%" style="width:40px">
-                        <input type="number" id="m-${p.id}" placeholder="Min" style="width:40px">
-                        <button class="admin-btn" onclick="window.setPromo('${p.id}')">SET</button>
-                        <button class="admin-btn" style="background:red" onclick="window.delMenu('${p.id}')">X</button>
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
+    `).join('');
 
-// === LOGIN UI ===
-document.getElementById('adminProfileBtn').onclick = () => document.getElementById('loginModal').classList.remove('hidden');
-document.getElementById('closeModalBtn').onclick = () => document.getElementById('loginModal').classList.add('hidden');
-document.getElementById('loginBtn').onclick = () => {
-    if(document.getElementById('username').value === 'ZeroXitAndro' && document.getElementById('password').value === 'ROBB15') {
-        document.getElementById('loginModal').classList.add('hidden');
-        document.getElementById('adminPanelContainer').classList.remove('hidden');
-        renderAdminUI();
-    }
+    // Set WA & CS Global
+    window.waData = data.settings;
+    document.getElementById('cs_link').href = data.settings.cs;
+});
+
+window.buy = (name, price, waIdx) => {
+    const num = waIdx === 1 ? window.waData.wa1 : window.waData.wa2;
+    const msg = encodeURIComponent(`Halo ZMT Store!\n\nSaya mau order:\n📦 Produk: ${name}\n💳 Paket: ${price}\n\nTolong diproses ya, Admin!`);
+    window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
 };
-document.getElementById('logoutBtn').onclick = () => document.getElementById('adminPanelContainer').classList.add('hidden');
