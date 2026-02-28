@@ -1,20 +1,17 @@
-.nav-btn {
-    @apply flex items-center p-4 rounded-xl text-gray-400 hover:bg-blue-600/10 hover:text-white transition-all font-semibold;
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap');
+
+* {
+    -webkit-tap-highlight-color: transparent; /* NGILANGIN BIRU BASIC GOOGLE */
+    outline: none;
 }
 
-.admin-input {
-    @apply w-full bg-[#1a2233] border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500;
-}
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
 
-#sidebar.show {
-    transform: translateX(0) !important;
-}
+.nav-btn { @apply flex items-center w-full p-4 rounded-2xl text-gray-400 hover:bg-blue-600/10 hover:text-white transition-all font-bold text-left; }
+.admin-input { @apply w-full bg-[#1a2233] border border-white/5 rounded-2xl p-4 text-white focus:border-blue-500 text-sm; }
+.row-in { @apply bg-[#0b0f1a] border border-white/5 rounded-xl p-3 text-xs text-white; }
 
-/* Biar gak bisa scroll pas sidebar buka */
-body.stop-scroll {
-    overflow: hidden;
-}
+.product-card { @apply bg-[#121826] p-6 rounded-[2.5rem] border border-white/5 relative shadow-2xl; }
+.buy-btn { @apply px-3 py-1.5 rounded-xl text-[10px] font-black uppercase active:scale-90 transition; }
 
-.card-product {
-    @apply bg-[#121826] p-5 rounded-3xl border border-white/5 relative;
-}
+#sidebar.show { transform: translateX(0); }

@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-// KONFIGURASI FIREBASE LU
 const firebaseConfig = {
   apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
   authDomain: "zmtstore-92963.firebaseapp.com",
@@ -15,94 +14,84 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- SIDEBAR FIX ---
-window.toggleSidebar = () => {
-    const sb = document.getElementById('sidebar');
-    sb.classList.toggle('show');
-    document.body.classList.toggle('stop-scroll');
-};
-
-window.switchPage = (page) => {
-    document.getElementById('page_home').classList.toggle('hidden', page !== 'home');
-    document.getElementById('page_event').classList.toggle('hidden', page !== 'event');
+// --- NAVIGATION ---
+window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('show');
+window.switchPage = (p) => {
+    document.getElementById('page_home').classList.toggle('hidden', p !== 'home');
+    document.getElementById('page_event').classList.toggle('hidden', p !== 'event');
     window.toggleSidebar();
 };
 
-// --- AUTH ---
+// --- ADMIN LOGIN ---
 window.openAdmin = async () => {
     const { value: login } = await Swal.fire({
-        title: 'ADMIN LOGIN',
-        background: '#121826', color: '#fff',
+        title: 'ADMIN LOGIN', background: '#121826', color: '#fff',
         html: `<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">`,
         preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
     });
-
     if (login) {
-        onValue(ref(db, 'admin'), (snap) => {
-            const a = snap.val();
+        onValue(ref(db, 'admin'), (s) => {
+            const a = s.val();
             if (a && login[0] === a.user && login[1] === a.pass) {
                 document.getElementById('modal_admin').classList.remove('hidden');
-                window.toggleSidebar();
-            } else {
-                Swal.fire('Error', 'Sandi Salah!', 'error');
-            }
+            } else { Swal.fire('Error', 'Sandi Salah!', 'error'); }
         }, { onlyOnce: true });
     }
 };
-
 window.closeAdmin = () => document.getElementById('modal_admin').classList.add('hidden');
 
-// --- DATABASE RENDER ---
-onValue(ref(db, '/'), (snap) => {
-    const data = snap.val();
-    if (!data) return;
+// --- SIMPAN PRODUK (MAKS 5 BARIS) ---
+window.saveProduct = () => {
+    const name = document.getElementById('p_name').value;
+    const tag = document.getElementById('p_tag').value;
+    const dInputs = document.querySelectorAll('.d-in');
+    const pInputs = document.querySelectorAll('.p-in');
+    
+    let pricesArr = [];
+    dInputs.forEach((d, i) => {
+        if(d.value && pInputs[i].value) {
+            pricesArr.push(`${d.value} | ${pInputs[i].value}`);
+        }
+    });
 
-    // Produk
+    if(name && pricesArr.length > 0) {
+        push(ref(db, 'products'), { name, tag, prices: pricesArr.join(',') });
+        Swal.fire('Berhasil', 'Produk masuk toko!', 'success');
+        window.closeAdmin();
+    }
+};
+
+// --- RENDER DATA REALTIME ---
+onValue(ref(db, '/'), (snap) => {
+    const data = snap.val(); if (!data) return;
+    
+    // Render Halaman Utama
     const home = document.getElementById('page_home');
     home.innerHTML = '';
     for (let id in data.products) {
         const p = data.products[id];
-        const prices = p.prices.split(',').map(l => `
-            <div class="flex justify-between items-center bg-black/20 p-3 rounded-xl mb-2">
-                <span class="text-[11px] font-bold">${l.trim()}</span>
+        const list = p.prices.split(',').map(l => `
+            <div class="flex justify-between items-center bg-black/20 p-3 rounded-2xl mb-2 border border-white/5">
+                <span class="text-[11px] font-bold text-gray-300">${l}</span>
                 <div class="flex gap-2">
-                    <button onclick="buy('${p.name}','${l.trim()}',1)" class="bg-blue-600 px-3 py-1 rounded text-[10px] font-bold">WA 1</button>
-                    <button onclick="buy('${p.name}','${l.trim()}',2)" class="bg-green-600 px-3 py-1 rounded text-[10px] font-bold">WA 2</button>
+                    <button onclick="buy('${p.name}','${l}',1)" class="buy-btn bg-blue-600">WA 1</button>
+                    <button onclick="buy('${p.name}','${l}',2)" class="buy-btn bg-green-600">WA 2</button>
                 </div>
             </div>`).join('');
 
         home.innerHTML += `
-            <div class="card-product">
-                <span class="absolute top-3 right-3 bg-blue-500 text-[8px] px-2 py-1 rounded font-black">${p.tag}</span>
-                <h3 class="text-lg font-black text-blue-400 mb-4 uppercase">${p.name}</h3>
-                <div>${prices}</div>
-                <button onclick="delP('${id}')" class="mt-4 text-[9px] text-red-500 opacity-30 hover:opacity-100">Hapus</button>
+            <div class="product-card">
+                <span class="absolute top-4 right-4 bg-blue-600 text-[8px] px-2 py-0.5 rounded-full font-black uppercase">${p.tag}</span>
+                <h3 class="text-xl font-black text-blue-500 mb-4 uppercase italic">${p.name}</h3>
+                <div>${list}</div>
+                <button onclick="delP('${id}')" class="mt-4 text-[9px] text-red-500 opacity-20 hover:opacity-100">Hapus</button>
             </div>`;
     }
-
-    // Sosmed
-    const sos = document.getElementById('sosmed_container');
-    sos.innerHTML = '';
-    for (let id in data.sosmed) {
-        const s = data.sosmed[id];
-        sos.innerHTML += `<a href="${s.link}" target="_blank" class="nav-btn"><i class="${s.icon} w-8"></i> ${s.name}</a>`;
-    }
-
-    window.wa1 = data.settings.wa1;
-    window.wa2 = data.settings.wa2;
     document.getElementById('cs_link').href = data.settings.cs;
 });
 
-window.addProduct = () => {
-    const name = document.getElementById('p_name').value;
-    const tag = document.getElementById('p_tag').value;
-    const prices = document.getElementById('p_prices').value;
-    if(name && prices) push(ref(db, 'products'), { name, tag, prices });
-};
-
 window.delP = (id) => remove(ref(db, `products/${id}`));
-
 window.buy = (n, p, w) => {
-    const num = w === 1 ? window.wa1 : window.wa2;
+    const num = w === 1 ? '6289653938936' : '6285721057014';
     window.open(`https://wa.me/${num}?text=Order%20${n}%20 Paket%20${p}`, '_blank');
 };
