@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
+// KONFIGURASI FIREBASE LU
 const firebaseConfig = {
   apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
   authDomain: "zmtstore-92963.firebaseapp.com",
@@ -8,17 +9,17 @@ const firebaseConfig = {
   projectId: "zmtstore-92963",
   storageBucket: "zmtstore-92963.firebasestorage.app",
   messagingSenderId: "761749645893",
-  appId: "1:761749645893:web:b320961b1a672c3191d12c",
-  measurementId: "G-9VZQ2HWX50"
+  appId: "1:761749645893:web:b320961b1a672c3191d12c"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- NAVIGASI ---
+// --- SIDEBAR FIX ---
 window.toggleSidebar = () => {
     const sb = document.getElementById('sidebar');
-    sb.classList.toggle('-translate-x-full');
+    sb.classList.toggle('show');
+    document.body.classList.toggle('stop-scroll');
 };
 
 window.switchPage = (page) => {
@@ -27,26 +28,23 @@ window.switchPage = (page) => {
     window.toggleSidebar();
 };
 
-// --- AUTH ADMIN ---
+// --- AUTH ---
 window.openAdmin = async () => {
     const { value: login } = await Swal.fire({
-        title: 'VERIFIKASI ADMIN',
+        title: 'ADMIN LOGIN',
         background: '#121826', color: '#fff',
-        html: `
-            <input id="u" class="swal2-input" placeholder="User">
-            <input id="p" type="password" class="swal2-input" placeholder="Pass">
-        `,
+        html: `<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">`,
         preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
     });
 
     if (login) {
         onValue(ref(db, 'admin'), (snap) => {
             const a = snap.val();
-            if (login[0] === a.user && login[1] === a.pass) {
+            if (a && login[0] === a.user && login[1] === a.pass) {
                 document.getElementById('modal_admin').classList.remove('hidden');
                 window.toggleSidebar();
             } else {
-                Swal.fire('Gagal', 'Akses Ditolak!', 'error');
+                Swal.fire('Error', 'Sandi Salah!', 'error');
             }
         }, { onlyOnce: true });
     }
@@ -54,55 +52,47 @@ window.openAdmin = async () => {
 
 window.closeAdmin = () => document.getElementById('modal_admin').classList.add('hidden');
 
-// --- DATABASE CORE ---
+// --- DATABASE RENDER ---
 onValue(ref(db, '/'), (snap) => {
     const data = snap.val();
     if (!data) return;
 
-    // Render Produk
+    // Produk
     const home = document.getElementById('page_home');
     home.innerHTML = '';
     for (let id in data.products) {
         const p = data.products[id];
         const prices = p.prices.split(',').map(l => `
-            <div class="flex justify-between items-center bg-black/30 p-3 rounded-2xl mb-2 border border-white/5">
-                <span class="text-xs font-bold">${l.trim()}</span>
+            <div class="flex justify-between items-center bg-black/20 p-3 rounded-xl mb-2">
+                <span class="text-[11px] font-bold">${l.trim()}</span>
                 <div class="flex gap-2">
-                    <button onclick="buy('${p.name}','${l.trim()}',1)" class="bg-blue-600 px-3 py-1 rounded-lg text-[10px] font-black">WA 1</button>
-                    <button onclick="buy('${p.name}','${l.trim()}',2)" class="bg-green-600 px-3 py-1 rounded-lg text-[10px] font-black">WA 2</button>
+                    <button onclick="buy('${p.name}','${l.trim()}',1)" class="bg-blue-600 px-3 py-1 rounded text-[10px] font-bold">WA 1</button>
+                    <button onclick="buy('${p.name}','${l.trim()}',2)" class="bg-green-600 px-3 py-1 rounded text-[10px] font-bold">WA 2</button>
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
 
         home.innerHTML += `
             <div class="card-product">
-                <span class="absolute top-4 right-4 bg-blue-500 text-[9px] px-3 py-1 rounded-full font-black">${p.tag}</span>
-                <h3 class="text-xl font-black text-blue-500 mb-6 uppercase tracking-wider">${p.name}</h3>
+                <span class="absolute top-3 right-3 bg-blue-500 text-[8px] px-2 py-1 rounded font-black">${p.tag}</span>
+                <h3 class="text-lg font-black text-blue-400 mb-4 uppercase">${p.name}</h3>
                 <div>${prices}</div>
-                <button onclick="delP('${id}')" class="mt-4 text-red-500 text-[10px] opacity-20 hover:opacity-100 transition">Hapus Produk</button>
-            </div>
-        `;
+                <button onclick="delP('${id}')" class="mt-4 text-[9px] text-red-500 opacity-30 hover:opacity-100">Hapus</button>
+            </div>`;
     }
 
-    // Render Sosmed
-    const sosContainer = document.getElementById('sosmed_container');
-    sosContainer.innerHTML = '';
+    // Sosmed
+    const sos = document.getElementById('sosmed_container');
+    sos.innerHTML = '';
     for (let id in data.sosmed) {
         const s = data.sosmed[id];
-        sosContainer.innerHTML += `
-            <a href="${s.link}" target="_blank" class="nav-item">
-                <i class="${s.icon} w-8"></i> ${s.name}
-            </a>
-        `;
+        sos.innerHTML += `<a href="${s.link}" target="_blank" class="nav-btn"><i class="${s.icon} w-8"></i> ${s.name}</a>`;
     }
 
-    // Set WA Global
     window.wa1 = data.settings.wa1;
     window.wa2 = data.settings.wa2;
     document.getElementById('cs_link').href = data.settings.cs;
 });
 
-// --- ADMIN ACTIONS ---
 window.addProduct = () => {
     const name = document.getElementById('p_name').value;
     const tag = document.getElementById('p_tag').value;
@@ -110,17 +100,9 @@ window.addProduct = () => {
     if(name && prices) push(ref(db, 'products'), { name, tag, prices });
 };
 
-window.addSosmed = () => {
-    const name = document.getElementById('sm_name').value;
-    const icon = document.getElementById('sm_icon').value;
-    const link = document.getElementById('sm_link').value;
-    if(name && link) push(ref(db, 'sosmed'), { name, icon, link });
-};
-
 window.delP = (id) => remove(ref(db, `products/${id}`));
 
 window.buy = (n, p, w) => {
     const num = w === 1 ? window.wa1 : window.wa2;
-    const text = encodeURIComponent(`Halo ZMT Store!\nOrder: ${n}\nPaket: ${p}`);
-    window.open(`https://wa.me/${num}?text=${text}`, '_blank');
+    window.open(`https://wa.me/${num}?text=Order%20${n}%20 Paket%20${p}`, '_blank');
 };
