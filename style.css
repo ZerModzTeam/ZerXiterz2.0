@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap');
 
 * {
     -webkit-tap-highlight-color: transparent;
@@ -7,25 +7,35 @@
     box-sizing: border-box;
 }
 
-body { font-family: 'Plus Jakarta Sans', sans-serif; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #05070a; scroll-behavior: smooth; }
 
-.nav-item { @apply flex items-center w-full p-4 rounded-full text-gray-500 font-bold transition-all text-left; }
-.nav-item.active { @apply bg-blue-500/10 text-blue-400 border border-blue-500/20; }
+/* NAV BUTTONS VERTICAL */
+.nav-btn {
+    @apply flex items-center gap-5 w-full p-4 rounded-full text-gray-400 font-bold transition-all text-left border border-transparent active:scale-95;
+}
+.nav-btn.active { @apply bg-blue-600/10 text-blue-400 border-blue-500/10; }
+.nav-btn i { @apply text-xl w-6 flex justify-center; }
 
-.adm-in { @apply w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-white focus:border-blue-500 text-sm; }
-.row-in { @apply bg-black/40 border border-white/5 rounded-2xl p-3 text-xs text-white; }
+/* INPUT ADMIN */
+.adm-in { @apply w-full bg-black/40 border border-white/5 rounded-2xl p-4 text-white focus:border-blue-500 text-sm transition-all; }
+.row-in { @apply bg-black/40 border border-white/5 rounded-2xl p-3 text-xs text-white text-center; }
 
+/* PRODUCT CARDS */
 .card-z {
     background: linear-gradient(145deg, #0f172a, #080b12);
-    @apply p-6 rounded-[2.5rem] border border-white/5 relative shadow-xl mb-6;
+    @apply p-6 rounded-[2.5rem] border border-white/5 relative shadow-2xl mb-6;
 }
 
-.price-box { @apply bg-white/5 p-4 rounded-[2rem] mb-3 border border-white/5; }
+.price-box { @apply bg-white/5 p-5 rounded-[2.5rem] mb-4 border border-white/10; }
 
+/* BUY BUTTONS (KAPSUL) */
 .btn-buy {
-    @apply w-full py-3.5 rounded-full text-[11px] font-black uppercase flex items-center justify-center gap-3 transition-all active:scale-95 text-white;
+    @apply w-full py-3.5 rounded-full text-[10px] font-black uppercase flex items-center justify-center gap-3 transition-all active:scale-95 text-white shadow-md;
 }
-.btn-wa1 { background: rgba(37, 99, 235, 0.8); }
-.btn-wa2 { background: rgba(22, 163, 74, 0.8); }
+.btn-wa1 { background: linear-gradient(to right, #2563eb, #1d4ed8); }
+.btn-wa2 { background: linear-gradient(to right, #16a34a, #15803d); }
 
+/* ANIMATION */
 #sidebar.show { transform: translateX(0); }
+.animate-in { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
