@@ -16,88 +16,83 @@
             <i class="fas fa-bars-staggered"></i>
         </button>
         <h1 class="logo">ZMT STORE</h1>
-        <div id="admin_tag" class="admin-icon hidden"><i class="fas fa-user-shield"></i></div>
+        <div id="admin_tag" class="admin-icon-tag hidden"><i class="fas fa-user-shield"></i></div>
         <div class="spacer"></div>
     </header>
 
     <div id="sidebar" class="sidebar">
         <div class="sidebar-content">
             <div class="sidebar-top">
-                <span class="nav-title">NAVIGATOR</span>
-                <button onclick="toggleSidebar()" class="close-sidebar"><i class="fas fa-times"></i></button>
+                <span class="nav-label">NAVIGATOR</span>
+                <i onclick="toggleSidebar()" class="fas fa-times close-icon"></i>
             </div>
             
-            <nav class="menu-list">
-                <button onclick="switchPage('home')" class="menu-item active">
+            <nav class="nav-list">
+                <button onclick="switchPage('home')" class="nav-item active">
                     <i class="fas fa-home"></i> <span>Toko Utama</span>
                 </button>
-                <button onclick="switchPage('event')" class="menu-item">
+                <button onclick="switchPage('event')" class="nav-item">
                     <i class="fas fa-bolt"></i> <span>Event Gratis</span>
                 </button>
-                <a href="https://wa.me/6289653938936" class="menu-item">
-                    <i class="fab fa-whatsapp"></i> <span>Customer Service</span>
+                <a href="https://wa.me/6289653938936" class="nav-item">
+                    <i class="fab fa-whatsapp"></i> <span>CS Admin</span>
                 </a>
             </nav>
 
-            <div class="sidebar-bottom">
-                <button id="lgn_btn" onclick="openAdmin()" class="auth-btn login">LOGIN ADMIN</button>
-                <button id="lgt_btn" onclick="logoutAdmin()" class="auth-btn logout hidden">LOGOUT AKUN</button>
+            <div class="sidebar-footer">
+                <button id="lgn_btn" onclick="openAdmin()" class="auth-btn login-btn">LOGIN ADMIN</button>
+                <button id="lgt_btn" onclick="logoutAdmin()" class="auth-btn logout-btn hidden">LOGOUT AKUN</button>
             </div>
         </div>
     </div>
 
     <main class="container">
-        <div class="qris-section">
-            <div onclick="zoomQR()" class="qris-card">
+        <div class="qris-box">
+            <div onclick="zoomQR()" class="qris-frame">
                 <img src="qris_clean.png" alt="QRIS" class="qris-img">
             </div>
-            <h2 class="qris-text">CLICK TO PAYMENT</h2>
-            <p class="qris-subtext">DIGITAL PAYMENT ZMT</p>
+            <h2 class="qris-title">CLICK TO PAYMENT</h2>
+            <p class="qris-sub">DIGITAL PAYMENT ZMT</p>
         </div>
 
         <button onclick="showRules()" class="rules-btn">
             <i class="fas fa-scroll"></i> RULES PAYMENT
         </button>
 
-        <div id="page_home" class="product-container">
-            </div>
-
-        <div id="page_event" class="event-empty hidden">
-            BELUM ADA EVENT LEK...
-        </div>
+        <div id="page_home" class="product-feed"></div>
+        <div id="page_event" class="hidden empty-state">BELUM ADA EVENT...</div>
     </main>
 
-    <div id="modal_admin" class="modal hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>ADMIN CONSOLE</h3>
-                <button onclick="closeAdmin()"><i class="fas fa-times"></i></button>
+    <div id="modal_admin" class="modal">
+        <div class="modal-card">
+            <div class="modal-head">
+                <span class="modal-title italic">ADMIN CONSOLE</span>
+                <i onclick="closeAdmin()" class="fas fa-times"></i>
             </div>
             
             <div class="admin-form">
-                <div class="row-input">
-                    <input type="text" id="p_name" placeholder="Nama Produk" class="capsule-in">
-                    <select id="p_tag" class="capsule-in">
+                <div class="input-row">
+                    <input type="text" id="p_name" placeholder="Nama Produk" class="capsule-input">
+                    <select id="p_tag" class="capsule-input">
                         <option value="ROOT/VIRTUAL">ROOT</option>
                         <option value="NO ROOT">NO ROOT</option>
                     </select>
                 </div>
 
-                <div class="price-list" id="price_fields">
-                    <div class="row-input">
-                        <input type="text" placeholder="Durasi" class="capsule-in d-in">
-                        <input type="text" placeholder="Harga" class="capsule-in p-in">
+                <div id="price_fields">
+                    <div class="input-row">
+                        <input type="text" placeholder="Durasi" class="capsule-input d-in">
+                        <input type="text" placeholder="Harga" class="capsule-input p-in">
                     </div>
-                    <div class="row-input">
-                        <input type="text" placeholder="Durasi" class="capsule-in d-in">
-                        <input type="text" placeholder="Harga" class="capsule-in p-in">
+                    <div class="input-row">
+                        <input type="text" placeholder="Durasi" class="capsule-input d-in">
+                        <input type="text" placeholder="Harga" class="capsule-input p-in">
                     </div>
                 </div>
 
                 <button onclick="saveP()" class="upload-btn">UPLOAD PRODUK</button>
                 
-                <div id="admin_list" class="manage-list">
-                    </div>
+                <div id="admin_list" class="manage-list"></div>
             </div>
         </div>
     </div>
