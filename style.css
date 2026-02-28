@@ -1,163 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
 
-/* Reset & Global */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-}
+* { -webkit-tap-highlight-color: transparent; user-select: none; outline: none; margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #05070a; color: white; }
 
-body { 
-    background: #05070a; 
-    color: white; 
-    user-select: none;
-    overflow-x: hidden;
-}
+/* ANIMASI BINTANG */
+.stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
+#stars, #stars2, #stars3 { background: transparent; position: absolute; top: 0; left: 0; right: 0; bottom: 0; animation: animStar 100s linear infinite; }
+#stars { width: 1px; height: 1px; box-shadow: 1744px 113px #FFF , 113px 1438px #FFF, 150px 200px #FFF, 800px 900px #FFF, 500px 100px #FFF, 1200px 600px #FFF; }
+#stars2 { width: 2px; height: 2px; box-shadow: 500px 200px #FFF, 1000px 800px #FFF, 200px 1400px #FFF; animation-duration: 150s; }
+@keyframes animStar { from { transform: translateY(0px); } to { transform: translateY(-2000px); } }
 
-/* --- SIDEBAR FULL KAPSUL --- */
-#sidebar {
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* SIDEBAR FIX */
+#sidebar.active { transform: translateX(0); }
 
-/* Tombol Navigasi di Sidebar (Sejajar Vertikal & Kapsul) */
-.nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    width: 100%;
-    padding: 16px 25px;
-    margin-bottom: 12px;
-    border-radius: 9999px; /* FIX: FULL KAPSUL */
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: #94a3b8;
-    font-weight: 700;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
+/* KAPSUL UI */
+.nav-btn { @apply flex items-center gap-4 w-full p-4 rounded-full text-gray-400 font-bold transition-all border border-transparent active:scale-95 mb-2; background: rgba(255, 255, 255, 0.03); }
+.nav-btn.active { background: rgba(37, 99, 235, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+.admin-kapsul { @apply w-full py-4 rounded-full font-black text-[10px] tracking-widest uppercase border border-white/5 active:scale-95; }
+.tab-btn { @apply flex-1 py-3 text-[10px] font-black rounded-full transition-all uppercase; }
+.kapsul-in { @apply w-full bg-black/60 border border-white/10 rounded-full p-4 text-white focus:border-blue-500 text-sm mb-3; }
+.row-in { @apply bg-black/60 border border-white/10 rounded-full p-3 text-xs text-center; }
+.btn-rules { @apply w-full py-4 bg-red-600/10 border border-red-500/20 rounded-full text-red-500 font-black text-[10px] tracking-widest uppercase mb-10; }
+.qris-frame { @apply inline-block p-2 bg-white rounded-[2.5rem] shadow-2xl cursor-pointer active:scale-95; }
 
-.nav-btn.active {
-    background: rgba(37, 99, 235, 0.15);
-    color: #60a5fa;
-    border-color: rgba(59, 130, 246, 0.3);
-}
-
-.nav-btn i {
-    width: 20px;
-    text-align: center;
-    font-size: 18px;
-}
-
-/* --- TOMBOL LOGIN/LOGOUT TERPISAH --- */
-.admin-btn-kapsul {
-    width: 100%;
-    padding: 15px;
-    border-radius: 9999px; /* FIX: FULL KAPSUL */
-    font-weight: 800;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-
-/* --- ADMIN PANEL ELEMENTS --- */
-.kapsul-in {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 9999px; /* FIX: INPUT KAPSUL */
-    padding: 15px 25px;
-    color: white;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.row-in {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 9999px; /* FIX: ROW INPUT KAPSUL */
-    padding: 12px;
-    color: white;
-    font-size: 12px;
-    text-align: center;
-}
-
-/* --- PRODUCT DESIGN --- */
-.card-z {
-    background: linear-gradient(145deg, #0f172a, #080b12);
-    border-radius: 45px; /* Super Rounded untuk Card */
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    margin-bottom: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.price-box {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 35px; /* Rounded Dalam */
-    padding: 25px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Teks Durasi/Harga (Gedein dikit biar jelas) */
-.price-tag {
-    display: block;
-    text-align: center;
-    font-weight: 800;
-    font-size: 15px; /* FIX: LEBIH GEDE */
-    color: #60a5fa;
-    margin-bottom: 15px;
-    letter-spacing: 1px;
-    font-style: italic;
-}
-
-/* --- TOMBOL BELI (KAPSUL MODERN) --- */
-.btn-buy {
-    width: 100%;
-    padding: 14px;
-    border-radius: 9999px; /* FIX: TOMBOL BELI KAPSUL */
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-bottom: 10px;
-    color: white;
-    border: none;
-}
-
-.btn-wa1 { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-.btn-wa2 { background: linear-gradient(135deg, #16a34a, #15803d); }
-
-.btn-buy:active { transform: scale(0.92); }
-
-/* Tombol Rules (Kapsul Merah) */
-.btn-rules {
-    width: 100%;
-    padding: 14px;
-    border-radius: 9999px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #f87171;
-    font-weight: 800;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 40px;
-}
-
-/* QRIS Frame */
-.qris-frame {
-    background: white;
-    padding: 12px;
-    border-radius: 40px; /* Kapsul Frame */
-    display: inline-block;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-}
+/* PRODUCT CARD */
+.card-z { background: rgba(15, 23, 42, 0.8); backdrop-blur: 10px; @apply p-8 rounded-[3.5rem] border border-white/5 shadow-2xl mb-8; }
+.price-item { @apply bg-white/5 p-6 rounded-[2.5rem] mb-4 border border-white/5; }
+.btn-buy { @apply w-full py-4 rounded-full text-[10px] font-black uppercase flex items-center justify-center gap-3 transition-all active:scale-95 text-white mb-2; }
+.btn-wa1 { background: linear-gradient(to right, #2563eb, #1d4ed8); }
+.btn-wa2 { background: linear-gradient(to right, #16a34a, #15803d); }
