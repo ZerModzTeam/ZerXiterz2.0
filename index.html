@@ -3,80 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE - VVIP KAPSUL</title>
+    <title>ZMT STORE - VVIP</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-[#05070a] text-white">
 
     <div class="stars-wrapper" id="starField"></div>
 
-    <header class="navbar-top">
-        <button onclick="toggleSidebar()" class="hamburger-btn">
+    <header class="navbar-vvip">
+        <button onclick="toggleSidebar()" class="btn-burger">
             <i class="fas fa-bars-staggered text-blue-400 text-xl"></i>
         </button>
-        <h1 class="logo-text">ZMT STORE</h1>
-        <div id="admin_tag" class="hidden text-red-500 w-12 text-center animate-pulse">
-            <i class="fas fa-user-shield text-xl"></i>
-        </div>
+        <h1 class="logo-vvip">ZMT STORE</h1>
+        <div id="admin_tag" class="hidden text-red-500 w-12 text-center animate-pulse"><i class="fas fa-user-shield text-xl"></i></div>
         <div id="spacer" class="w-12"></div>
     </header>
 
-    <div id="sidebar" class="sidebar-main">
-        <div class="sidebar-content">
+    <div id="sidebar" class="sidebar-vvip">
+        <div class="sidebar-inner">
             <div class="sidebar-header">
-                <span class="nav-title">Menu Utama</span>
-                <button onclick="toggleSidebar()"><i class="fas fa-times text-2xl text-gray-500"></i></button>
+                <span class="nav-label">NAVIGATOR</span>
+                <button onclick="toggleSidebar()"><i class="fas fa-times text-xl text-gray-500"></i></button>
             </div>
             
-            <nav class="nav-list">
-                <button onclick="switchPage('home')" class="nav-item active"><i class="fas fa-home"></i> <span>Home</span></button>
-                <button onclick="switchPage('event')" class="nav-item"><i class="fas fa-bolt text-yellow-500"></i> <span>Event</span></button>
-                <a href="https://wa.me/6289653938936" class="nav-item"><i class="fab fa-whatsapp text-green-500"></i> <span>WhatsApp Admin</span></a>
+            <nav class="nav-menu">
+                <button onclick="switchPage('home')" class="nav-kapsul active"><i class="fas fa-home"></i> <span>Toko Utama</span></button>
+                <button onclick="switchPage('event')" class="nav-kapsul"><i class="fas fa-bolt text-yellow-400"></i> <span>Event Gratis</span></button>
+                <a href="https://wa.me/6289653938936" class="nav-kapsul"><i class="fab fa-whatsapp text-green-500"></i> <span>Customer Service</span></a>
             </nav>
 
             <div class="sidebar-footer">
-                <button id="lgn_btn" onclick="openAdmin()" class="btn-admin-access login">LOGIN ADMIN</button>
-                <button id="lgt_btn" onclick="logoutAdmin()" class="hidden btn-admin-access logout">LOGOUT</button>
+                <button id="lgn_btn" onclick="openAdmin()" class="btn-admin-kapsul login">LOGIN ADMIN</button>
+                <button id="lgt_btn" onclick="logoutAdmin()" class="hidden btn-admin-kapsul logout">LOGOUT AKUN</button>
             </div>
         </div>
     </div>
 
-    <main class="content-area">
-        <div class="qris-section">
-            <div onclick="zoomQR()" class="qris-box">
+    <main class="main-container">
+        <div class="qris-area">
+            <div onclick="zoomQR()" class="qris-frame">
                 <img src="qris_clean.png" class="qris-img">
             </div>
-            <p class="qris-hint">SCAN TO PAYMENT</p>
+            <p class="click-hint">CLICK TO PAYMENT</p>
+            <p class="sub-hint italic">DIGITAL PAYMENT ZMT</p>
         </div>
 
-        <button onclick="showRules()" class="btn-rules">
+        <button onclick="showRules()" class="btn-rules-kapsul">
             <i class="fas fa-scroll mr-2"></i> Rules Payment
         </button>
 
-        <div id="page_home" class="product-grid"></div>
-        <div id="page_event" class="hidden empty-state">Belum ada event lek...</div>
+        <div id="page_home" class="space-y-10"></div>
+        <div id="page_event" class="hidden text-center py-20 opacity-30 text-xs font-bold tracking-[0.5em]">BELUM ADA EVENT</div>
     </main>
 
-    <div id="modal_admin" class="modal-backdrop hidden">
+    <div id="modal_admin" class="modal-vvip hidden">
         <div class="modal-card">
-            <div class="modal-header">
-                <h3>ADMIN PANEL</h3>
+            <div class="modal-head">
+                <h3 class="italic font-black text-blue-500">ADMIN CONSOLE</h3>
                 <button onclick="closeAdmin()"><i class="fas fa-times"></i></button>
             </div>
+            <div class="modal-tabs">
+                <button class="tab-kapsul active">PRODUK</button>
+                <button class="tab-kapsul">EVENT</button>
+            </div>
             <div class="modal-body">
-                <input type="text" id="p_name" placeholder="Nama Produk" class="input-kapsul">
-                <select id="p_tag" class="input-kapsul">
-                    <option value="ROOT/VIRTUAL">ROOT/VIRTUAL</option>
-                    <option value="NO ROOT">NO ROOT</option>
-                </select>
-                <div class="grid-inputs">
-                    <input type="text" id="p_day" placeholder="Durasi (Day)" class="input-kapsul">
-                    <input type="text" id="p_price" placeholder="Harga (K)" class="input-kapsul">
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <input type="text" id="p_name" placeholder="Nama Produk" class="in-kapsul">
+                    <select id="p_tag" class="in-kapsul">
+                        <option value="ROOT/VIRTUAL">ROOT</option>
+                        <option value="NO ROOT">NO ROOT</option>
+                    </select>
                 </div>
-                <button onclick="saveP()" class="btn-save">UPLOAD PRODUK</button>
-                <div id="admin_list" class="manage-list"></div>
+                <div class="price-inputs-container space-y-2" id="price_fields">
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="Durasi" class="in-kapsul-half d-in">
+                        <input type="text" placeholder="Harga" class="in-kapsul-half p-in">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="Durasi" class="in-kapsul-half d-in">
+                        <input type="text" placeholder="Harga" class="in-kapsul-half p-in">
+                    </div>
+                </div>
+                <button onclick="saveP()" class="btn-upload-kapsul">UPLOAD PRODUK</button>
+                <div id="admin_list" class="mt-6 space-y-2 max-h-40 overflow-y-auto"></div>
             </div>
         </div>
     </div>
