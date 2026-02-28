@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE V3.6 - FIX DASHBOARD</title>
+    <title>ZMT STORE V3.7</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -39,10 +39,10 @@
         .qris-img { width: 190px; height: 190px; border-radius: 30px; display: block; }
         .rules-btn { width: 100%; padding: 18px; border-radius: 50px; background: #ef44441a; border: 1px solid #ef444433; color: #ef4444; font-weight: 900; margin: 25px 0; cursor: pointer; }
 
-        .p-card { background: rgba(15, 23, 42, 0.6); border-radius: 50px; padding: 35px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; }
-        .p-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
-        .p-name { font-size: 26px; font-style: italic; font-weight: 900; text-transform: uppercase; line-height: 1.1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; flex: 1; }
-        .p-tag { color: #3b82f6; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; background: #3b82f61a; padding: 5px 12px; border-radius: 20px; border: 1px solid #3b82f633; white-space: nowrap; }
+        .p-card { background: rgba(15, 23, 42, 0.6); border-radius: 50px; padding: 35px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; position: relative; overflow: hidden; }
+        .p-header { margin-bottom: 25px; padding-right: 80px; } /* Ruang buat tag */
+        .p-name { font-size: 24px; font-style: italic; font-weight: 900; text-transform: uppercase; line-height: 1.2; color: #fff; }
+        .p-tag { position: absolute; top: 35px; right: 25px; color: #3b82f6; font-size: 8px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; background: #3b82f61a; padding: 4px 10px; border-radius: 20px; border: 1px solid #3b82f633; white-space: nowrap; }
         
         .price-box { background: rgba(255,255,255,0.03); border-radius: 40px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; text-align: center; }
         .buy-btn { width: 100%; padding: 12px; border-radius: 50px; border: none; color: white; font-weight: 800; font-size: 11px; margin-top: 5px; cursor: pointer; }
@@ -64,7 +64,7 @@
         .photo-rules li { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 10px; font-style: italic; }
     </style>
 </head>
-<body>
+<body> 
 
     <div id="starField"></div>
 
@@ -84,7 +84,7 @@
             <nav>
                 <div onclick="switchPage('home')" class="nav-item active" id="nav_home"><i class="fas fa-home"></i> Home</div>
                 <div onclick="switchPage('event')" class="nav-item" id="nav_event"><i class="fas fa-bolt"></i> Event Gratis</div>
-                <a href="https://chat.whatsapp.com/JBW6fNk5KwiGRWCaPVmr8T" target="_blank" class="nav-item" style="text-decoration:none">
+                <a href="https://chat.whatsapp.com/JBW6fNk5KwiGRWCaPVmr8T" target="_blank" class="nav-item">
                     <i class="fab fa-whatsapp"></i> CUSTOMER SERVICE
                 </a>
                 <div id="dash_nav" onclick="openAdmin()" class="nav-item hidden" style="color:#fbbf24!important"><i class="fas fa-tools"></i> Dashboard Admin</div>
@@ -123,11 +123,11 @@
     <div id="modal_adm" class="modal">
         <div class="modal-card">
             <div style="display:flex; justify-content:space-between; margin-bottom:25px; color:#3b82f6; font-weight:800">
-                <span id="form_title">DASHBOARD ADMIN</span>
+                <span>DASHBOARD ADMIN</span>
                 <i onclick="closeAdmin()" class="fas fa-times" style="cursor:pointer"></i>
             </div>
             
-            <p style="font-size:10px; color:#3b82f6; margin-bottom:10px">UPLOAD PRODUK</p>
+            <p style="font-size:10px; color:#3b82f6; margin-bottom:10px">PRODUK CHEAT</p>
             <input type="hidden" id="edit_id">
             <div class="row-in">
                 <input type="text" id="p_name" placeholder="Nama Cheat" class="cap-in">
@@ -140,15 +140,17 @@
                 <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
                 <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
                 <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
+                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
+                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
             </div>
             <button onclick="saveP()" id="save_p_btn" class="up-btn">UPLOAD PRODUK</button>
 
             <hr style="margin:30px 0; border:none; border-top:1px solid #222">
             
-            <p style="font-size:10px; color:#10b981; margin-bottom:10px">SETTING EVENT GRATIS</p>
+            <p style="font-size:10px; color:#10b981; margin-bottom:10px">EVENT GRATIS</p>
             <input type="hidden" id="ev_edit_id">
             <input type="text" id="ev_title" placeholder="Judul Event" class="cap-in">
-            <input type="text" id="ev_link" placeholder="Link (https://...)" class="cap-in">
+            <input type="text" id="ev_link" placeholder="Link Link (https://...)" class="cap-in">
             <button onclick="saveEv()" id="save_ev_btn" class="up-btn" style="background:#10b981">UPDATE EVENT</button>
 
             <div id="manage_list_p" style="margin-top:30px"></div>
@@ -163,9 +165,9 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let isAdmin = localStorage.getItem('zmt_v36') === 'true';
+        let isAdmin = localStorage.getItem('zmt_v37') === 'true';
 
-        // Stars Background
+        // Stars
         const field = document.getElementById('starField');
         for(let i=0; i<80; i++) {
             let s = document.createElement('div');
@@ -189,7 +191,7 @@
             const input = document.getElementById('searchInput').value.toUpperCase();
             const cards = document.getElementsByClassName('p-card');
             for (let i = 0; i < cards.length; i++) {
-                const name = cards[i].getElementsByClassName('p-name')[0];
+                const name = cards[i].querySelector('.p-name');
                 if (name) cards[i].style.display = name.innerText.toUpperCase().indexOf(input) > -1 ? "" : "none";
             }
         };
@@ -208,16 +210,14 @@
                 html: '<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">',
                 preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
             });
-            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v36', 'true'); location.reload(); }
+            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v37', 'true'); location.reload(); }
         };
 
-        window.logout = () => { localStorage.removeItem('zmt_v36'); location.reload(); };
+        window.logout = () => { localStorage.removeItem('zmt_v37'); location.reload(); };
 
-        // Product Logic
         window.saveP = () => {
             const id = document.getElementById('edit_id').value;
-            const name = document.getElementById('p_name').value;
-            const tag = document.getElementById('p_tag').value;
+            const name = document.getElementById('p_name').value, tag = document.getElementById('p_tag').value;
             const durs = document.querySelectorAll('.d-in'), prcs = document.querySelectorAll('.p-in');
             let prices = [];
             durs.forEach((d, i) => { if(d.value) prices.push(`${d.value} Day | ${prcs[i].value}K`); });
@@ -235,7 +235,6 @@
             document.getElementById('save_p_btn').innerText = "UPDATE PRODUK";
         };
 
-        // Event Logic
         window.saveEv = () => {
             const id = document.getElementById('ev_edit_id').value;
             const title = document.getElementById('ev_title').value, link = document.getElementById('ev_link').value;
@@ -257,7 +256,6 @@
             document.getElementById('save_p_btn').innerText = "UPLOAD PRODUK"; document.getElementById('save_ev_btn').innerText = "UPDATE EVENT";
         }
 
-        // Database Sync
         db.ref('products').on('value', snap => {
             const list = document.getElementById('product_list'), mList = document.getElementById('manage_list_p');
             list.innerHTML = ''; mList.innerHTML = '';
@@ -268,7 +266,7 @@
                         <div style="display:flex; gap:10px; margin-top:10px;"><button onclick="window.open('https://wa.me/6289653938936?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#2563eb">WA 1</button>
                         <button onclick="window.open('https://wa.me/6285721057014?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#10b981">WA 2</button></div></div>`;
                 });
-                list.innerHTML += `<div class="p-card"><div class="p-header"><h1 class="p-name">${item.name}</h1><span class="p-tag">${item.tag}</span></div>${p_html}</div>`;
+                list.innerHTML += `<div class="p-card"><span class="p-tag">${item.tag}</span><div class="p-header"><h1 class="p-name">${item.name}</h1></div>${p_html}</div>`;
                 if(isAdmin) mList.innerHTML += `<div class="manage-item"><span>${item.name}</span><div style="display:flex; gap:10px"><i onclick="editP('${child.key}','${item.name}','${item.tag}','${item.prices}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('products/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
             });
         });
@@ -279,4 +277,29 @@
             snap.forEach(child => {
                 const ev = child.val();
                 evPage.innerHTML += `<div onclick="window.open('${ev.link}')" class="p-card" style="text-align:center; cursor:pointer; background:rgba(16,185,129,0.1); border-color:#10b98133;"><h2 style="color:#10b981; font-style:italic;">${ev.title}</h2><p style="font-size:10px; margin-top:10px; opacity:0.5;">CLICK TO OPEN LINK</p></div>`;
-                if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px"><i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('events/${child.key}').remove
+                if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px"><i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('events/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
+            });
+        });
+
+        window.zoomQR = () => Swal.fire({ imageUrl: 'qris_clean.png', imageWidth: 400, background: '#0f172a', confirmButtonText: 'OK', confirmButtonColor: '#ef4444' });
+        
+        window.showRules = () => Swal.fire({
+            background: '#0f172a', color: '#fff', confirmButtonText: 'OK', confirmButtonColor: '#ef4444',
+            html: `
+                <div class="photo-rules">
+                    <div class="title">RULES TF</div>
+                    <div class="hangus">TIDAK MENGIKUTI = HANGUS</div>
+                    <ul>
+                        <li>+ BAYAR SESUAI NOMINAL</li>
+                        <li>+ CEK DETAIL</li>
+                        <li>+ KLIK BELI PADA PRODUK</li>
+                        <li>+ KIRIM BUKTI TF</li>
+                        <li>+ KIRIM DETAIL MAU MOD APA</li>
+                        <li>+ DAN ADMIN AUTO SEN DATA</li>
+                    </ul>
+                </div>
+            `
+        });
+    </script>
+</body>
+</html>
