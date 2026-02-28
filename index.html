@@ -3,86 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE | OFFICIAL</title>
+    <title>ZMT STORE</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-[#050811] text-white overflow-x-hidden">
+<body class="bg-[#05070a] text-white overflow-x-hidden">
 
-    <header class="fixed top-0 w-full z-[100] bg-[#050811]/80 backdrop-blur-xl border-b border-white/5 px-5 py-4 flex justify-between items-center">
-        <button onclick="toggleSidebar()" class="w-12 h-12 flex items-center justify-center bg-blue-600/10 border border-blue-500/50 rounded-2xl active:scale-90 transition-all">
-            <i class="fas fa-bars-staggered text-blue-500"></i>
+    <header class="fixed top-0 w-full z-[100] bg-[#05070a]/80 backdrop-blur-2xl border-b border-white/5 px-6 py-5 flex justify-between items-center">
+        <button onclick="toggleSidebar()" class="w-11 h-11 flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.4)] active:scale-90 transition-all">
+            <i class="fas fa-bars-staggered"></i>
         </button>
-        <h1 class="text-2xl font-black italic tracking-tighter bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">ZMT STORE</h1>
-        <div class="w-12"></div>
+        <h1 class="text-2xl font-black italic tracking-tighter text-blue-500 uppercase">ZMT STORE</h1>
+        <div class="w-11"></div>
     </header>
 
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-[#0a0f1d] z-[1000] transform -translate-x-full transition-transform duration-500 ease-in-out border-r border-blue-500/20 shadow-[0_0_50px_rgba(0,0,0,0.9)]">
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-[#080b12] z-[1000] transform -translate-x-full transition-transform duration-500 ease-out border-r border-blue-500/20 shadow-[20px_0_50px_rgba(0,0,0,0.8)]">
         <div class="p-8 flex flex-col h-full">
             <div class="flex justify-between items-center mb-12">
-                <span class="text-xl font-black italic text-blue-500 uppercase tracking-widest">Navigation</span>
-                <button onclick="toggleSidebar()" class="text-gray-500 hover:text-white"><i class="fas fa-xmark text-2xl"></i></button>
+                <span class="text-blue-500 font-black italic uppercase tracking-widest text-lg">ZMT Navigator</span>
+                <button onclick="toggleSidebar()" class="text-gray-500"><i class="fas fa-xmark text-2xl"></i></button>
             </div>
             
-            <nav class="flex-1 space-y-4">
-                <button onclick="switchPage('home')" class="nav-link active"><i class="fas fa-layer-group w-8"></i> Toko Utama</button>
-                <button onclick="switchPage('event')" class="nav-link"><i class="fas fa-bolt w-8 text-yellow-400"></i> Event Gratis</button>
-                <a href="#" id="cs_link" target="_blank" class="nav-link"><i class="fab fa-whatsapp w-8 text-green-500"></i> Customer Service</a>
+            <nav class="flex flex-col space-y-4">
+                <button onclick="switchPage('home')" class="nav-item active"><i class="fas fa-home w-8 text-blue-500"></i> Toko Utama</button>
+                <button onclick="switchPage('event')" class="nav-item"><i class="fas fa-bolt w-8 text-yellow-500"></i> Event Gratis</button>
+                <a href="https://wa.me/6289653938936" target="_blank" class="nav-item"><i class="fab fa-whatsapp w-8 text-green-500"></i> CS Service</a>
             </nav>
 
-            <button onclick="openAdmin()" class="mt-auto p-5 bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/30 rounded-3xl text-red-500 font-bold active:scale-95 transition">
-                <i class="fas fa-shield-halved mr-3"></i> ADMIN DASHBOARD
+            <button onclick="openAdmin()" class="mt-auto p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-500 font-black text-sm active:scale-95 transition-all">
+                <i class="fas fa-shield-halved mr-2"></i> ADMIN PANEL
             </button>
         </div>
     </div>
 
-    <main class="pt-28 pb-24 px-5 max-w-lg mx-auto">
+    <main class="pt-32 pb-24 px-6 max-w-md mx-auto">
         <div class="text-center mb-12">
-            <div class="inline-block p-3 bg-white rounded-[2.5rem] shadow-[0_0_40px_rgba(59,130,246,0.3)] mb-6">
-                <img src="qris_clean.jpg" class="w-48 h-48 object-contain rounded-3xl">
+            <div class="inline-block p-3 bg-white rounded-[2.5rem] shadow-[0_0_40px_rgba(59,130,246,0.2)] mb-6">
+                <img src="qris_clean.png" alt="QRIS" class="w-48 h-48 object-contain rounded-3xl">
             </div>
-            <p class="text-[10px] font-bold text-gray-500 tracking-[0.4em] uppercase">Digital Payment ZMT</p>
+            <p class="text-[10px] font-bold text-gray-400 tracking-[0.4em] uppercase">Digital Payment ZMT</p>
         </div>
 
         <div id="page_home" class="space-y-8"></div>
         <div id="page_event" class="hidden space-y-6"></div>
     </main>
 
-    <div id="modal_admin" class="fixed inset-0 bg-black/95 z-[2000] hidden flex items-center justify-center p-4">
-        <div class="bg-[#0a0f1d] w-full max-w-md rounded-[3rem] p-8 border border-blue-500/30 overflow-y-auto max-h-[90vh] shadow-2xl">
+    <div id="modal_admin" class="fixed inset-0 bg-black/95 z-[2000] hidden flex items-center justify-center p-6">
+        <div class="bg-[#080b12] w-full max-w-sm rounded-[2.5rem] p-8 border border-blue-500/30 overflow-y-auto max-h-[90vh]">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-black italic text-blue-500 uppercase">Admin Panel</h2>
+                <h2 class="text-xl font-black italic text-blue-500 uppercase">Admin Panel</h2>
                 <button onclick="closeAdmin()"><i class="fas fa-times text-2xl text-gray-500"></i></button>
             </div>
 
-            <div class="flex gap-2 mb-8 bg-black/40 p-1.5 rounded-2xl border border-white/5">
-                <button onclick="tabAdmin('tab_produk')" class="flex-1 py-3 text-xs font-bold rounded-xl bg-blue-600">PRODUK</button>
-                <button onclick="tabAdmin('tab_event')" class="flex-1 py-3 text-xs font-bold rounded-xl">EVENT</button>
+            <div class="flex gap-2 mb-6 bg-black/50 p-1 rounded-xl">
+                <button onclick="tabAdmin('tab_p')" id="btn_tab_p" class="flex-1 py-2 text-[10px] font-bold rounded-lg bg-blue-600">PRODUK</button>
+                <button onclick="tabAdmin('tab_e')" id="btn_tab_e" class="flex-1 py-2 text-[10px] font-bold rounded-lg">EVENT</button>
             </div>
 
-            <div id="tab_produk" class="space-y-5">
-                <input type="text" id="p_name" placeholder="Nama Produk" class="admin-input">
-                <select id="p_tag" class="admin-input">
+            <div id="tab_p" class="space-y-4">
+                <input type="text" id="p_name" placeholder="Nama Produk" class="adm-in">
+                <select id="p_tag" class="adm-in">
                     <option value="ROOT/VIRTUAL">ROOT/VIRTUAL</option>
                     <option value="NO ROOT">NO ROOT</option>
                 </select>
-                <div class="grid grid-cols-2 gap-2" id="price_rows">
+                <div class="grid grid-cols-2 gap-2" id="price_area">
                     <input type="text" placeholder="Durasi" class="row-in d-in"> <input type="text" placeholder="Harga" class="row-in p-in">
                     <input type="text" placeholder="Durasi" class="row-in d-in"> <input type="text" placeholder="Harga" class="row-in p-in">
                     <input type="text" placeholder="Durasi" class="row-in d-in"> <input type="text" placeholder="Harga" class="row-in p-in">
                     <input type="text" placeholder="Durasi" class="row-in d-in"> <input type="text" placeholder="Harga" class="row-in p-in">
                     <input type="text" placeholder="Durasi" class="row-in d-in"> <input type="text" placeholder="Harga" class="row-in p-in">
                 </div>
-                <button onclick="saveProduct()" class="w-full bg-blue-600 p-4 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-blue-500/50">Simpan Produk</button>
+                <button onclick="saveP()" class="w-full bg-blue-600 py-4 rounded-2xl font-black uppercase active:scale-95 transition">Upload Produk</button>
             </div>
 
-            <div id="tab_event" class="hidden space-y-5">
-                <input type="text" id="ev_title" placeholder="Nama Event / Nama File" class="admin-input">
-                <input type="text" id="ev_link" placeholder="Link Download / Link Event" class="admin-input">
-                <button onclick="saveEvent()" class="w-full bg-purple-600 p-4 rounded-2xl font-black uppercase tracking-widest">Tambah Event</button>
-                <hr class="border-white/5 my-4">
-                <div id="admin_event_list" class="space-y-3"></div>
+            <div id="tab_e" class="hidden space-y-4">
+                <input type="text" id="e_title" placeholder="Nama Event" class="adm-in">
+                <input type="text" id="e_link" placeholder="Link Download" class="adm-in">
+                <button onclick="saveE()" class="w-full bg-purple-600 py-4 rounded-2xl font-black uppercase active:scale-95 transition">Tambah Event</button>
             </div>
         </div>
     </div>

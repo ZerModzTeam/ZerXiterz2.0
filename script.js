@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
@@ -14,39 +14,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// --- NAV & UI ---
 window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('show');
+
 window.switchPage = (p) => {
     document.getElementById('page_home').classList.toggle('hidden', p !== 'home');
     document.getElementById('page_event').classList.toggle('hidden', p !== 'event');
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
     window.toggleSidebar();
 };
 
 window.tabAdmin = (id) => {
-    document.getElementById('tab_produk').classList.add('hidden');
-    document.getElementById('tab_event').classList.add('hidden');
+    document.getElementById('tab_p').classList.add('hidden');
+    document.getElementById('tab_e').classList.add('hidden');
     document.getElementById(id).classList.remove('hidden');
-    const btns = document.querySelectorAll('[onclick^="tabAdmin"]');
-    btns.forEach(b => b.classList.remove('bg-blue-600'));
-    event.target.classList.add('bg-blue-600');
+    document.getElementById('btn_tab_p').classList.remove('bg-blue-600');
+    document.getElementById('btn_tab_e').classList.remove('bg-blue-600');
+    document.getElementById('btn_' + id).classList.add('bg-blue-600');
 };
 
-// --- AUTH ---
 window.openAdmin = async () => {
-    const { value: login } = await Swal.fire({
-        title: 'VERIFIKASI ZMT', background: '#0a0f1d', color: '#fff',
-        html: `<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">`,
-        preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
+    const { value: pass } = await Swal.fire({
+        title: 'PASS ADMIN', background: '#080b12', color: '#fff',
+        input: 'password', confirmButtonColor: '#2563eb'
     });
-    if (login && login[0] === 'Zmt' && login[1] === 'zmt') {
+    if (pass === 'zmt') {
         document.getElementById('modal_admin').classList.remove('hidden');
         window.toggleSidebar();
-    } else if (login) { Swal.fire('Error', 'Sandi Salah!', 'error'); }
+    } else if (pass) { Swal.fire('Salah!', '', 'error'); }
 };
 window.closeAdmin = () => document.getElementById('modal_admin').classList.add('hidden');
 
-// --- DATABASE ACTION ---
-window.saveProduct = () => {
+window.saveP = () => {
     const name = document.getElementById('p_name').value;
     const tag = document.getElementById('p_tag').value;
     const dIn = document.querySelectorAll('.d-in');
@@ -55,75 +54,73 @@ window.saveProduct = () => {
     dIn.forEach((d, i) => { if(d.value) prices.push(`${d.value} | ${pIn[i].value}`); });
     if(name && prices.length > 0) {
         push(ref(db, 'products'), { name, tag, prices: prices.join(',') });
-        Swal.fire('Berhasil', 'Produk Ditambahkan!', 'success');
+        Swal.fire('Berhasil!', '', 'success');
         document.getElementById('p_name').value = '';
-        dIn.forEach(d => d.value = ''); pIn.forEach(p => p.value = '');
+        dIn.forEach(i => i.value = ''); pIn.forEach(i => i.value = '');
     }
 };
 
-window.saveEvent = () => {
-    const title = document.getElementById('ev_title').value;
-    const link = document.getElementById('ev_link').value;
-    if(title && link) {
-        push(ref(db, 'events'), { title, link }).then(() => {
-            document.getElementById('ev_title').value = '';
-            document.getElementById('ev_link').value = '';
-        });
+window.saveE = () => {
+    const t = document.getElementById('e_title').value;
+    const l = document.getElementById('e_link').value;
+    if(t && l) {
+        push(ref(db, 'events'), { title: t, link: l });
+        Swal.fire('Event Ditambah!', '', 'success');
+        document.getElementById('e_title').value = '';
+        document.getElementById('e_link').value = '';
     }
 };
 
-window.delItem = (path) => {
+window.hapusItem = (path) => {
     Swal.fire({
-        title: 'Hapus?', text: 'Data tidak bisa balik lagi!', icon: 'warning',
-        showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Ya, Hapus!'
-    }).then((res) => { if(res.isConfirmed) remove(ref(db, path)); });
+        title: 'Hapus?', icon: 'warning', showCancelButton: true,
+        confirmButtonColor: '#ef4444', confirmButtonText: 'Ya, Hapus'
+    }).then(r => { if(r.isConfirmed) remove(ref(db, path)); });
 };
 
-// --- RENDER REALTIME ---
 onValue(ref(db, '/'), (snap) => {
-    const data = snap.val(); if (!data) return;
-
-    // Render Produk
+    const data = snap.val(); if(!data) return;
     const home = document.getElementById('page_home');
     home.innerHTML = '';
-    for (let id in data.products) {
+    for(let id in data.products){
         const p = data.products[id];
         const list = p.prices.split(',').map(l => `
-            <div class="price-row">
-                <span class="text-[11px] font-bold text-gray-400">${l}</span>
-                <div class="flex gap-2">
-                    <button onclick="buy('${p.name}','${l}',1)" class="wa-btn wa1"><i class="fab fa-whatsapp"></i> WA 1</button>
-                    <button onclick="buy('${p.name}','${l}',2)" class="wa-btn wa2"><i class="fab fa-whatsapp"></i> WA 2</button>
+            <div class="price-box">
+                <span class="text-[11px] font-black text-blue-500 uppercase tracking-widest">${l}</span>
+                <div class="flex flex-col gap-2">
+                    <button onclick="buy('${p.name}','${l}',1)" class="btn-buy btn-wa1"><i class="fab fa-whatsapp"></i> BUY VIA WA 1</button>
+                    <button onclick="buy('${p.name}','${l}',2)" class="btn-buy btn-wa2"><i class="fab fa-whatsapp"></i> BUY VIA WA 2</button>
                 </div>
             </div>`).join('');
         home.innerHTML += `
-            <div class="product-card">
+            <div class="card-z">
                 <div class="flex justify-between items-start mb-6">
                     <div>
-                        <span class="text-[8px] font-black uppercase text-blue-500 tracking-widest">${p.tag}</span>
-                        <h3 class="text-xl font-black italic uppercase text-white">${p.name}</h3>
+                        <span class="text-[8px] font-black text-blue-600 tracking-widest uppercase">${p.tag}</span>
+                        <h3 class="text-xl font-black italic uppercase">${p.name}</h3>
                     </div>
-                    <button onclick="delItem('products/${id}')" class="text-red-500/30 hover:text-red-500 transition"><i class="fas fa-trash-can"></i></button>
+                    <button onclick="hapusItem('products/${id}')" class="text-red-500/20 hover:text-red-500"><i class="fas fa-trash-alt"></i></button>
                 </div>
-                <div>${list}</div>
+                ${list}
             </div>`;
     }
 
-    // Render Event
-    const evMain = document.getElementById('page_event');
-    const evAdmin = document.getElementById('admin_event_list');
-    evMain.innerHTML = '<h2 class="text-2xl font-black text-blue-500 italic mb-8">EVENT & DOWNLOADS</h2>';
-    evAdmin.innerHTML = '';
-    for (let id in data.events) {
-        const ev = data.events[id];
-        evMain.innerHTML += `<a href="${ev.link}" target="_blank" class="block p-6 bg-white/5 border border-white/5 rounded-[2rem] text-left font-bold hover:bg-blue-600/10 transition-all flex justify-between items-center">
-            ${ev.title} <i class="fas fa-circle-down text-blue-500"></i>
-        </a>`;
-        evAdmin.innerHTML += `<div class="flex justify-between p-3 bg-white/5 rounded-xl text-xs"><span>${ev.title}</span> <button onclick="delItem('events/${id}')" class="text-red-500"><i class="fas fa-trash"></i></button></div>`;
+    const ev = document.getElementById('page_event');
+    ev.innerHTML = '<h2 class="text-xl font-black text-center text-blue-500 mb-8 uppercase italic">Event & Downloads</h2>';
+    for(let id in data.events){
+        const e = data.events[id];
+        ev.innerHTML += `
+            <div class="flex justify-between items-center bg-white/5 p-6 rounded-[2rem] border border-white/5 mb-4">
+                <span class="font-bold text-sm uppercase italic">${e.title}</span>
+                <div class="flex gap-4 items-center">
+                    <a href="${e.link}" target="_blank" class="text-blue-500 text-2xl active:scale-90 transition"><i class="fas fa-circle-down"></i></a>
+                    <button onclick="hapusItem('events/${id}')" class="text-red-500/20 hover:text-red-500"><i class="fas fa-trash-can"></i></button>
+                </div>
+            </div>`;
     }
 });
 
 window.buy = (n, p, w) => {
     const num = w === 1 ? '6289653938936' : '6285721057014';
-    window.open(`https://wa.me/${num}?text=Halo%20Admin%20ZMT%20Store!%0AOrder%20%3A%20${n}%0APaket%20%3A%20${p}`, '_blank');
+    window.open(`https://wa.me/${num}?text=Order%20%3A%20${n}%0APaket%20%3A%20${p}`, '_blank');
 };
