@@ -1,512 +1,163 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // ===== DATA PRODUK AWAL =====
-    let products = [
-        {
-            id: 'p1',
-            name: 'HOLO ALL CHAR FFM',
-            oldPrice: 22000,
-            newPrice: 22000,
-            discount: 0,
-            timerEnd: null,
-            buttonText: '[ ORDER ]'
-        },
-        {
-            id: 'p2',
-            name: 'HOLO SENJATA FFM',
-            oldPrice: 18000,
-            newPrice: 18000,
-            discount: 0,
-            timerEnd: null,
-            buttonText: '[ ORDER ]'
-        },
-        {
-            id: 'p3',
-            name: 'HOLO SENJATA FFB',
-            oldPrice: 15000,
-            newPrice: 15000,
-            discount: 0,
-            timerEnd: null,
-            buttonText: '[ ORDER ]'
-        }
-    ];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // ===== VARIABEL GLOBAL =====
-    let offset = 0;
-    let timerInterval = null;
+const firebaseConfig = {
+    apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
+    authDomain: "zmtstore-92963.firebaseapp.com",
+    databaseURL: "https://zmtstore-92963-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "zmtstore-92963",
+    storageBucket: "zmtstore-92963.firebasestorage.app",
+    messagingSenderId: "761749645893",
+    appId: "1:761749645893:web:b320961b1a672c3191d12c"
+};
 
-    // ===== REAL TIME CLOCK =====
-    function updateClock() {
-        const now = new Date();
-        const adjusted = new Date(now.getTime() + offset * 60000);
-        const hours = adjusted.getHours().toString().padStart(2, '0');
-        const mins = adjusted.getMinutes().toString().padStart(2, '0');
-        const secs = adjusted.getSeconds().toString().padStart(2, '0');
-        document.getElementById('clock').innerText = `${hours}:${mins}:${secs}`;
-        const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
-        document.getElementById('date').innerText = adjusted.toLocaleDateString('id-ID', options);
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const dbRef = ref(db, 'zmt_products_v2');
+
+let products = [];
+let offset = 0;
+
+// === SIMPAN KE FIREBASE ===
+function saveToFirebase() {
+    set(dbRef, products);
+}
+
+// === LOAD DARI FIREBASE ===
+onValue(dbRef, (snapshot) => {
+    const data = snapshot.val();
+    products = data || [];
+    renderProducts();
+    if (!document.getElementById('adminPanelContainer').classList.contains('hidden')) {
+        renderAdminUI();
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+});
 
-    // ===== FORMAT TIMER (JAM:MENIT:DETIK) =====
-    function formatTimeLeft(ms) {
-        if (ms <= 0) return '00:00:00';
-        
-        const totalSeconds = Math.floor(ms / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
+// === JAM REALTIME ===
+function updateClock() {
+    const now = new Date();
+    const adjusted = new Date(now.getTime() + offset * 60000);
+    document.getElementById('clock').innerText = adjusted.toLocaleTimeString('id-ID');
+    document.getElementById('date').innerText = adjusted.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+setInterval(updateClock, 1000);
 
-    // ===== UPDATE SEMUA TIMER PRODUK (SETIAP DETIK) =====
-    function startProductTimers() {
-        if (timerInterval) clearInterval(timerInterval);
-        
-        timerInterval = setInterval(() => {
-            let needRender = false;
-            const now = new Date();
-            
-            products.forEach(product => {
-                if (product.timerEnd) {
-                    const timeLeft = product.timerEnd - now;
-                    
-                    if (timeLeft <= 0) {
-                        product.newPrice = product.oldPrice;
-                        product.discount = 0;
-                        product.timerEnd = null;
-                        needRender = true;
-                    }
-                }
-            });
-            
-            if (needRender) {
-                renderProducts();
-            } else {
-                updateTimerDisplays();
-            }
-        }, 1000);
-    }
+// === RENDER PRODUK KE USER ===
+function renderProducts() {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+    const now = new Date().getTime();
 
-    // ===== UPDATE TAMPILAN TIMER =====
-    function updateTimerDisplays() {
-        const now = new Date();
-        
-        products.forEach(product => {
-            if (product.timerEnd) {
-                const timeLeft = product.timerEnd - now;
-                const timerElement = document.querySelector(`#product-${product.id} .timer-badge`);
-                
-                if (timerElement) {
-                    if (timeLeft <= 0) {
-                        timerElement.remove();
-                    } else {
-                        timerElement.innerText = `⏱️ ${formatTimeLeft(timeLeft)}`;
-                    }
-                }
-            }
-        });
-    }
+    products.forEach(p => {
+        let isExpired = p.timerEnd && now > p.timerEnd;
+        let currentPrice = isExpired ? p.oldPrice : p.newPrice;
+        let timeLeft = p.timerEnd ? p.timerEnd - now : 0;
 
-    // ===== RENDER PRODUK =====
-    function renderProducts() {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '';
-        
-        products.forEach(product => {
-            if (product.timerEnd && new Date() > product.timerEnd) {
-                product.newPrice = product.oldPrice;
-                product.discount = 0;
-                product.timerEnd = null;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'product';
-            card.id = `product-${product.id}`;
-            
-            const discPercent = product.oldPrice > 0 ? 
-                Math.round(((product.oldPrice - product.newPrice) / product.oldPrice) * 100) : 0;
-            
-            let timerHtml = '';
-            if (product.timerEnd) {
-                const timeLeft = product.timerEnd - new Date();
-                if (timeLeft > 0) {
-                    timerHtml = `<div class="timer-badge">⏱️ ${formatTimeLeft(timeLeft)}</div>`;
-                }
-            }
-
-            const buttonText = product.buttonText || '[ ORDER ]';
-
-            card.innerHTML = `
-                <div class="product-name">${product.name}</div>
-                <div class="product-price">
-                    <span class="old-price">Rp ${product.oldPrice.toLocaleString()}</span>
-                    <span class="new-price">Rp ${product.newPrice.toLocaleString()}</span>
-                </div>
-                ${discPercent > 0 ? `<div class="discount-badge">DISKON ${discPercent}%</div>` : ''}
-                ${timerHtml}
-                <button class="order-btn" data-product="${product.name}">${buttonText}</button>
-            `;
-            
-            grid.appendChild(card);
-        });
-
-        document.querySelectorAll('.order-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const phoneNumber = '6289653938936';
-                const message = encodeURIComponent('bang aku mau beli holo badan');
-                window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
-            });
-        });
-    }
-
-    // ===== MODAL LOGIN =====
-    const modal = document.getElementById('loginModal');
-    const profileBtn = document.getElementById('adminProfileBtn');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const loginBtn = document.getElementById('loginBtn');
-    const username = document.getElementById('username');
-    const password = document.getElementById('password');
-    const loginMessage = document.getElementById('loginMessage');
-    const adminPanelContainer = document.getElementById('adminPanelContainer');
-
-    profileBtn.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-        username.value = '';
-        password.value = '';
-        loginMessage.innerText = '';
-    });
-
-    closeBtn.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
-
-    window.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
-
-    loginBtn.addEventListener('click', function() {
-        if (username.value === 'ZeroXitAndro' && password.value === 'ROBB15') {
-            modal.classList.add('hidden');
-            adminPanelContainer.classList.remove('hidden');
-            loginMessage.innerText = '';
-            loadAdminPanel();
-        } else {
-            loginMessage.innerText = '✗ Username/password salah';
-        }
-    });
-
-    // ===== LOAD ADMIN PANEL =====
-    function loadAdminPanel() {
-        const panelBody = document.getElementById('adminPanelBody');
-        panelBody.innerHTML = `
-            <!-- TAMBAH PRODUK -->
-            <div class="admin-section">
-                <div class="admin-section-title">➕ TAMBAH PRODUK</div>
-                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                    <input type="text" id="newProductName" placeholder="Nama produk" style="flex:2; background:black; border:2px solid white; color:white; padding:0.5rem 1rem; border-radius:40px;">
-                    <input type="number" id="newProductPrice" placeholder="Harga" style="flex:1; background:black; border:2px solid white; color:white; padding:0.5rem 1rem; border-radius:40px;">
-                    <input type="text" id="newProductButton" placeholder="Teks button" value="[ ORDER ]" style="flex:1; background:black; border:2px solid white; color:white; padding:0.5rem 1rem; border-radius:40px;">
-                    <button id="addProductBtn" class="admin-btn" style="padding:0.5rem 1.2rem;">TAMBAH</button>
-                </div>
+        const card = document.createElement('div');
+        card.className = 'product';
+        card.innerHTML = `
+            <div class="product-name">${p.name}</div>
+            <div class="product-price">
+                <span class="old-price">Rp ${p.oldPrice.toLocaleString()}</span>
+                <span class="new-price">Rp ${currentPrice.toLocaleString()}</span>
             </div>
-            
-            <!-- OFFSET WAKTU -->
-            <div class="admin-section">
-                <div class="admin-section-title">⏱️ OFFSET WAKTU</div>
+            ${(!isExpired && timeLeft > 0) ? `<div class="timer-badge" id="timer-${p.id}">⏱️ Loading...</div>` : ''}
+            <button class="order-btn" onclick="window.orderWhatsApp('${p.name}')">${p.buttonText || '[ ORDER ]'}</button>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// === TIMER COUNTDOWN ===
+setInterval(() => {
+    const now = new Date().getTime();
+    products.forEach(p => {
+        if (p.timerEnd && now < p.timerEnd) {
+            const el = document.getElementById(`timer-${p.id}`);
+            if (el) {
+                const diff = p.timerEnd - now;
+                const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                el.innerText = `⏱️ ${h}:${m}:${s}`;
+            }
+        } else if (p.timerEnd && now >= p.timerEnd) {
+            // Auto reset harga kalau waktu habis
+            p.newPrice = p.oldPrice;
+            p.timerEnd = null;
+            saveToFirebase();
+        }
+    });
+}, 1000);
+
+// === ADMIN UI RENDER ===
+function renderAdminUI() {
+    const container = document.getElementById('adminPanelBody');
+    container.innerHTML = `
+        <div class="admin-section">
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="text" id="addName" placeholder="Nama Produk" style="flex:2; padding:5px;">
+                <input type="number" id="addPrice" placeholder="Harga" style="flex:1; padding:5px;">
+                <button class="admin-btn" onclick="window.handleMenuAdd()">TAMBAH</button>
+            </div>
+        </div>
+        <div class="admin-section">
+            <h3>DAFTAR EDIT</h3>
+            ${products.map(p => `
                 <div class="admin-row">
-                    <span class="admin-label">MENIT</span>
-                    <div class="admin-control">
-                        <input type="number" id="offsetInput" value="0" min="-720" max="720">
-                        <button id="applyOffsetBtn" class="admin-btn">TERAP</button>
+                    <span>${p.name}</span>
+                    <div style="display:flex; gap:5px;">
+                        <input type="number" id="disc-${p.id}" placeholder="%" style="width:40px;">
+                        <input type="number" id="min-${p.id}" placeholder="Min" style="width:40px;">
+                        <button class="admin-btn" onclick="window.handleMenuDisc('${p.id}')">SET</button>
+                        <button class="admin-btn" style="background:red; color:white;" onclick="window.handleMenuDel('${p.id}')">X</button>
                     </div>
                 </div>
-            </div>
-            
-            <!-- DAFTAR PRODUK -->
-            <div class="admin-section">
-                <div class="admin-section-title">📦 DAFTAR PRODUK</div>
-                <div id="productListContainer" style="max-height:300px; overflow-y:auto;"></div>
-            </div>
-            
-            <!-- DISKON + TIMER -->
-            <div class="admin-section">
-                <div class="admin-section-title">🏷️ DISKON + TIMER</div>
-                <div id="discountControlContainer"></div>
-            </div>
-            
-            <!-- EDIT HARGA -->
-            <div class="admin-section">
-                <div class="admin-section-title">💰 EDIT HARGA</div>
-                <div id="priceEditContainer"></div>
-            </div>
+            `).join('')}
+        </div>
+    `;
+}
 
-            <!-- EDIT NAMA PRODUK -->
-            <div class="admin-section">
-                <div class="admin-section-title">✏️ EDIT NAMA PRODUK</div>
-                <div id="productNameEditContainer"></div>
-            </div>
+// === GLOBAL FUNCTIONS (Biar bisa dipanggil dari HTML) ===
+window.orderWhatsApp = (name) => {
+    window.open(`https://wa.me/6289653938936?text=Bang+beli+${name}`, '_blank');
+};
 
-            <!-- EDIT TEKS BUTTON -->
-            <div class="admin-section">
-                <div class="admin-section-title">🔘 EDIT TEKS BUTTON</div>
-                <div id="buttonTextContainer"></div>
-            </div>
-            
-            <!-- RESET -->
-            <div class="admin-section">
-                <button id="resetAllBtn" class="admin-btn warn" style="width:100%; padding:0.8rem;">RESET SEMUA PRODUK</button>
-            </div>
-        `;
-
-        renderProductListForAdmin();
-        renderDiscountControls();
-        renderPriceControls();
-        renderProductNameControls();  // <-- EDIT NAMA PRODUK
-        renderButtonTextControls();
-
-        // Event listeners
-        document.getElementById('applyOffsetBtn').addEventListener('click', function() {
-            const val = parseInt(document.getElementById('offsetInput').value, 10);
-            if (!isNaN(val)) offset = val;
-            updateClock();
-        });
-
-        document.getElementById('addProductBtn').addEventListener('click', function() {
-            const name = document.getElementById('newProductName').value.trim();
-            const price = document.getElementById('newProductPrice').value;
-            const buttonText = document.getElementById('newProductButton').value.trim() || '[ ORDER ]';
-            
-            if (name && price && !isNaN(price) && parseInt(price) > 0) {
-                addProduct(name, price, buttonText);
-                document.getElementById('newProductName').value = '';
-                document.getElementById('newProductPrice').value = '';
-                document.getElementById('newProductButton').value = '[ ORDER ]';
-                loadAdminPanel();
-            }
-        });
-
-        document.getElementById('resetAllBtn').addEventListener('click', function() {
-            products = products.map(p => ({
-                ...p,
-                newPrice: p.oldPrice,
-                discount: 0,
-                timerEnd: null
-            }));
-            renderProducts();
-            loadAdminPanel();
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            adminPanelContainer.classList.add('hidden');
-        });
+window.handleMenuAdd = () => {
+    const name = document.getElementById('addName').value;
+    const price = parseInt(document.getElementById('addPrice').value);
+    if (name && price) {
+        products.push({ id: 'id' + Date.now(), name, oldPrice: price, newPrice: price, timerEnd: null, buttonText: '[ ORDER ]' });
+        saveToFirebase();
     }
+};
 
-    // ===== RENDER LIST PRODUK UNTUK ADMIN =====
-    function renderProductListForAdmin() {
-        const container = document.getElementById('productListContainer');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        products.forEach(product => {
-            const item = document.createElement('div');
-            item.className = 'product-list-item';
-            item.innerHTML = `
-                <span style="font-weight:bold;">${product.name}</span>
-                <span>Rp ${product.oldPrice.toLocaleString()}</span>
-                <span style="color:#ff6b35;">${product.buttonText || '[ ORDER ]'}</span>
-                <div>
-                    <button class="admin-btn small" onclick="window.deleteProduct('${product.id}')">HAPUS</button>
-                </div>
-            `;
-            container.appendChild(item);
-        });
+window.handleMenuDel = (id) => {
+    products = products.filter(p => p.id !== id);
+    saveToFirebase();
+};
+
+window.handleMenuDisc = (id) => {
+    const disc = parseInt(document.getElementById(`disc-${id}`).value) || 0;
+    const mins = parseInt(document.getElementById(`min-${id}`).value) || 0;
+    const p = products.find(p => p.id === id);
+    if (p) {
+        p.newPrice = p.oldPrice - (p.oldPrice * disc / 100);
+        p.timerEnd = new Date().getTime() + (mins * 60000);
+        saveToFirebase();
     }
+};
 
-    // ===== RENDER KONTROL DISKON =====
-    function renderDiscountControls() {
-        const container = document.getElementById('discountControlContainer');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        products.forEach(product => {
-            const row = document.createElement('div');
-            row.className = 'admin-row';
-            row.innerHTML = `
-                <span class="admin-label">${product.name.substring(0, 15)}...</span>
-                <div style="display:flex; gap:0.3rem; flex-wrap:wrap;">
-                    <input type="number" id="disc_${product.id}" placeholder="%" min="0" max="100" style="width:60px;" value="${product.discount || ''}">
-                    <input type="number" id="timer_${product.id}" placeholder="menit" min="0" style="width:70px;" value="">
-                    <input type="number" id="detik_${product.id}" placeholder="detik" min="0" max="59" style="width:70px;" value="">
-                    <button class="admin-btn small" onclick="window.applyDiscTimer('${product.id}')">TERAP</button>
-                </div>
-            `;
-            container.appendChild(row);
-        });
+// === LOGIN LOGIC ===
+document.getElementById('adminProfileBtn').onclick = () => document.getElementById('loginModal').classList.remove('hidden');
+document.getElementById('closeModalBtn').onclick = () => document.getElementById('loginModal').classList.add('hidden');
+document.getElementById('loginBtn').onclick = () => {
+    if (document.getElementById('username').value === 'ZeroXitAndro' && document.getElementById('password').value === 'ROBB15') {
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('adminPanelContainer').classList.remove('hidden');
+        renderAdminUI();
+    } else {
+        alert('Salah bang!');
     }
-
-    // ===== RENDER KONTROL EDIT HARGA =====
-    function renderPriceControls() {
-        const container = document.getElementById('priceEditContainer');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        products.forEach(product => {
-            const row = document.createElement('div');
-            row.className = 'admin-row';
-            row.innerHTML = `
-                <span class="admin-label">${product.name.substring(0, 15)}...</span>
-                <div style="display:flex; gap:0.3rem;">
-                    <input type="number" id="price_${product.id}" placeholder="Harga" value="${product.oldPrice}" style="width:80px;">
-                    <button class="admin-btn small" onclick="window.updatePrice('${product.id}')">UBAH</button>
-                </div>
-            `;
-            container.appendChild(row);
-        });
-    }
-
-    // ===== RENDER KONTROL EDIT NAMA PRODUK =====
-    function renderProductNameControls() {
-        const container = document.getElementById('productNameEditContainer');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        products.forEach(product => {
-            const row = document.createElement('div');
-            row.className = 'admin-row';
-            row.innerHTML = `
-                <span class="admin-label">ID: ${product.id}</span>
-                <div style="display:flex; gap:0.3rem; flex:1; justify-content:flex-end;">
-                    <input type="text" id="name_${product.id}" placeholder="Nama produk" value="${product.name}" style="width:180px; background:black; border:2px solid white; color:white; padding:0.3rem 0.6rem; border-radius:30px;">
-                    <button class="admin-btn small" onclick="window.updateProductName('${product.id}')">UBAH</button>
-                </div>
-            `;
-            container.appendChild(row);
-        });
-    }
-
-    // ===== RENDER KONTROL EDIT TEKS BUTTON =====
-    function renderButtonTextControls() {
-        const container = document.getElementById('buttonTextContainer');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        products.forEach(product => {
-            const row = document.createElement('div');
-            row.className = 'admin-row';
-            row.innerHTML = `
-                <span class="admin-label">${product.name.substring(0, 15)}...</span>
-                <div style="display:flex; gap:0.3rem;">
-                    <input type="text" id="btn_${product.id}" placeholder="Teks button" value="${product.buttonText || '[ ORDER ]'}" style="width:120px; background:black; border:2px solid white; color:white; padding:0.3rem 0.6rem; border-radius:30px;">
-                    <button class="admin-btn small" onclick="window.updateButtonText('${product.id}')">UBAH</button>
-                </div>
-            `;
-            container.appendChild(row);
-        });
-    }
-
-    // ===== FUNGSI GLOBAL =====
-    window.deleteProduct = function(productId) {
-        products = products.filter(p => p.id !== productId);
-        renderProducts();
-        loadAdminPanel();
-    };
-
-    window.applyDiscTimer = function(productId) {
-        const discInput = document.getElementById(`disc_${productId}`);
-        const timerInput = document.getElementById(`timer_${productId}`);
-        const detikInput = document.getElementById(`detik_${productId}`);
-        
-        const disc = discInput ? discInput.value : 0;
-        const menit = timerInput ? parseInt(timerInput.value) || 0 : 0;
-        const detik = detikInput ? parseInt(detikInput.value) || 0 : 0;
-        
-        const product = products.find(p => p.id === productId);
-        if (product) {
-            const discPercent = parseFloat(disc);
-            if (!isNaN(discPercent) && discPercent >= 0) {
-                product.discount = discPercent;
-                product.newPrice = discPercent >= 100 ? 0 : 
-                    Math.round(product.oldPrice - (product.oldPrice * discPercent / 100));
-                
-                if (menit > 0 || detik > 0) {
-                    const totalMs = (menit * 60 + detik) * 1000;
-                    product.timerEnd = new Date(new Date().getTime() + totalMs);
-                }
-                
-                renderProducts();
-                loadAdminPanel();
-            }
-        }
-    };
-
-    window.updatePrice = function(productId) {
-        const priceInput = document.getElementById(`price_${productId}`);
-        if (priceInput) {
-            const newPrice = parseInt(priceInput.value);
-            if (!isNaN(newPrice) && newPrice > 0) {
-                const product = products.find(p => p.id === productId);
-                if (product) {
-                    product.oldPrice = newPrice;
-                    if (!product.timerEnd) {
-                        product.newPrice = newPrice;
-                    }
-                    renderProducts();
-                    loadAdminPanel();
-                }
-            }
-        }
-    };
-
-    // ===== FUNGSI EDIT NAMA PRODUK =====
-    window.updateProductName = function(productId) {
-        const nameInput = document.getElementById(`name_${productId}`);
-        if (nameInput) {
-            const newName = nameInput.value.trim();
-            if (newName) {
-                const product = products.find(p => p.id === productId);
-                if (product) {
-                    product.name = newName;
-                    renderProducts();
-                    loadAdminPanel();
-                }
-            }
-        }
-    };
-
-    window.updateButtonText = function(productId) {
-        const btnInput = document.getElementById(`btn_${productId}`);
-        if (btnInput) {
-            const newText = btnInput.value.trim() || '[ ORDER ]';
-            const product = products.find(p => p.id === productId);
-            if (product) {
-                product.buttonText = newText;
-                renderProducts();
-                loadAdminPanel();
-            }
-        }
-    };
-
-    function addProduct(name, price, buttonText = '[ ORDER ]') {
-        const newId = 'p' + Date.now() + Math.random().toString(36).substr(2, 4);
-        products.push({
-            id: newId,
-            name: name,
-            oldPrice: parseInt(price),
-            newPrice: parseInt(price),
-            discount: 0,
-            timerEnd: null,
-            buttonText: buttonText
-        });
-        renderProducts();
-    }
-
-    // ===== MULAI TIMER PRODUK =====
-    startProductTimers();
-
-    // ===== RENDER AWAL =====
-    renderProducts();
-});
+};
+document.getElementById('logoutBtn').onclick = () => document.getElementById('adminPanelContainer').classList.add('hidden');
