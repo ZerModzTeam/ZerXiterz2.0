@@ -3,303 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT STORE V3.6</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>ZMT EVENT - PRIVATE CAPSULE</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #05070a; color: white; overflow-x: hidden; }
+        :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
 
-        #starField { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%); }
-        .star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: moveStars linear infinite; }
-        @keyframes moveStars { from { transform: translateY(0); } to { transform: translateY(-1000px); } }
+        /* NEBULA BG */
+        .nebula-bg { position: fixed; inset: 0; z-index: -1; background: #020308; overflow: hidden; }
+        .vapor { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35; animation: drift 20s infinite alternate; }
+        .v1 { width: 500px; height: 300px; background: #4f46e5; top: -10%; left: -5%; }
+        .v2 { width: 400px; height: 600px; background: #9333ea; bottom: -10%; right: -5%; animation-delay: -5s; }
+        @keyframes drift { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(100px, 80px) rotate(45deg); } }
 
-        .main-header { position: fixed; top: 0; width: 100%; height: 75px; background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-style: italic; color: #3b82f6; font-weight: 900; font-size: 22px; }
-        .burger-btn { width: 45px; height: 45px; border-radius: 50%; border: 1px solid #3b82f633; background: #3b82f61a; color: #3b82f6; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        .sidebar { position: fixed; top: 0; left: 0; width: 290px; height: 100%; background: rgba(8, 11, 18, 0.98); backdrop-filter: blur(25px); z-index: 1000; transition: 0.5s; transform: translateX(-100%); border-right: 1px solid rgba(255,255,255,0.1); }
-        .sidebar.active { transform: translateX(0); }
-        .sidebar-content { padding: 35px; display: flex; flex-direction: column; height: 100%; }
-        .nav-item { display: flex; align-items: center; gap: 15px; width: 100%; padding: 16px 25px; border-radius: 50px; background: rgba(255,255,255,0.03); color: #94a3b8; font-weight: 700; margin-bottom: 12px; cursor: pointer; text-decoration: none; font-size: 14px; }
-        .nav-item.active { background: #3b82f626; color: #3b82f6; border-color: #3b82f64d; }
-
-        .container { padding: 110px 20px 60px; max-width: 480px; margin: 0 auto; position: relative; z-index: 10; }
+        /* UI CAPSULE */
+        .capsule-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; padding: 25px; margin-bottom: 20px; }
+        .btn-capsule { width: 100%; padding: 16px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-p { background: linear-gradient(90deg, #6366f1, #a855f7); border: none; }
         
-        .search-container { position: relative; margin-bottom: 25px; }
-        .search-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 18px 25px 18px 55px; color: white; font-family: inherit; font-weight: 700; outline: none; transition: 0.3s; }
-        .search-input:focus { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
-        .search-icon { position: absolute; left: 22px; top: 50%; transform: translateY(-50%); color: #3b82f6; }
-
-        .qris-frame { display: block; margin: 0 auto; padding: 12px; background: white; border-radius: 40px; width: fit-content; cursor: pointer; }
-        .qris-img { width: 190px; height: 190px; border-radius: 30px; display: block; }
-        .rules-btn { width: 100%; padding: 18px; border-radius: 50px; background: #ef44441a; border: 1px solid #ef444433; color: #ef4444; font-weight: 900; margin: 25px 0; cursor: pointer; }
-
-        .p-card { background: rgba(15, 23, 42, 0.6); border-radius: 50px; padding: 35px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; position: relative; overflow: hidden; }
-        .p-header { margin-bottom: 25px; padding-right: 80px; } /* Ruang buat tag */
-        .p-name { font-size: 24px; font-style: italic; font-weight: 900; text-transform: uppercase; line-height: 1.2; color: #fff; }
-        .p-tag { position: absolute; top: 35px; right: 25px; color: #3b82f6; font-size: 8px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; background: #3b82f61a; padding: 4px 10px; border-radius: 20px; border: 1px solid #3b82f633; white-space: nowrap; }
+        input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 30px; font-size: 14px; margin-bottom: 10px; resize: none; }
         
-        .price-box { background: rgba(255,255,255,0.03); border-radius: 40px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 15px; text-align: center; }
-        .buy-btn { width: 100%; padding: 12px; border-radius: 50px; border: none; color: white; font-weight: 800; font-size: 11px; margin-top: 5px; cursor: pointer; }
+        /* CHAT SYSTEM */
+        .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 85%; line-height: 1.5; white-space: pre-wrap; user-select: text; -webkit-user-select: text; }
+        .me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .other { background: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
-        .modal.active { display: flex; }
-        .modal-card { background: #0f172a; width: 100%; max-width: 450px; border-radius: 50px; padding: 35px; border: 1px solid #3b82f633; overflow-y: auto; max-height: 90vh; }
-        .cap-in { background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 15px 20px; color: white; font-size: 13px; outline: none; width: 100%; margin-bottom: 10px; }
-        .row-in { display: flex; gap: 10px; }
-        .up-btn { width: 100%; background: #2563eb; color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 900; margin-top: 15px; cursor: pointer; }
-        
-        .manage-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); padding: 15px 20px; border-radius: 30px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05); font-size: 12px; }
-        .hidden { display: none !important; }
+        /* MARQUEE */
+        .marquee-capsule { background: rgba(0,0,0,0.4); border-radius: 999px; padding: 12px 25px; border: 1px solid var(--border); color: var(--g); font-weight: 800; margin: 20px 0; overflow: hidden; }
+        .mq-inner { display: inline-block; white-space: nowrap; animation: slide 15s linear infinite; }
+        @keyframes slide { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        .photo-rules { text-align: left; }
-        .photo-rules .title { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .photo-rules .hangus { background: #4b5563; padding: 8px 15px; color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 20px; display: inline-block; }
-        .photo-rules ul { list-style: disc; padding-left: 20px; }
-        .photo-rules li { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 10px; font-style: italic; }
+        /* WHEEL */
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 25px auto; border: 8px solid var(--glass); border-radius: 50%; }
+        canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); }
+        .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; border: 2px solid #fff; }
+
+        /* HISTORY */
+        .hist-item { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 10px 20px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 12px; }
+        .q-item { background: rgba(255,255,255,0.03); border-radius: 999px; padding: 8px 15px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 12px; }
     </style>
 </head>
-<body> 
+<body>
 
-    <div id="starField"></div>
+<div class="nebula-bg"><div class="vapor v1"></div><div class="vapor v2"></div></div>
 
-    <header class="main-header">
-        <button onclick="toggleSidebar()" class="burger-btn"><i class="fas fa-bars-staggered"></i></button>
-        <h1 class="logo">ZMT STORE</h1>
-        <div id="adm_tag" class="hidden" style="color:#ef4444; font-size:20px"><i class="fas fa-user-shield"></i></div>
-        <div style="width:45px"></div>
-    </header>
+<div id="gate" style="position:fixed; inset:0; z-index:1000; background:rgba(2,3,8,0.9); display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(15px);">
+    <div class="capsule-card" style="width:100%; max-width:380px; text-align:center;">
+        <h1 style="font-weight:900; letter-spacing:4px; color:var(--p); margin:0;">ZMT EVENT</h1>
+        <div id="loginUser">
+            <input type="text" id="uIn" placeholder="Username">
+            <input type="password" id="pIn" placeholder="Password">
+            <button class="btn-capsule btn-p" onclick="login('user')">Masuk Event</button>
+            <p onclick="toggleGate()" style="margin-top:25px; font-size:11px; opacity:0.4; cursor:pointer;">Admin Access</p>
+        </div>
+        <div id="loginAdmin" style="display:none;">
+            <input type="password" id="aKey" placeholder="Admin Key">
+            <button class="btn-capsule btn-p" style="background:var(--g); color:#000;" onclick="login('admin')">Verify Master</button>
+            <p onclick="toggleGate()" style="margin-top:20px; font-size:11px; opacity:0.4; cursor:pointer;">Kembali</p>
+        </div>
+    </div>
+</div>
 
-    <div id="sidebar" class="sidebar">
-        <div class="sidebar-content">
-            <div style="display:flex; justify-content:space-between; margin-bottom:40px">
-                <span style="font-size:10px; letter-spacing:3px; color:#3b82f6; font-weight:800">MENU</span>
-                <i onclick="toggleSidebar()" class="fas fa-times" style="cursor:pointer"></i>
+<div id="app" style="display:none; padding:15px; max-width:550px; margin:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div style="background:rgba(16,185,129,0.1); color:#10b981; padding:5px 15px; border-radius:999px; font-size:10px; font-weight:800; border:1px solid #10b981;">● <span id="onlineVal">0</span> ONLINE</div>
+        <button onclick="logout()" style="background:none; border:none; color:#ff4757; font-weight:800; font-size:11px;">LOGOUT</button>
+    </div>
+
+    <div class="marquee-capsule"><div class="mq-inner" id="mqText">ZMT ENGINE LOADING...</div></div>
+
+    <div id="uiAdmin" style="display:none;">
+        <div class="capsule-card">
+            <h4>Control Panel</h4>
+            <input type="text" placeholder="Ganti Running Text..." onchange="setMQ(this.value)">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
+                <button class="btn-capsule" onclick="setReg(true)" style="color:#10b981;">Buka</button>
+                <button class="btn-capsule" onclick="setReg(false)" style="color:#ef4444;">Tutup</button>
             </div>
-            <nav>
-                <div onclick="switchPage('home')" class="nav-item active" id="nav_home"><i class="fas fa-home"></i> Home</div>
-                <div onclick="switchPage('event')" class="nav-item" id="nav_event"><i class="fas fa-bolt"></i> Event Gratis</div>
-                <a href="https://chat.whatsapp.com/JBW6fNk5KwiGRWCaPVmr8T" target="_blank" class="nav-item">
-                    <i class="fab fa-whatsapp"></i> CUSTOMER SERVICE
-                </a>
-                <div id="dash_nav" onclick="openAdmin()" class="nav-item hidden" style="color:#fbbf24!important"><i class="fas fa-tools"></i> Dashboard Admin</div>
-            </nav>
-            <div style="margin-top:auto">
-                <button id="lgn_btn" onclick="openAdmin()" class="nav-item" style="border:none; width:100%; background:#3b82f61a; color:#3b82f6">LOGIN ADMIN</button>
-                <button id="lgt_btn" onclick="logout()" class="nav-item hidden" style="background:#ef44441a; color:#ef4444; border:none; width:100%">LOGOUT</button>
+            <button class="btn-capsule" style="margin-top:10px; font-size:11px;" onclick="resetQ()">🧹 Reset Semua Antrian</button>
+        </div>
+        <div class="capsule-card" style="text-align:center;">
+            <div class="wheel-container"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
+            <button class="btn-capsule btn-p" onclick="spin()">Spin Sekarang</button>
+        </div>
+        <div class="capsule-card">
+            <h4>Antrian Peserta (@<span id="qCount">0</span>)</h4>
+            <div id="qList"></div>
+        </div>
+        <div class="capsule-card">
+            <h4>Chat Private Pemenang</h4>
+            <div id="adminChatList"></div>
+            <div id="activeAdminChat" style="display:none; margin-top:20px;">
+                <b id="targetUser" style="color:var(--g)"></b>
+                <div id="adminChatBox" class="chat-box" style="margin:10px 0;"></div>
+                <textarea id="adminMsg" rows="2" placeholder="Tulis balasan..."></textarea>
+                <button class="btn-capsule btn-p" onclick="send('admin')">Kirim</button>
             </div>
         </div>
     </div>
 
-    <main class="container">
-        <div id="page_home">
-            <div class="qris-frame" onclick="zoomQR()">
-                <img src="qris_clean.png" class="qris-img" onerror="this.src='https://via.placeholder.com/200?text=QRIS'">
-            </div>
-            <p style="text-align:center; font-size:10px; color:#3b82f6; margin-top:10px; font-weight:800; letter-spacing:1px; margin-bottom: 20px;">
-                <i class="fas fa-search-plus"></i> KLIK GAMBAR UNTUK ZOOM
-            </p>
-            
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari nama cheat..." onkeyup="filterProducts()">
-            </div>
-
-            <button onclick="showRules()" class="rules-btn">RULES TF</button>
-            <div id="product_list"></div>
+    <div id="uiUser" style="display:none;">
+        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">Daftar Spin</button></div>
+        <div class="capsule-card" style="text-align:center;">
+            <div class="wheel-container"><div class="needle"></div><canvas id="wheelUser" width="500" height="500"></canvas></div>
         </div>
-
-        <div id="page_event" class="hidden">
-            <h2 style="text-align:center; margin-bottom:30px; font-style:italic; color:#3b82f6">EVENT UPDATE</h2>
-            <div id="event_list"></div>
+        <div class="capsule-card">
+            <h4>📜 Histori Pemenang</h4>
+            <div id="winHistory"></div>
         </div>
-    </main>
-
-    <div id="modal_adm" class="modal">
-        <div class="modal-card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:25px; color:#3b82f6; font-weight:800">
-                <span>DASHBOARD ADMIN</span>
-                <i onclick="closeAdmin()" class="fas fa-times" style="cursor:pointer"></i>
-            </div>
-            
-            <p style="font-size:10px; color:#3b82f6; margin-bottom:10px">PRODUK CHEAT</p>
-            <input type="hidden" id="edit_id">
-            <div class="row-in">
-                <input type="text" id="p_name" placeholder="Nama Cheat" class="cap-in">
-                <select id="p_tag" class="cap-in" style="flex:0.7">
-                    <option value="ROOT / VIRTUAL">ROOT / VIRTUAL</option>
-                    <option value="NO ROOT">NO ROOT</option>
-                </select>
-            </div>
-            <div id="price_rows">
-                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
-                <div class="row-in"><input type="number" placeholder="Hari" class="cap-in d-in"><input type="number" placeholder="K" class="cap-in p-in"></div>
-            </div>
-            <button onclick="saveP()" id="save_p_btn" class="up-btn">UPLOAD PRODUK</button>
-
-            <hr style="margin:30px 0; border:none; border-top:1px solid #222">
-            
-            <p style="font-size:10px; color:#10b981; margin-bottom:10px">EVENT GRATIS</p>
-            <input type="hidden" id="ev_edit_id">
-            <input type="text" id="ev_title" placeholder="Judul Event" class="cap-in">
-            <input type="text" id="ev_link" placeholder="Link Link (https://...)" class="cap-in">
-            <button onclick="saveEv()" id="save_ev_btn" class="up-btn" style="background:#10b981">UPDATE EVENT</button>
-
-            <div id="manage_list_p" style="margin-top:30px"></div>
-            <div id="manage_list_ev" style="margin-top:20px"></div>
+        <div id="winArea" class="capsule-card" style="display:none; border:2px solid var(--g);">
+            <h3 style="color:var(--g); text-align:center;">🏆 KAMU MENANG!</h3>
+            <div id="userChatBox" class="chat-box" style="margin-bottom:10px;"></div>
+            <textarea id="userMsg" rows="2" placeholder="Kirim pesan ke admin (Bisa Enter)..."></textarea>
+            <button class="btn-capsule btn-p" onclick="send('user')">Kirim Pesan</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDCOuLRN2VNULW1T2P-43GkXBUqpCHqQSY",
-            databaseURL: "https://zmtstore-92963-default-rtdb.asia-southeast1.firebasedatabase.app",
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        let isAdmin = localStorage.getItem('zmt_v37') === 'true';
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, remove, get, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-        // Stars
-        const field = document.getElementById('starField');
-        for(let i=0; i<80; i++) {
-            let s = document.createElement('div');
-            s.className='star'; s.style.width=s.style.height=Math.random()*3+'px';
-            s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
-            s.style.animationDuration=(Math.random()*50+50)+'s';
-            field.appendChild(s);
+    const fb = {
+        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
+        authDomain: "spinanberhadiahzmt.firebaseapp.com",
+        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "spinanberhadiahzmt",
+        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
+    };
+
+    const app = initializeApp(fb); const db = getDatabase(app);
+    let myID = ""; let items = []; let rot = 0; let regOk = true; let curChat = "";
+
+    // SESSION SYNC
+    if(localStorage.getItem('zmt_s') === "MASTER_ADMIN" && localStorage.getItem('zmt_k') !== "zmtxxx") { localStorage.clear(); location.reload(); }
+    if(localStorage.getItem('zmt_s')) start(localStorage.getItem('zmt_s'));
+
+    // ONLINE COUNTER
+    const oRef = ref(db, 'online/'+Math.floor(Math.random()*1e6));
+    onDisconnect(oRef).remove(); set(oRef, true);
+    onValue(ref(db, 'online'), (s) => document.getElementById('onlineVal').innerText = s.exists() ? Object.keys(s.val()).length : 1);
+
+    window.login = async (role) => {
+        if(role === 'admin') {
+            if(document.getElementById('aKey').value === "zmtxxx") { localStorage.setItem('zmt_k', "zmtxxx"); start("MASTER_ADMIN"); }
+            else Swal.fire("Key Salah");
+        } else {
+            const u = document.getElementById('uIn').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+            const p = document.getElementById('pIn').value;
+            if(u.length < 3) return Swal.fire("Username Min 3");
+            const snap = await get(ref(db, `auth/${u}`));
+            if(snap.exists() && snap.val().pw !== p) return Swal.fire("Password Salah");
+            await set(ref(db, `auth/${u}`), {pw:p}); start(u);
         }
+    };
 
-        window.toggleSidebar = () => document.getElementById('sidebar').classList.toggle('active');
-        window.closeAdmin = () => { document.getElementById('modal_adm').classList.remove('active'); resetForm(); };
-        window.switchPage = (p) => {
-            document.getElementById('page_home').classList.toggle('hidden', p !== 'home');
-            document.getElementById('page_event').classList.toggle('hidden', p !== 'event');
-            document.getElementById('nav_home').classList.toggle('active', p === 'home');
-            document.getElementById('nav_event').classList.toggle('active', p === 'event');
-            toggleSidebar();
-        };
+    function start(u) {
+        myID = u; localStorage.setItem('zmt_s', u);
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        if(u === "MASTER_ADMIN") { document.getElementById('uiAdmin').style.display='block'; runAdmin(); }
+        else { document.getElementById('uiUser').style.display='block'; runUser(); syncHistory(); }
+    }
 
-        window.filterProducts = () => {
-            const input = document.getElementById('searchInput').value.toUpperCase();
-            const cards = document.getElementsByClassName('p-card');
-            for (let i = 0; i < cards.length; i++) {
-                const name = cards[i].querySelector('.p-name');
-                if (name) cards[i].style.display = name.innerText.toUpperCase().indexOf(input) > -1 ? "" : "none";
-            }
-        };
-
-        if(isAdmin) {
-            document.getElementById('adm_tag').classList.remove('hidden');
-            document.getElementById('dash_nav').classList.remove('hidden');
-            document.getElementById('lgt_btn').classList.remove('hidden');
-            document.getElementById('lgn_btn').classList.add('hidden');
-        }
-
-        window.openAdmin = async () => {
-            if(isAdmin) return document.getElementById('modal_adm').classList.add('active');
-            const { value: v } = await Swal.fire({
-                title: 'ADMIN LOGIN', background: '#0f172a', color: '#fff',
-                html: '<input id="u" class="swal2-input" placeholder="User"><input id="p" type="password" class="swal2-input" placeholder="Pass">',
-                preConfirm: () => [document.getElementById('u').value, document.getElementById('p').value]
+    function runAdmin() {
+        onValue(ref(db, 'q'), (s) => {
+            items = []; const list = document.getElementById('qList'); list.innerHTML = "";
+            s.forEach(c => {
+                items.push({u:c.val().u, k:c.key});
+                list.innerHTML += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="border:none; background:none; color:#ff4757; font-weight:800; cursor:pointer;">KICK</button></div>`;
             });
-            if(v && v[0]==='Zmt' && v[1]==='zmt') { localStorage.setItem('zmt_v37', 'true'); location.reload(); }
-        };
+            document.getElementById('qCount').innerText = items.length;
+            draw('wheel');
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            const list = document.getElementById('adminChatList'); list.innerHTML = "";
+            s.forEach(c => { list.innerHTML += `<button class="btn-capsule" style="margin-bottom:8px;" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
+        });
+    }
 
-        window.logout = () => { localStorage.removeItem('zmt_v37'); location.reload(); };
+    function runUser() {
+        onValue(ref(db, 'q'), (s) => {
+            items = []; let joined = false;
+            s.forEach(c => { items.push({u:c.val().u}); if(c.val().u === myID) joined = true; });
+            document.getElementById('joinBtn').innerText = joined ? "TERDAFTAR ✅" : "DAFTAR SPIN";
+            document.getElementById('joinBtn').disabled = joined;
+            draw('wheelUser');
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            let win = false; s.forEach(c => { if(c.val().u === myID) win = true; });
+            if(win) { document.getElementById('winArea').style.display='block'; listenChat(myID, 'userChatBox'); }
+        });
+    }
 
-        window.saveP = () => {
-            const id = document.getElementById('edit_id').value;
-            const name = document.getElementById('p_name').value, tag = document.getElementById('p_tag').value;
-            const durs = document.querySelectorAll('.d-in'), prcs = document.querySelectorAll('.p-in');
-            let prices = [];
-            durs.forEach((d, i) => { if(d.value) prices.push(`${d.value} Day | ${prcs[i].value}K`); });
-            if(!name || prices.length === 0) return;
-            const data = { name, tag, prices: prices.join(',') };
-            if(id) db.ref('products/'+id).update(data); else db.ref('products').push(data);
-            Swal.fire('Success!', '', 'success'); closeAdmin();
-        };
+    function syncHistory() {
+        onValue(ref(db, 'wins'), (s) => {
+            const list = document.getElementById('winHistory'); list.innerHTML = "";
+            let data = []; s.forEach(c => data.unshift(c.val()));
+            data.slice(0, 5).forEach(w => { list.innerHTML += `<div class="hist-item"><span>@${w.u}</span><span style="color:var(--g)">HOKI! 🏆</span></div>`; });
+        });
+    }
 
-        window.editP = (id, name, tag, prices) => {
-            resetForm(); document.getElementById('edit_id').value = id;
-            document.getElementById('p_name').value = name; document.getElementById('p_tag').value = tag;
-            const pArr = prices.split(','), durs = document.querySelectorAll('.d-in'), prcs = document.querySelectorAll('.p-in');
-            pArr.forEach((p, i) => { if(durs[i]) { const part = p.split(' Day | '); durs[i].value = part[0]; prcs[i].value = part[1].replace('K',''); } });
-            document.getElementById('save_p_btn').innerText = "UPDATE PRODUK";
-        };
+    window.draw = (id) => {
+        const c = document.getElementById(id); if(!c) return;
+        const ctx = c.getContext('2d'); const n = items.length || 1; const arc = (2*Math.PI)/n;
+        ctx.clearRect(0,0,500,500);
+        items.forEach((it, i) => {
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i*(360/n)}, 65%, 45%)`;
+            ctx.moveTo(250,250); ctx.arc(250,250,245,i*arc,(i+1)*arc); ctx.fill();
+            ctx.save(); ctx.translate(250,250); ctx.rotate(i*arc+arc/2);
+            ctx.fillStyle="#fff"; ctx.font="800 20px Plus Jakarta Sans"; ctx.fillText(it.u.toUpperCase().substring(0,7), 120, 10); ctx.restore();
+        });
+    };
 
-        window.saveEv = () => {
-            const id = document.getElementById('ev_edit_id').value;
-            const title = document.getElementById('ev_title').value, link = document.getElementById('ev_link').value;
-            if(!title || !link) return;
-            if(id) db.ref('events/'+id).update({title, link}); else db.ref('events').push({title, link});
-            resetForm(); Swal.fire('Event Saved!', '', 'success');
-        };
+    window.spin = () => {
+        if(items.length < 2) return Swal.fire("Min 2 Orang");
+        const idx = Math.floor(Math.random() * items.length);
+        const win = items[idx];
+        const arc = 360 / items.length;
+        const stop = (360 - (idx * arc)) - (arc/2);
+        rot += 3600 + (stop - (rot % 360));
+        document.getElementById('wheel').style.transform = `rotate(${rot}deg)`;
+        setTimeout(async () => {
+            confetti({particleCount: 150, spread: 70});
+            await push(ref(db, 'wins'), {u: win.u});
+            await remove(ref(db, `q/${win.k}`));
+            Swal.fire("Pemenang: @"+win.u);
+        }, 6000);
+    };
 
-        window.editEv = (id, title, link) => {
-            document.getElementById('ev_edit_id').value = id;
-            document.getElementById('ev_title').value = title; document.getElementById('ev_link').value = link;
-            document.getElementById('save_ev_btn').innerText = "UPDATE EVENT";
-        };
+    // --- CHAT SYSTEM (REAL PRIVATE) ---
+    window.openChat = (u) => {
+        curChat = u; document.getElementById('activeAdminChat').style.display='block';
+        document.getElementById('targetUser').innerText = "Chatting with @"+u;
+        listenChat(u, 'adminChatBox');
+    };
 
-        function resetForm() {
-            document.getElementById('edit_id').value = ""; document.getElementById('ev_edit_id').value = "";
-            document.getElementById('p_name').value = ""; document.getElementById('ev_title').value = "";
-            document.getElementById('ev_link').value = ""; document.querySelectorAll('.d-in, .p-in').forEach(i => i.value = "");
-            document.getElementById('save_p_btn').innerText = "UPLOAD PRODUK"; document.getElementById('save_ev_btn').innerText = "UPDATE EVENT";
-        }
-
-        db.ref('products').on('value', snap => {
-            const list = document.getElementById('product_list'), mList = document.getElementById('manage_list_p');
-            list.innerHTML = ''; mList.innerHTML = '';
-            snap.forEach(child => {
-                const item = child.val(); let p_html = '';
-                item.prices.split(',').forEach(p => {
-                    p_html += `<div class="price-box"><span style="font-weight:900; color:#3b82f6; font-size:18px">${p}</span>
-                        <div style="display:flex; gap:10px; margin-top:10px;"><button onclick="window.open('https://wa.me/6289653938936?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#2563eb">WA 1</button>
-                        <button onclick="window.open('https://wa.me/6285721057014?text=Order%20${item.name}%20${p}')" class="buy-btn" style="background:#10b981">WA 2</button></div></div>`;
-                });
-                list.innerHTML += `<div class="p-card"><span class="p-tag">${item.tag}</span><div class="p-header"><h1 class="p-name">${item.name}</h1></div>${p_html}</div>`;
-                if(isAdmin) mList.innerHTML += `<div class="manage-item"><span>${item.name}</span><div style="display:flex; gap:10px"><i onclick="editP('${child.key}','${item.name}','${item.tag}','${item.prices}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('products/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
+    function listenChat(u, boxID) {
+        onValue(ref(db, `chats/${u}`), (s) => {
+            const b = document.getElementById(boxID); b.innerHTML = "";
+            s.forEach(c => {
+                const isMe = c.val().sender === myID;
+                b.innerHTML += `<div class="msg ${isMe?'me':'other'}">${c.val().text}</div>`;
             });
+            b.scrollTop = b.scrollHeight;
         });
+    }
 
-        db.ref('events').on('value', snap => {
-            const evPage = document.getElementById('event_list'), mEvList = document.getElementById('manage_list_ev');
-            evPage.innerHTML = ''; mEvList.innerHTML = '';
-            snap.forEach(child => {
-                const ev = child.val();
-                evPage.innerHTML += `<div onclick="window.open('${ev.link}')" class="p-card" style="text-align:center; cursor:pointer; background:rgba(16,185,129,0.1); border-color:#10b98133;"><h2 style="color:#10b981; font-style:italic;">${ev.title}</h2><p style="font-size:10px; margin-top:10px; opacity:0.5;">CLICK TO OPEN LINK</p></div>`;
-                if(isAdmin) mEvList.innerHTML += `<div class="manage-item" style="border-color:#10b98133"><span>EV: ${ev.title}</span><div style="display:flex; gap:10px"><i onclick="editEv('${child.key}','${ev.title}','${ev.link}')" class="fas fa-edit" style="color:#fbbf24; cursor:pointer"></i><i onclick="db.ref('events/${child.key}').remove()" class="fas fa-trash" style="color:#ef4444; cursor:pointer"></i></div></div>`;
-            });
-        });
+    window.send = async (role) => {
+        const target = (role === 'admin') ? curChat : myID;
+        const inp = document.getElementById(role === 'admin' ? 'adminMsg' : 'userMsg');
+        if(!inp.value.trim()) return;
+        await push(ref(db, `chats/${target}`), { sender: myID, text: inp.value });
+        inp.value = "";
+    };
 
-        window.zoomQR = () => Swal.fire({ imageUrl: 'qris_clean.png', imageWidth: 400, background: '#0f172a', confirmButtonText: 'OK', confirmButtonColor: '#ef4444' });
-        
-        window.showRules = () => Swal.fire({
-            background: '#0f172a', color: '#fff', confirmButtonText: 'OK', confirmButtonColor: '#ef4444',
-            html: `
-                <div class="photo-rules">
-                    <div class="title">RULES TF</div>
-                    <div class="hangus">TIDAK MENGIKUTI = HANGUS</div>
-                    <ul>
-                        <li>+ BAYAR SESUAI NOMINAL</li>
-                        <li>+ CEK DETAIL</li>
-                        <li>+ KLIK BELI PADA PRODUK</li>
-                        <li>+ KIRIM BUKTI TF</li>
-                        <li>+ KIRIM DETAIL MAU MOD APA</li>
-                        <li>+ DAN ADMIN AUTO SEND DATA</li>
-                    </ul>
-                </div>
-            `
-        });
-    </script>
+    // --- OTHERS ---
+    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "WELCOME TO ZMT EVENT");
+    onValue(ref(db, 'config/reg'), s => regOk = s.val() !== false);
+    window.kick = (k) => remove(ref(db, `q/${k}`));
+    window.resetQ = () => { if(confirm("Reset Semua?")) remove(ref(db, 'q')); };
+    window.setMQ = (t) => set(ref(db, 'config/marquee'), t);
+    window.setReg = (v) => set(ref(db, 'config/reg'), v);
+    window.join = () => { if(!regOk) return Swal.fire("Tutup"); push(ref(db, 'q'), {u: myID}); };
+    window.logout = () => { localStorage.clear(); location.reload(); };
+    window.toggleGate = () => { 
+        document.getElementById('loginUser').style.display = document.getElementById('loginUser').style.display === 'none' ? 'block' : 'none';
+        document.getElementById('loginAdmin').style.display = document.getElementById('loginAdmin').style.display === 'none' ? 'block' : 'none';
+    };
+</script>
 </body>
 </html>
