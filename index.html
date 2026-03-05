@@ -1,311 +1,143 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT v0.1.5 (BETA)</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZerModzTeam Prank</title>
     <style>
-        /* // # (STYLE DASAR & BACKGROUND) */
         body {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            background-attachment: fixed; color: #e0e0e0; overflow-x: hidden;
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
         }
-        body::after {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.15; z-index: -1; pointer-events: none;
+        #hacked-text {
+            font-size: 4rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            animation: blink 0.2s infinite;
+            border-radius: 10px;
         }
-
-        /* // # (HEADER & NAVIGATION) */
-        .header {
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid #00f2fe; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-            position: sticky; top: 0; z-index: 1000;
+        @keyframes blink {
+            0% { color: black; background-color: white; }
+            50% { color: white; background-color: black; }
+            100% { color: black; background-color: white; }
         }
-        .main-title { font-size: 20px; font-weight: 900; margin: 0; color: #00f2fe; text-shadow: 0 0 10px #00f2fe; }
-        .sub-title { font-size: 9px; color: #71ff00; margin: 0; font-weight: 600; text-transform: uppercase; }
-        .btn-logout { background: #ff0844; color: #fff; border: none; padding: 4px 12px; border-radius: 20px; font-size: 9px; cursor: pointer; font-weight: bold; }
-
-        .container { max-width: 450px; margin: 15px auto; padding: 0 15px; }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(15px);
-            border-radius: 30px; border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            position: relative;
+        /* tambahan biar mantap */
+        .hidden {
+            display: none;
         }
-
-        /* // # (UI INFO AKUN) */
-        .info-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 11px; }
-        .info-label { color: #00f2fe; font-weight: bold; }
-        .status-on { color: #71ff00; } .status-off { color: #ff0844; }
-
-        /* // # (UI MONITORING ADMIN) */
-        .monitor-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; }
-        .monitor-table th { text-align: left; color: #00f2fe; padding: 8px; border-bottom: 1px solid #00f2fe; }
-        .monitor-table td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff; }
-        .btn-kick { background: #ff0844; color: #fff; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 9px; }
-
-        /* // # (UI SPINAN FIX - GAK NIMPA) */
-        .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: visible; }
-        .wheel-container { 
-            position: relative; 
-            width: 230px; height: 230px; 
-            margin: 15px auto; 
-            z-index: 1;
-        }
-        #cv-u, #cv-a { 
-            width: 100% !important; height: 100% !important; 
-            border-radius: 50%; border: 4px solid #00f2fe; 
-            transition: 7s cubic-bezier(0.1, 0, 0.1, 1); 
-        }
-        .pointer { 
-            position: absolute; top: -12px; left: 50%; transform: translateX(-50%); 
-            width: 18px; height: 30px; background: #71ff00; 
-            clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; 
-        }
-
-        /* // # (UI CHAT & GLOBAL) */
-        input, textarea { width: 100%; padding: 14px 20px; margin-bottom: 12px; border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 25px; background: rgba(0, 0, 0, 0.5); color: #71ff00; outline: none; box-sizing: border-box; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 25px; font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
-        .btn-danger { background: #ff0844; color: #fff; }
-
-        .chat-box { height: 240px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 12px; }
-        .msg-me { background: rgba(0, 242, 254, 0.15); border: 1px solid #00f2fe; align-self: flex-end; }
-        .msg-ot { background: rgba(255, 255, 255, 0.05); align-self: flex-start; }
     </style>
 </head>
 <body>
+    <div id="hacked-text">HACKED BY ZerModzTeam</div>
 
-<div id="pg-login">
-    <div class="login-card">
-        <h1 class="main-title">ZMT EVENT</h1>
-        <p class="sub-title">SILAHKAN DAFTAR</p>
-        <div id="u-form" style="margin-top: 25px;">
-            <input type="text" id="log-u" placeholder="USERNAME">
-            <input type="password" id="log-p" placeholder="PASSWORD">
-            <button class="btn btn-primary" onclick="auth('user')">MASUK / DAFTAR</button>
-            <p onclick="setA(true)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">ADMIN MODE</p>
-        </div>
-        <div id="a-form" style="display:none; margin-top: 25px;">
-            <input type="password" id="a-key" placeholder="MASTER KEY">
-            <button class="btn btn-danger" onclick="auth('admin')">MASUK KE ADMIN</button>
-            <p onclick="setA(false)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">BACK</p>
-        </div>
-    </div>
-</div>
+    <script>
+        (function() {
+            // Ambil elemen teks
+            const textEl = document.getElementById('hacked-text');
 
-<div id="pg-app" style="display:none;">
-    <div class="header">
-        <div class="header-titles"><h1 class="main-title">ZMT EVENT</h1><p class="sub-title">v0.1.5 (BETA)</p></div>
-        <div class="user-meta"><div class="usn-display" id="top-usn">USN: ---</div><button class="btn-logout" onclick="location.reload()">Logout</button></div>
-    </div>
+            // ======================== SOUND ========================
+            function playChaosSounds() {
+                try {
+                    // Inisialisasi AudioContext (bisa jalan kalau dibuka via link)
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioContext) {
+                        console.warn("Browser gak support AudioContext, suara batal.");
+                        return;
+                    }
+                    const audioCtx = new AudioContext();
 
-    <div class="container">
-        <div class="card">
-            <div class="sub-title" style="margin-bottom:10px; color:#00f2fe;">📋 DATA LOGIN ANDA</div>
-            <div class="info-row"><span class="info-label">User :</span> <span id="info-u">---</span></div>
-            <div class="info-row"><span class="info-label">Pass :</span> <span id="info-p">---</span></div>
-            <div class="info-row"><span class="info-label">Device :</span> <span id="info-dev">0</span></div>
-            <div class="info-row"><span class="info-label">Status :</span> <span id="info-stat">---</span></div>
-            <div class="info-row"><span class="info-label">Login on :</span> <span id="info-time">---</span></div>
-        </div>
+                    // Master gain biar gak terlalu keras
+                    const masterGain = audioCtx.createGain();
+                    masterGain.gain.value = 0.1; // volume kecil biar gak sakit telinga
+                    masterGain.connect(audioCtx.destination);
 
-        <div id="ui-user" style="display:none;">
-            <div class="card"><button id="btn-join" class="btn btn-primary" onclick="join()">DAFTAR ANTRIAN</button></div>
-            <div class="card wheel-box">
-                <div class="wheel-container"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div>
-            </div>
-            <div class="card">
-                <div id="chat-u" class="chat-box"></div>
-                <textarea id="msg-u" placeholder="Chat Global..."></textarea>
-                <button class="btn btn-primary" onclick="send('global')">KIRIM</button>
-            </div>
-            <div id="box-win" class="card" style="display:none; border:2px solid #71ff00;">
-                <div id="chat-p-u" class="chat-box"></div>
-                <input type="file" id="f-u" onchange="up('user')">
-                <textarea id="msg-p-u" placeholder="Klaim hadiah..."></textarea>
-                <button id="sb-u" class="btn btn-primary" onclick="send('private-u')">KIRIM KLAIM</button>
-            </div>
-        </div>
+                    // Buat 20 oscillator dengan parameter random
+                    const oscs = [];
+                    const types = ['sine', 'square', 'sawtooth', 'triangle'];
+                    for (let i = 0; i < 20; i++) {
+                        const osc = audioCtx.createOscillator();
+                        // type random
+                        osc.type = types[Math.floor(Math.random() * types.length)];
+                        // frekuensi random antara 100 - 2000 Hz
+                        osc.frequency.value = 100 + Math.random() * 1900;
+                        
+                        // gain per osc kecil biar total gak overload
+                        const gainNode = audioCtx.createGain();
+                        gainNode.gain.value = 0.01 + Math.random() * 0.04; // 0.01 - 0.05
+                        
+                        // routing: osc -> gainNode -> masterGain -> destination
+                        osc.connect(gainNode);
+                        gainNode.connect(masterGain);
+                        
+                        // mulai sekarang, berhenti 1 detik lagi
+                        const now = audioCtx.currentTime;
+                        osc.start(now);
+                        osc.stop(now + 1); // otomatis stop setelah 1 detik
+                        
+                        oscs.push(osc);
+                    }
 
-        <div id="ui-admin" style="display:none;">
-            <div class="card">
-                <div class="sub-title" style="margin-bottom:10px; color:#ff0844;">👥 MONITORING AKUN USER</div>
-                <div style="overflow-x:auto;">
-                    <table class="monitor-table">
-                        <thead><tr><th>User</th><th>Pass</th><th>Status</th><th>Aksi</th></tr></thead>
-                        <tbody id="user-list-body"></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card">
-                <button class="btn btn-primary" onclick="reg(true)">BUKA REGISTRASI</button>
-                <button class="btn btn-danger" onclick="reg(false)" style="margin-top:10px;">TUTUP REGISTRASI</button>
-            </div>
-            <div class="card wheel-box">
-                <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
-                <button class="btn btn-primary" onclick="spin()" style="margin-top:15px;">PUTAR SEKARANG</button>
-            </div>
-            <div class="card">
-                <div id="chat-a" class="chat-box"></div>
-                <textarea id="msg-a" placeholder="Console (/ban user)..."></textarea>
-                <button class="btn btn-primary" onclick="send('global-a')">TRANSMIT</button>
-            </div>
-            <div class="card">
-                <div id="win-tags" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
-                <div id="box-p-a" style="display:none;">
-                    <b id="target-n" style="color:#00f2fe;"></b>
-                    <div id="chat-p-a" class="chat-box"></div>
-                    <input type="file" id="f-a" onchange="up('admin')">
-                    <textarea id="msg-p-a"></textarea>
-                    <button id="sb-a" class="btn btn-primary" onclick="send('private-a')">BALAS</button>
-                </div>
-            </div>
-            <button class="btn btn-danger" onclick="wipeConfirm()">☢️ CLEAN DATABASE</button>
-        </div>
-    </div>
-</div>
-
-<audio id="s-spin" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3"></audio>
-<audio id="s-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, get, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
-
-    const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
-    const app = initializeApp(cfg); const db = getDatabase(app);
-
-    let myU = "", myR = "", q = [], curT = "", imgB = null;
-
-    // # (FITUR AUTHENTICATION)
-    window.setA = (v) => { document.getElementById('u-form').style.display = v ? 'none' : 'block'; document.getElementById('a-form').style.display = v ? 'block' : 'none'; };
-    window.auth = async (role) => {
-        if(role === 'admin') {
-            if(document.getElementById('a-key').value === "zmtxxx") { myU="ADMIN"; myR="admin"; launch("SECRET"); }
-            else Swal.fire('Error', 'Key Salah!', 'error');
-        } else {
-            const u = document.getElementById('log-u').value.trim(); const p = document.getElementById('log-p').value; if(!u || !p) return;
-            const uRef = ref(db, `auth/users/${u}`); const snap = await get(uRef);
-            if(snap.exists()) { if(snap.val().pw === p) { myU=u; myR="user"; launch(p); } else Swal.fire('Error', 'Pass Salah!', 'error'); } 
-            else { 
-                const regS = await get(ref(db, 'config/regStatus')); if(regS.exists() && !regS.val()) return Swal.fire('Tutup', 'Registrasi Tutup!', 'info');
-                const now = new Date(); const ts = `${now.getHours()}:${now.getMinutes()} - ${now.getDate()}/${now.getMonth()+1}`;
-                await set(uRef, {pw: p, loginOn: ts}); myU=u; myR="user"; launch(p);
+                    // Kalau context suspended, coba resume (tapi biasanya kalau via link udah aktif)
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                } catch (e) {
+                    console.error('Sound error:', e);
+                }
             }
-        }
-    };
 
-    function launch(pass) {
-        document.getElementById('pg-login').style.display='none'; document.getElementById('pg-app').style.display='block';
-        document.getElementById('top-usn').innerText = `USN: ${myU}`; document.getElementById('info-u').innerText = myU; document.getElementById('info-p').innerText = pass;
-        if(myR==='admin') { document.getElementById('ui-admin').style.display='block'; initA(); } 
-        else { document.getElementById('ui-user').style.display='block'; initU(); handlePresence(myU); }
-    }
+            // ======================== CRASH SIMULATION ========================
+            function crashBrowser() {
+                // Fungsi ini bikin tab jadi hang / nge-freeze
+                // Loop tanpa henti + alokasi memori biar keliatan "crash"
+                // (Gak beneran nge-crash Chrome, cuma bikin tab gak responsif)
+                console.log("Mulai crash...");
+                
+                // Sembunyikan teks (sudah di-hidden sebelumnya, tapi buat jaga-jaga)
+                textEl.classList.add('hidden');
+                
+                // Opsi 1: Loop CPU murni
+                // while (true) {
+                //     for (let i = 0; i < 1e7; i++) { Math.sqrt(i); }
+                // }
 
-    // # (FITUR MONITORING LOGIC)
-    function initA() {
-        listen('chats/global', 'chat-a');
-        onValue(ref(db, 'queue'), (s) => { q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); draw('cv-a', q); });
-        onValue(ref(db, 'auth/users'), (snap) => {
-            const tbody = document.getElementById('user-list-body'); tbody.innerHTML = "";
-            snap.forEach(userSnap => {
-                const username = userSnap.key; const userData = userSnap.val();
-                onValue(ref(db, `presence/${username}`), (pSnap) => {
-                    const isOnline = pSnap.exists(); const rowId = `row-${username}`; let row = document.getElementById(rowId);
-                    const html = `<td>${username}</td><td>${userData.pw}</td><td class="${isOnline?'status-on':'status-off'}">${isOnline?'Online':'Offline'}</td><td><button class="btn-kick" onclick="banUser('${username}')">BAN</button></td>`;
-                    if(row) row.innerHTML = html; else { const tr = document.createElement('tr'); tr.id = rowId; tr.innerHTML = html; tbody.appendChild(tr); }
-                });
-            });
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            const l = document.getElementById('win-tags'); l.innerHTML = "";
-            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 10px;" onclick="openP('${n}')">@${n}</button>`; });
-        });
-    }
+                // Opsi 2: Loop + alokasi memori (lebih berasa "berat")
+                const arr = [];
+                while (true) {
+                    try {
+                        // Tambah 10MB tiap iterasi
+                        arr.push(new ArrayBuffer(10 * 1024 * 1024));
+                    } catch (e) {
+                        // Kalau memory penuh, lanjut loop aja biar CPU kepanasan
+                        console.log('memory full, tapi tetap loop');
+                    }
+                    // tambah dummy biar CPU ngebut
+                    for (let j = 0; j < 1000000; j++) {
+                        Math.random();
+                    }
+                }
+            }
 
-    // # (FITUR BAN/BANISHMENT)
-    window.banUser = async (u) => {
-        Swal.fire({ title: 'BAN?', text: `Yakin ban ${u}?`, icon: 'warning', showCancelButton: true }).then(async (r) => {
-            if(r.isConfirmed) { await remove(ref(db, `auth/users/${u}`)); await remove(ref(db, `presence/${u}`)); Swal.fire('Banned!', '', 'success'); }
-        });
-    };
+            // ======================== EKSEKUSI ========================
+            // Mainkan suara segera
+            playChaosSounds();
 
-    // # (FITUR PRESENCE LOGIC)
-    function handlePresence(u) {
-        const pRef = ref(db, `presence/${u}`); const sRef = push(pRef);
-        set(sRef, { state: 'online' }); onDisconnect(sRef).remove();
-        onValue(pRef, (s) => { const count = s.exists() ? Object.keys(s.val()).length : 0; document.getElementById('info-dev').innerText = count; document.getElementById('info-stat').innerText = count > 0 ? "Online" : "Offline"; document.getElementById('info-stat').className = count > 0 ? "status-on" : "status-off"; });
-        get(ref(db, `auth/users/${u}/loginOn`)).then(s => { document.getElementById('info-time').innerText = s.val() || "---"; });
-        onValue(ref(db, `auth/users/${u}`), (s) => { if(!s.exists()) location.reload(); });
-    }
+            // Teks akan otomatis kedip sampai 1 detik, lalu hilang dan crash dimulai
+            setTimeout(() => {
+                // Sembunyikan teks
+                textEl.style.display = 'none'; // langsung ilang
 
-    // # (FITUR MESSAGING LOGIC)
-    window.send = async (m) => {
-        const isG = m.includes('global'); const inp = document.getElementById(isG ? (myR==='admin'?'msg-a':'msg-u') : (myR==='admin'?'msg-p-a':'msg-p-u'));
-        let txt = inp.value.trim(); if(myR==='admin' && txt.startsWith('/ban ')) { banUser(txt.split(' ')[1]); inp.value=""; return; }
-        const path = isG ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
-        await push(ref(db, path), { s: myU, m: txt, f: imgB }); inp.value = ""; imgB = null;
-    };
-
-    function listen(p, id) {
-        onValue(ref(db, p), (s) => {
-            const b = document.getElementById(id); b.innerHTML = "";
-            s.forEach(c => { const d = c.val(); let cls = d.s === myU ? 'msg-me' : 'msg-ot'; b.innerHTML += `<div class="msg ${cls}"><b>${d.s}:</b><br>${d.f ? `<img src="${d.f}" style="max-width:100%;"><br>` : ""}${d.m}</div>`; });
-            b.scrollTop = b.scrollHeight;
-        });
-    }
-
-    // # (FITUR IMAGE UPLOAD)
-    window.up = (r) => {
-        const file = document.getElementById(r==='admin'?'f-a':'f-u').files[0]; const reader = new FileReader();
-        reader.onload = (e) => { imgB = e.target.result; Swal.fire('Ready', 'Gambar Siap', 'success'); }; reader.readAsDataURL(file);
-    };
-
-    // # (FITUR SPIN LOGIC)
-    window.spin = async () => {
-        if(q.length < 2) return; const wIdx = Math.floor(Math.random() * q.length);
-        const rot = 3600 + (360 - (wIdx * (360/q.length))) - ((360/q.length)/2);
-        await set(ref(db, 'config/sync'), { r: rot, w: q[wIdx].u, d: false });
-        setTimeout(async () => { await update(ref(db, 'config/sync'), { d: true }); await push(ref(db, 'wins'), { u: q[wIdx].u }); await remove(ref(db, `queue/${q[wIdx].k}`)); }, 7200);
-    };
-
-    function draw(id, list) {
-        const c = document.getElementById(id); if(!c) return; const ctx = c.getContext('2d'); const n = list.length || 1; const a = (2*Math.PI)/n;
-        ctx.clearRect(0,0,500,500);
-        list.forEach((p, i) => {
-            ctx.beginPath(); ctx.fillStyle = i%2===0 ? '#001529' : '#002140'; ctx.moveTo(250,250); ctx.arc(250,250,240,i*a,(i+1)*a); ctx.fill();
-            ctx.save(); ctx.translate(250,250); ctx.rotate(i*a + a/2); ctx.fillStyle = "#00f2fe"; ctx.font = "bold 20px Arial"; ctx.textAlign="right"; ctx.fillText(p.u, 230, 8); ctx.restore();
-        });
-    }
-
-    function initU() {
-        listen('chats/global', 'chat-u');
-        onValue(ref(db, 'queue'), (s) => { let l=[]; let j=false; s.forEach(c => { l.push({u:c.val().u}); if(c.val().u===myU) j=true; }); if(j) { document.getElementById('btn-join').disabled=true; document.getElementById('btn-join').innerText="SUDAH DAFTAR"; } draw('cv-u', l); });
-        onValue(ref(db, 'config/sync'), (s) => {
-            const d = s.val(); if(!d) return; document.getElementById('cv-u').style.transform = `rotate(${d.r - 90}deg)`;
-            if(d.r > 0 && !d.d) document.getElementById('s-spin').play();
-            if(d.d && d.w === myU) { confetti(); document.getElementById('s-win').play(); }
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            let w=false; s.forEach(c => { if(c.val().u===myU) w=true; });
-            document.getElementById('box-win').style.display = w ? 'block' : 'none'; if(w) listen(`chats/private/${myU}`, 'chat-p-u');
-        });
-    }
-
-    // # (FITUR ADMIN CONTROL)
-    window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="REPLY: @"+u; listen(`chats/private/${u}`, 'chat-p-a'); };
-    window.reg = (v) => set(ref(db, 'config/regStatus'), v);
-    window.join = () => push(ref(db, 'queue'), {u: myU});
-    window.wipeConfirm = () => { Swal.fire({ title: 'WIPE?', icon: 'error', showCancelButton: true }).then(async (r) => { if(r.isConfirmed) { await remove(ref(db, '/')); location.reload(); } }); };
-</script>
+                // Panggil fungsi crash
+                crashBrowser();
+            }, 1000); // tepat 1 detik
+        })();
+    </script>
 </body>
 </html>
